@@ -6,12 +6,21 @@ import { NavLink } from 'react-router-dom';
 
 import Logout from '../auth/Logout';
 
+import { withStyles } from '@material-ui/core/styles';
+
 import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import Avatar from '@material-ui/core/Avatar';
 
+const styles = (theme) => ({
+  avatar: {
+    color: theme.palette.primary.main,
+    backgroundColor: 'white'
+  }
+});
 
 class Navbar extends Component {
 
@@ -20,7 +29,12 @@ class Navbar extends Component {
     const authNavbar = (this.props.isAuthenticated ? (
       <div style={{display: 'flex'}}>
         <Logout/>
-        <Button component={NavLink} to={"/user"} strict replace color="inherit">User</Button>
+        <Button component={NavLink} to={"/user"} strict replace color="inherit">
+          {this.props.user.image ?
+            <Avatar src={this.props.user.image} />
+          : <Avatar classes={{root: this.props.classes.avatar}}>{this.props.user.firstname.charAt(0)}{this.props.user.lastname.charAt(0)}</Avatar>
+          }
+        </Button>
       </div>
     ) : (
       <div>
@@ -60,11 +74,13 @@ class Navbar extends Component {
 }
 
 Navbar.propTypes = {
-  isAuthenticated: PropTypes.bool
+  isAuthenticated: PropTypes.bool,
+  user: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-  isAuthenticated: state.auth.isAuthenticated
+  isAuthenticated: state.auth.isAuthenticated,
+  user: state.auth.user
 });
 
-export default connect(mapStateToProps, null)(Navbar);
+export default connect(mapStateToProps, null)(withStyles(styles, {withTheme: true})(Navbar));
