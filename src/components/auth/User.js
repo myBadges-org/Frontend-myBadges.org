@@ -50,7 +50,13 @@ export class User extends Component {
   };
 
   onFileChange = (e) => {
-    this.setState({ file: e.target.files[0], url: URL.createObjectURL(e.target.files[0]) });
+    var extensionType = e.target.files[0].type.split('image/')[1];
+    if(extensionType !== 'png' && extensionType !== 'jpg' && extensionType !== 'gif' && extensionType !== 'jpeg') {
+      this.setState({ msgType: 'error', msg: 'Es sind nur Bilder mit der Dateiendung "PNG", "JPG", "JPEG" und "GIF" erlaubt.' });
+    }
+    else {
+      this.setState({ msgType: null, msg: null, file: e.target.files[0], url: URL.createObjectURL(e.target.files[0]) });
+    }
   };
 
   onReset = () => {
@@ -101,7 +107,7 @@ export class User extends Component {
         {this.state.msg ? <Alert style={{marginBottom: '10px'}} icon={false} severity={this.state.msgType}>{this.state.msg}</Alert> : null}
         <Grid container spacing={1}>
           <Grid item xs={6}>
-            {user.image && user.image.path ?
+            {(user.image && user.image.path) || this.state.url ?
               <Avatar src={this.state.url || `/media/${user.image.path}`} style={{width: '200px', height: '200px'}}/>
             : <Avatar style={{width: '200px', height: '200px'}}>{user.firstname.charAt(0)}{this.state.lastname.charAt(0)}</Avatar>
             }
