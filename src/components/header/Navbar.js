@@ -31,7 +31,7 @@ class Navbar extends Component {
         <Logout/>
         <Button component={NavLink} to={"/user"} strict replace color="inherit">
           {this.props.user.image ?
-            <Avatar src={this.props.user.image} />
+            <Avatar src={`/media/${this.props.user.image.path}`}/>
           : <Avatar classes={{root: this.props.classes.avatar}}>{this.props.user.firstname.charAt(0)}{this.props.user.lastname.charAt(0)}</Avatar>
           }
         </Button>

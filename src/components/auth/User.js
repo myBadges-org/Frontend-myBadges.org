@@ -60,17 +60,14 @@ export class User extends Component {
   onSubmit = e => {
     e.preventDefault();
     const { lastname, city, postalcode, email, file } = this.state;
-    // create user object
-    const updatedUser = {
-      lastname,
-      city,
-      postalcode,
-      email,
-      image: file
-    };
+    var updatedUser = new FormData();
+    updatedUser.set('lastname', lastname);
+    updatedUser.set('city', city);
+    updatedUser.set('postalcode', postalcode);
+    updatedUser.set('email', email);
+    updatedUser.append('profile', file);
     // Request Body
-    const body = JSON.stringify(updatedUser);
-    axios.put('api/v1/user/me', body)
+    axios.put('api/v1/user/me', updatedUser)
       .then(res => {
         this.props.dispatch({
           type: USER_LOADED,
@@ -104,8 +101,8 @@ export class User extends Component {
         {this.state.msg ? <Alert style={{marginBottom: '10px'}} icon={false} severity={this.state.msgType}>{this.state.msg}</Alert> : null}
         <Grid container spacing={1}>
           <Grid item xs={6}>
-            {user.image ?
-              <Avatar src={this.state.url || user.image} style={{width: '200px', height: '200px'}}/>
+            {user.image && user.image.path ?
+              <Avatar src={this.state.url || `/media/${user.image.path}`} style={{width: '200px', height: '200px'}}/>
             : <Avatar style={{width: '200px', height: '200px'}}>{user.firstname.charAt(0)}{this.state.lastname.charAt(0)}</Avatar>
             }
           </Grid>
