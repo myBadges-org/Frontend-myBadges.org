@@ -38,8 +38,8 @@ class Navbar extends Component {
       </div>
     ) : (
       <div>
-        <Button component={NavLink} to={"/login"} strict replace color="inherit">Anmelden</Button>
-        <Button component={NavLink} to={"/register"} exact replace color="inherit">Registrieren</Button>
+        <Button component={NavLink} to={"/login"} activeStyle={{fontWeight: "bold"}} strict replace color="inherit">Anmelden</Button>
+        <Button component={NavLink} to={"/register"} activeStyle={{fontWeight: "bold"}} exact replace color="inherit">Registrieren</Button>
       </div>
     ));
 
