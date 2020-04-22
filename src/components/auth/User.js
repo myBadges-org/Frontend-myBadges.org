@@ -45,6 +45,10 @@ export class User extends Component {
     postalcode: this.props.user.postalcode,
   }
 
+  componentDidUpdate() {
+    window.scrollTo(0, 0);
+  }
+
   onChange = e => {
     this.setState({ [e.target.name]: e.target.value });
   };
