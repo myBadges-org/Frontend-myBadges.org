@@ -30,7 +30,7 @@ export class Login extends Component {
   }
 
   componentDidUpdate(prevProps){
-    const { message, isAuthenticated } = this.props;
+    const { message } = this.props;
     if (message !== prevProps.message) {
       if(message.id === 'LOGIN_SUCCESS'){
         this.props.history.push('/');
@@ -74,21 +74,24 @@ export class Login extends Component {
 
   render(){
     return(
-      <div style={{maxWidth: '500px', marginLeft: 'auto', marginRight: 'auto'}}>
+      <div style={{maxWidth: '500px', marginLeft: 'auto', marginRight: 'auto', marginTop: '30px'}}>
         {this.state.msg ? <Alert style={{marginBottom: '10px'}} icon={false} severity={this.state.msgType}>{this.state.msg}</Alert> : null}
         <TextField
+          style={{marginBottom: '10px'}}
+          variant='outlined'
           type='text'
           label='Nutzername'
           name='username'
-          placeholder="Nutzername"
+          value={this.state.username}
           onChange={this.onChange}
           fullWidth={true}
         />
         <TextField
+          variant='outlined'
           type={this.state.showPassword ? 'text' : 'password'}
           label='Passwort'
           name='password'
-          placeholder="Passwort"
+          value={this.state.password}
           InputProps={{
             endAdornment:
               <InputAdornment
@@ -112,7 +115,7 @@ export class Login extends Component {
           </Button>
         </p>
         <p style={{textAlign: 'center', fontSize: '0.8rem'}}>
-          <Link to="/password" onClick={this.toggle}>Passwort vergessen?</Link>
+          <Link to="/user/password" onClick={this.toggle}>Passwort vergessen?</Link>
         </p>
         <Divider variant='fullWidth'/>
         <p style={{textAlign: 'center', paddingRight: "34px", paddingLeft: "34px"}}>

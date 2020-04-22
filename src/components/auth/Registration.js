@@ -8,6 +8,7 @@ import { clearMessages } from '../../actions/messageActions'
 import moment from 'moment';
 import { withRouter, Link } from 'react-router-dom';
 
+import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -84,96 +85,129 @@ export class Registration extends Component {
 
   render(){
     return(
-      <div style={{maxWidth: '500px', marginLeft: 'auto', marginRight: 'auto'}}>
+      <div style={{maxWidth: '500px', marginLeft: 'auto', marginRight: 'auto', marginTop: '30px'}}>
         {this.state.msg ? <Alert style={{marginBottom: '10px'}} icon={false} severity='error'>{this.state.msg}</Alert> : null}
-        <TextField
-          type='text'
-          label='Vorname'
-          name='firstname'
-          placeholder="Vorname"
-          onChange={this.onChange}
-          fullWidth={true}
-        />
-        <TextField
-          type='text'
-          label='Nachname'
-          name='lastname'
-          placeholder="Nachname"
-          onChange={this.onChange}
-          fullWidth={true}
-        />
-        <TextField
-          type='text'
-          label='Stadt'
-          name='city'
-          placeholder="Stadt"
-          onChange={this.onChange}
-          fullWidth={true}
-        />
-        <TextField
-          type='text'
-          label='Postleitzahl'
-          name='postalcode'
-          placeholder="12345"
-          onChange={this.onChange}
-          fullWidth={true}
-        />
-        <TextField
-          label="Geburtsdatum"
-          type="date"
-          name="birthday"
-          onChange={this.onChange}
-          defaultValue={moment().format('YYYY-MM-DD')}
-          InputLabelProps={{
-            shrink: true
-          }}
-        />
-        <TextField
-          type='email'
-          label='Email'
-          name='email'
-          placeholder="Email"
-          onChange={this.onChange}
-          fullWidth={true}
-        />
-        <TextField
-          type='text'
-          label='Nutzername'
-          name='username'
-          placeholder="Nutzername"
-          onChange={this.onChange}
-          fullWidth={true}
-        />
-        <TextField
-          type={this.state.showPassword ? 'text' : 'password'}
-          label='Passwort'
-          name='password'
-          placeholder="Passwort"
-          InputProps={{
-            endAdornment:
-              <InputAdornment
-                position="end"
-              >
-                <IconButton
-                  onClick={this.handleClickShowPassword}
-                  onMouseDown={this.handleMouseDownPassword}
-                  edge="end"
-                >
-                  <FontAwesomeIcon size='xs' icon={this.state.showPassword ? faEyeSlash : faEye} />
-                </IconButton>
-              </InputAdornment>
-          }}
-          onChange={this.onChange}
-          fullWidth={true}
-        />
-        <TextField
-          type='password'
-          label='Passwort bestätigen'
-          name='confirmPassword'
-          placeholder="Passwort bestätigen"
-          onChange={this.onChange}
-          fullWidth={true}
-        />
+        <Grid container spacing={1}>
+          <Grid item xs={12} md={6}>
+            <TextField
+              style={{marginBottom: '10px'}}
+              variant='outlined'
+              type='text'
+              label='Vorname'
+              name='firstname'
+              value={this.state.firstname}
+              onChange={this.onChange}
+              fullWidth={true}
+            />
+            <TextField
+              style={{marginBottom: '10px'}}
+              variant='outlined'
+              type='text'
+              label='Nachname'
+              name='lastname'
+              value={this.state.lastname}
+              onChange={this.onChange}
+              fullWidth={true}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField
+              style={{marginBottom: '10px'}}
+              variant='outlined'
+              type='text'
+              label='Stadt'
+              name='city'
+              value={this.state.city}
+              onChange={this.onChange}
+              fullWidth={true}
+            />
+            <TextField
+              style={{marginBottom: '10px'}}
+              variant='outlined'
+              type='text'
+              label='Postleitzahl'
+              name='postalcode'
+              value={this.state.postalcode}
+              onChange={this.onChange}
+              fullWidth={true}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField
+              style={{marginBottom: '10px'}}
+              variant='outlined'
+              label="Geburtsdatum"
+              type="date"
+              name="birthday"
+              onChange={this.onChange}
+              value={moment(this.state.birthday).format('YYYY-MM-DD')}
+              InputLabelProps={{
+                shrink: true
+              }}
+              fullWidth={true}
+            />
+          </Grid>
+        </Grid>
+        <Grid container spacing={1}>
+          <Grid item xs={12} md={6}>
+            <TextField
+              style={{marginBottom: '10px'}}
+              variant='outlined'
+              type='email'
+              label='Email'
+              name='email'
+              value={this.state.email}
+              onChange={this.onChange}
+              fullWidth={true}
+            />
+            <TextField
+              style={{marginBottom: '10px'}}
+              variant='outlined'
+              type='text'
+              label='Nutzername'
+              name='username'
+              value={this.state.username}
+              onChange={this.onChange}
+              fullWidth={true}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField
+              style={{marginBottom: '10px'}}
+              variant='outlined'
+              type={this.state.showPassword ? 'text' : 'password'}
+              label='Passwort'
+              name='password'
+              value={this.state.password}
+              InputProps={{
+                endAdornment:
+                  <InputAdornment
+                    position="end"
+                  >
+                    <IconButton
+                      onClick={this.handleClickShowPassword}
+                      onMouseDown={this.handleMouseDownPassword}
+                      edge="end"
+                    >
+                      <FontAwesomeIcon size='xs' icon={this.state.showPassword ? faEyeSlash : faEye} />
+                    </IconButton>
+                  </InputAdornment>
+              }}
+              onChange={this.onChange}
+              fullWidth={true}
+            />
+            <TextField
+              style={{marginBottom: '10px'}}
+              variant='outlined'
+              type='password'
+              label='Passwort bestätigen'
+              name='confirmPassword'
+              value={this.state.confirmPassword}
+              onChange={this.onChange}
+              fullWidth={true}
+            />
+          </Grid>
+        </Grid>
         <p>
           <Button color="primary" variant='contained' onClick={this.onSubmit} style={{width: '100%'}}>
             Registrieren
@@ -181,7 +215,7 @@ export class Registration extends Component {
         </p>
         <Divider variant='fullWidth'/>
         <p style={{textAlign: 'center', paddingRight: "34px", paddingLeft: "34px"}}>
-          Du bist schon angemeldet? <Link to="/login" onClick={this.toggle}>Anmelden</Link>
+          Du bist schon angemeldet? <Link to="/login">Anmelden</Link>
         </p>
       </div>
     );

@@ -7,6 +7,8 @@ import Home from '../home/Home';
 import Registration from '../auth/Registration';
 import Login from '../auth/Login';
 import User from '../auth/User';
+import Password from '../auth/Password';
+import ResetPassword from '../auth/ResetPassword';
 import EmailConfirmation from '../auth/EmailConfirmation';
 import Contact from '../contact/Contact';
 import NotFound from '../notFound/NotFound';
@@ -17,13 +19,15 @@ class Routes extends Component {
     return (
       <Switch>
         <Route path="/" exact component={Home} />
-        <Route path="/login" component={Login} />
-        <Route path="/register" component={Registration} />
+        <Route path="/login" exact component={Login} />
+        <Route path="/register" exact component={Registration} />
         <PrivateRoute path="/user" exact>
           <User/>
         </PrivateRoute>
-        <Route path="/user/email" component={EmailConfirmation} />
-        <Route path="/contact" component={Contact} />
+        <Route path="/user/password" exact component={Password} />
+        <Route path="/user/password/reset" exact component={ResetPassword} />
+        <Route path="/user/email" exact component={EmailConfirmation} />
+        <Route path="/contact" exact component={Contact} />
         <Route component={NotFound} />
       </Switch>
     );
