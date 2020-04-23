@@ -31,6 +31,11 @@ export class Contact extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
+  onChangeBadge = e => {
+    console.log(e.target)
+    this.setState({ [e.target.name]: e.target.value });
+  };
+
   onReset = () => {
     this.setState({ msg: null, msgType: null, content: '', subject: '', email: this.props.user && this.props.user.email ? this.props.user.email :  '' });
   };

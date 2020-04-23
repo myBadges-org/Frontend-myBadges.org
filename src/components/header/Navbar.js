@@ -53,6 +53,9 @@ class Navbar extends Component {
         <Button component={NavLink} to={'/course'} activeStyle={{fontWeight: "bold"}} color="inherit">
           Kursliste
         </Button>
+        <Button component={NavLink} to={'/course/create'} activeStyle={{fontWeight: "bold"}} color="inherit">
+          Kurs erstellen
+        </Button>
         <Button component={NavLink} to={'/contact'} activeStyle={{fontWeight: "bold"}} color="inherit">
           Kontakt
         </Button>
