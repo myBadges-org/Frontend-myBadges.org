@@ -148,19 +148,21 @@ export class CreateCourse extends Component {
     newCourse.set('startdate', startdate);
     newCourse.set('enddate', enddate);
     newCourse.set('size', size);
-    newCourse.append('image', file);
     globalbadge.forEach((item, i) => {
       newCourse.append('badge[]', item);
     });
     localbadge.forEach((item, i) => {
       newCourse.append('localbadge[]', item);
     });
-    coordinates.forEach((item, i) => {
-      newCourse.append('coordinates[]', item);
-    });
+    if(file){
+      newCourse.append('image', file);
+    }
     if(course !== 'online'){
       newCourse.set('postalcode', postalcode);
       newCourse.set('address', address);
+      coordinates.forEach((item, i) => {
+        newCourse.append('coordinates[]', item);
+      });
     }
     axios.post('/api/v1/course', newCourse)
       .then(res => {
