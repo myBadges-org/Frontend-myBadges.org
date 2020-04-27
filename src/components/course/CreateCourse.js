@@ -36,8 +36,8 @@ export class CreateCourse extends Component {
     localbadge: [],
     courseprovider: '',
     postalcode: '',
-    adresses: [],
-    adress: '',
+    addresses: [],
+    address: '',
     coordinates: [],
     topic: '',
     description: '',
@@ -74,14 +74,14 @@ export class CreateCourse extends Component {
     }
   };
 
-  onChangeAdress = e => {
+  onChangeAddress = e => {
     if(e.target.value){
       axios.get(`https://nominatim.openstreetmap.org/search?format=json&limit=3&q=${e.target.value}`)
         .then(res => {
           if(res.data.length > 0){
-            this.setState({adresses: res.data});
+            this.setState({addresses: res.data});
           } else {
-            this.setState({adresses: ['Keine Übereinstimmung gefunden.']});
+            this.setState({addresses: ['Keine Übereinstimmung gefunden.']});
           }
         })
         .catch(err => {
@@ -89,16 +89,16 @@ export class CreateCourse extends Component {
         });
     }
     else {
-      this.setState({adresses: []});
+      this.setState({addresses: []});
     }
   };
 
-  deleteAdress = () => {
-    this.setState({ adresses: [], adress: '' });
+  deleteAddress = () => {
+    this.setState({ addresses: [], address: '' });
   };
 
-  setAdress = (adress) => {
-    this.setState({ adresses: [], adress: adress.display_name, coordinates: [adress.lon, adress.lat] });
+  setAddress = (address) => {
+    this.setState({ addresses: [], address: address.display_name, coordinates: [address.lon, address.lat] });
   };
 
   onChangeBadge = e => {
@@ -112,15 +112,30 @@ export class CreateCourse extends Component {
 
   onSubmit = e => {
     e.preventDefault();
-    const { lastname, city, postalcode, email, file } = this.state;
-    var updatedUser = new FormData();
-    updatedUser.set('lastname', lastname);
-    updatedUser.set('city', city);
-    updatedUser.set('postalcode', postalcode);
-    updatedUser.set('email', email);
-    updatedUser.append('profile', file);
+    const { name, globalbadge, localbadge, courseprovider, postalcode, address, coordinates, topic, description, requirements, startdate, enddate, size, file } = this.state;
+    var newCourse = new FormData();
+    newCourse.set('name', name);
+    newCourse.set('courseprovider', courseprovider);
+    newCourse.set('postalcode', postalcode);
+    newCourse.set('address', address);
+    newCourse.set('topic', topic);
+    newCourse.set('description', description);
+    newCourse.set('requirements', requirements);
+    newCourse.set('startdate', startdate);
+    newCourse.set('enddate', enddate);
+    newCourse.set('size', size);
+    newCourse.append('image', file);
+    globalbadge.forEach((item, i) => {
+      newCourse.append('badge[]', item);
+    });
+    localbadge.forEach((item, i) => {
+      newCourse.append('localbadge[]', item);
+    });
+    coordinates.forEach((item, i) => {
+      newCourse.append('coordinates[]', item);
+    });
     // Request Body
-    axios.put('api/v1/user/me', updatedUser)
+    axios.post('/api/v1/course', newCourse)
       .then(res => {
         this.setState({msgType: 'success', msg: res.data.message});
       })
@@ -178,21 +193,21 @@ export class CreateCourse extends Component {
               variant='outlined'
               type='text'
               label='Adresse'
-              name='adress'
-              value={this.state.adress}
+              name='address'
+              value={this.state.address}
               onChange={this.onChange}
-              onBlur={this.onChangeAdress}
+              onBlur={this.onChangeAddress}
               fullWidth={true}
             />
             <List style={{paddingTop: 0, paddingBottom: '10px'}}>
-            {this.state.adresses.map((adress, i) => (
-              adress === 'Keine Übereinstimmung gefunden.' ?
-                <ListItem button key={i} onClick={this.deleteAdress} style={{border: '1px solid rgba(0, 0, 0, 0.23)', borderRadius: '4px'}}>
-                  <ListItemText>{adress}</ListItemText>
+            {this.state.addresses.map((address, i) => (
+              address === 'Keine Übereinstimmung gefunden.' ?
+                <ListItem button key={i} onClick={this.deleteAddress} style={{border: '1px solid rgba(0, 0, 0, 0.23)', borderRadius: '4px'}}>
+                  <ListItemText>{address}</ListItemText>
                 </ListItem>
               :
-              <ListItem button key={i} onClick={() => {this.setAdress(adress)}} style={{border: '1px solid rgba(0, 0, 0, 0.23)', borderRadius: '4px'}}>
-                <ListItemText>{adress.display_name}</ListItemText>
+              <ListItem button key={i} onClick={() => {this.setAddress(address)}} style={{border: '1px solid rgba(0, 0, 0, 0.23)', borderRadius: '4px'}}>
+                <ListItemText>{address.display_name}</ListItemText>
               </ListItem>
             ))}
             </List>
@@ -267,6 +282,16 @@ export class CreateCourse extends Component {
               name='requirements'
               multiline
               value={this.state.requirements}
+              onChange={this.onChange}
+              fullWidth={true}
+            />
+            <TextField
+              style={{marginBottom: '10px'}}
+              variant='outlined'
+              type='text'
+              label='Kursgröße'
+              name='size'
+              value={this.state.size}
               onChange={this.onChange}
               fullWidth={true}
             />
