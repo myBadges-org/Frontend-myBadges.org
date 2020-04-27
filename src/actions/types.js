@@ -15,3 +15,7 @@ export const REFRESH_TOKEN_SUCCESS = 'REFRESH_TOKEN_SUCCESS';
 export const GET_ERRORS = 'GET_ERRORS';
 export const GET_SUCCESS = 'GET_SUCCESS';
 export const CLEAR_MESSAGES = 'CLEAR_MESSAGES';
+
+// badge
+export const GET_BADGES = 'GET_BADGES';
+export const ADD_BADGE = 'ADD_BADGE';

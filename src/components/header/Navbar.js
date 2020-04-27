@@ -25,12 +25,12 @@ const styles = (theme) => ({
 class Navbar extends Component {
 
   render(){
-
+    
     const authNavbar = (this.props.isAuthenticated ? (
       <div style={{display: 'flex'}}>
         <Logout/>
         <Button component={NavLink} to={"/user"} strict replace color="inherit">
-          {this.props.user.image && this.props.user.image.path ?
+          {this.props.user && this.props.user.image && this.props.user.image.path ?
             <Avatar src={`/media/${this.props.user.image.path}`}/>
           : <Avatar classes={{root: this.props.classes.avatar}}>{this.props.user.firstname.charAt(0)}{this.props.user.lastname.charAt(0)}</Avatar>
           }
