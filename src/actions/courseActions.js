@@ -10,14 +10,14 @@ import {
 
 
 // get courses
-export const loadCourses = (params) => (dispatch) => {
+export const loadCourses = (url, params) => (dispatch) => {
   dispatch({
     type: COURSE_LOADING
   });
   const config = {
     params: params
   };
-  axios.get('/api/v1/course', config)
+  axios.get(url, config)
     .then(res => dispatch({
         type: COURSE_LOADED,
         payload: res.data.courses
@@ -103,36 +103,22 @@ export const setAddress = (address) => (dispatch, getState) => {
 };
 
 
-export const onReset = () => (dispatch) => {
-  dispatch({
-    type: SET_COURSE_PARAMS,
-    payload: {
-      type: '',
-      coordinates: null,
-      radius: 15,
-      startdate: null,
-      enddate: null,
-      parameter: 0,
-      addresses: [],
-      address: ''
-    }
-  });
-  dispatch(loadCourses());
+export const onReset = (url) => (dispatch) => {
+  dispatch(clearParams());
+  dispatch(loadCourses(url));
 };
 
 
-export const onFilter = () => (dispatch, getState) => {
+export const onFilter = (url) => (dispatch, getState) => {
   var params = getState().course.params;
   const { type, coordinates, radius, startdate, enddate, topic, name } = params;
   const configParams = {
     startdate,
     enddate,
-    topic,
-    name
   };
-  if(type !== ''){
-    configParams.type = type;
-  }
+  if(type !== '') configParams.type = type;
+  if(name !== '') configParams.name = name;
+  if(topic !== '') configParams.topic = topic;
   if(type !== 'online' && coordinates){
     configParams.coordinates = coordinates;
     configParams.radius = radius;
@@ -142,7 +128,7 @@ export const onFilter = () => (dispatch, getState) => {
     type: SET_COURSE_PARAMS,
     payload: params
   })
-  dispatch(loadCourses(configParams));
+  dispatch(loadCourses(url, configParams));
 };
 
 
@@ -151,6 +137,8 @@ export const clearParams = () => (dispatch) => {
     type: SET_COURSE_PARAMS,
     payload: {
       type: '',
+      name: '',
+      topic: '',
       coordinates: null,
       radius: 15,
       startdate: null,

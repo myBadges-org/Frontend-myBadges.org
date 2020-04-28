@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { loadCourses, paramsOnChange, sliderOnChange, onChangeAddress, deleteAddress, setAddress, onReset, onFilter } from '../../actions/courseActions';
+import { paramsOnChange, sliderOnChange, onChangeAddress, deleteAddress, setAddress, onReset, onFilter } from '../../actions/courseActions';
 
 import axios from 'axios';
 import moment from 'moment';
@@ -29,77 +29,6 @@ import Badge from '@material-ui/core/Badge';
 
 export class CourseFilter extends Component {
 
-  // state = {
-  //   type: '',
-  //   addresses: [],
-  //   address: '',
-  //   coordinates: null,
-  //   radius: 15,
-  //   startdate: null,
-  //   enddate: null,
-  //   parameter: 0
-  // }
-
-  // onChange = e => {
-  //   this.setState({ [e.target.name]: e.target.value });
-  // };
-  //
-  // onSliderChange = (e, newValue) => {
-  //   this.setState({ radius: newValue });
-  // };
-  //
-  // onChangeAddress = e => {
-  //   if(e.target.value){
-  //     axios.get(`https://nominatim.openstreetmap.org/search?format=json&limit=3&q=${e.target.value}`)
-  //       .then(res => {
-  //         if(res.data.length > 0){
-  //           this.setState({addresses: res.data});
-  //         } else {
-  //           this.setState({addresses: ['Keine Übereinstimmung gefunden.']});
-  //         }
-  //       })
-  //       .catch(err => {
-  //         this.setState({msgType: 'error', msg: err.response.data.message});
-  //       });
-  //   }
-  //   else {
-  //     this.setState({addresses: []});
-  //   }
-  // };
-  //
-  // deleteAddress = () => {
-  //   this.setState({ addresses: [], address: '' });
-  // };
-  //
-  // setAddress = (address) => {
-  //   this.setState({ addresses: [], address: address.display_name, coordinates: [address.lon, address.lat] });
-  // };
-  //
-  // onReset = () => {
-  //   this.setState({type: '', addresses: [], address: '', coordinates: null, radius: 15, startdate: null, enddate: null, parameter: 0});
-  //   this.props.loadCourses();
-  // };
-  //
-  // onFilter = () => {
-  //   const { type, coordinates, radius, startdate, enddate, topic, name } = this.state;
-  //   const params = {
-  //     startdate,
-  //     enddate,
-  //     topic,
-  //     name
-  //   };
-  //   if(type !== ''){
-  //     params.type = type;
-  //   }
-  //   if(type !== 'online' && coordinates){
-  //     params.coordinates = coordinates;
-  //     params.radius = radius;
-  //   }
-  //   const parameter = Object.values(params).filter(param => param !== null && param !== undefined && param !== '');
-  //   this.setState({parameter: parameter.length});
-  //   this.props.loadCourses(params)
-  // };
-
   render(){
     return(
       <ExpansionPanel style={{marginBottom: '20px'}}>
@@ -111,6 +40,7 @@ export class CourseFilter extends Component {
           <Badge badgeContent={this.props.parameter > 0 ? this.props.parameter : null} color="primary">
             <Typography>Filter</Typography>
           </Badge>
+          {this.props.courses ? <Typography style={{marginLeft: '30px', color: 'grey'}}>{this.props.courses.length} Kurse</Typography> : null}
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <Grid container spacing={1}>
@@ -228,8 +158,8 @@ export class CourseFilter extends Component {
           </Grid>
         </ExpansionPanelDetails>
         <ExpansionPanelActions>
-          <Button variant='contained' onClick={this.props.onReset}>Zurücksetzen</Button>
-          <Button variant='contained' color='primary' onClick={this.props.onFilter}>Filtern</Button>
+          <Button variant='contained' onClick={() => {this.props.onReset(this.props.url)}}>Zurücksetzen</Button>
+          <Button variant='contained' color='primary' onClick={() => {this.props.onFilter(this.props.url)}}>Filtern</Button>
         </ExpansionPanelActions>
       </ExpansionPanel>
     );
@@ -237,8 +167,6 @@ export class CourseFilter extends Component {
 }
 
 CourseFilter.propTypes = {
-  params: PropTypes.object.isRequired,
-  loadCourses: PropTypes.func.isRequired,
   paramsOnChange: PropTypes.func.isRequired,
   sliderOnChange: PropTypes.func.isRequired,
   onChangeAddress: PropTypes.func.isRequired,
@@ -249,6 +177,7 @@ CourseFilter.propTypes = {
 };
 
 const mapStateToProps = state => ({
+  courses: state.course.courses,
   type: state.course.params.type,
   name: state.course.params.name,
   topic: state.course.params.topic,
@@ -261,4 +190,4 @@ const mapStateToProps = state => ({
   address: state.course.params.address,
 });
 
-export default connect(mapStateToProps, { loadCourses, paramsOnChange, sliderOnChange, onChangeAddress, deleteAddress, setAddress, onReset, onFilter })(CourseFilter);
+export default connect(mapStateToProps, { paramsOnChange, sliderOnChange, onChangeAddress, deleteAddress, setAddress, onReset, onFilter })(CourseFilter);
