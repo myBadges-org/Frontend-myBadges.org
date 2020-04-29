@@ -6,6 +6,7 @@ const initialState = {
   isLoading: false,
   params: {
     type: '',
+    online: false,
     name: '',
     topic: '',
     coordinates: null,

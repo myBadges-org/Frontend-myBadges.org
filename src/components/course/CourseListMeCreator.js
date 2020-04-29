@@ -26,7 +26,7 @@ export class CourseList extends Component {
 
   componentDidMount(){
     this.props.clearParams();
-    this.props.loadCourses('/api/v1/course');
+    this.props.loadCourses('/api/v1/course/creator/me');
   }
 
   componentDidUpdate(prevProps){
@@ -50,7 +50,7 @@ export class CourseList extends Component {
           {this.state.msg ? <Alert style={{marginBottom: '10px'}} icon={false} severity={this.state.msgType}>{this.state.msg}</Alert> : null}
           {!this.props.course.isLoading ?
             <div>
-            <CourseFilter url={'/api/v1/course'}/>
+            <CourseFilter url={'/api/v1/course/creator/me'}/>
             <CourseListMap />
             {this.props.course.courses && this.props.course.courses.length > 0 ?
               this.props.course.courses.map(course => (

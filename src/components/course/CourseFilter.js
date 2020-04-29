@@ -31,7 +31,7 @@ export class CourseFilter extends Component {
 
   render(){
     return(
-      <ExpansionPanel style={{marginBottom: '20px'}}>
+      <ExpansionPanel style={{marginBottom: '20px', borderRadius: '4px'}}>
         <ExpansionPanelSummary
           expandIcon={
             <FontAwesomeIcon icon={faChevronDown} />

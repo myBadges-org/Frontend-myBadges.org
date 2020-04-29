@@ -10,7 +10,22 @@ import {
 
 
 // get courses
-export const loadCourses = (url, params) => (dispatch) => {
+export const loadCourses = (url, params) => (dispatch, getState) => {
+  var parameter = getState().course.params;
+  if(parameter.type === 'online'){
+    parameter.online = true;
+    dispatch({
+      type: SET_COURSE_PARAMS,
+      payload: parameter
+    });
+  }
+  else {
+    parameter.online = false;
+    dispatch({
+      type: SET_COURSE_PARAMS,
+      payload: parameter
+    });
+  }
   dispatch({
     type: COURSE_LOADING
   });
@@ -137,6 +152,7 @@ export const clearParams = () => (dispatch) => {
     type: SET_COURSE_PARAMS,
     payload: {
       type: '',
+      online: false,
       name: '',
       topic: '',
       coordinates: null,
