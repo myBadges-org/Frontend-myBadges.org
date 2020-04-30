@@ -33,6 +33,7 @@ class Routes extends Component {
         <Route path="/user/password/reset" exact component={ResetPassword} />
         <Route path="/user/email" exact component={EmailConfirmation} />
         <Route path="/course" exact component={CourseList}/>
+        <Route path="/course/:courseId" exact component={Course}/>
         <PrivateRoute path="/course/me" exact>
           <CourseListMe/>
         </PrivateRoute>

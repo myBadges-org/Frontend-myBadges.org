@@ -25,12 +25,12 @@ const styles = (theme) => ({
 class Navbar extends Component {
 
   render(){
-    
-    const authNavbar = (this.props.isAuthenticated ? (
+
+    const authNavbar = (this.props.isAuthenticated && this.props.user ? (
       <div style={{display: 'flex'}}>
         <Logout/>
         <Button component={NavLink} to={"/user"} strict replace color="inherit">
-          {this.props.user && this.props.user.image && this.props.user.image.path ?
+          {this.props.user.image && this.props.user.image.path ?
             <Avatar src={`/media/${this.props.user.image.path}`}/>
           : <Avatar classes={{root: this.props.classes.avatar}}>{this.props.user.firstname.charAt(0)}{this.props.user.lastname.charAt(0)}</Avatar>
           }
@@ -53,9 +53,21 @@ class Navbar extends Component {
         <Button component={NavLink} to={'/course'} activeStyle={{fontWeight: "bold"}} color="inherit">
           Kursliste
         </Button>
-        <Button component={NavLink} to={'/course/create'} activeStyle={{fontWeight: "bold"}} color="inherit">
-          Kurs erstellen
-        </Button>
+        {this.props.isAuthenticated ?
+          <Button component={NavLink} to={'/course/me'} activeStyle={{fontWeight: "bold"}} color="inherit">
+            belegte Kurse
+          </Button>
+        : null}
+        {this.props.isAuthenticated && this.props.user.role == 'issuer' ?
+          <Button component={NavLink} to={'/course/me/creator'} activeStyle={{fontWeight: "bold"}} color="inherit">
+            erstellte Kurse
+          </Button>
+        : null}
+        {this.props.isAuthenticated ?
+          <Button component={NavLink} to={'/course/create'} activeStyle={{fontWeight: "bold"}} color="inherit">
+            Kurs erstellen
+          </Button>
+        : null}
         <Button component={NavLink} to={'/contact'} activeStyle={{fontWeight: "bold"}} color="inherit">
           Kontakt
         </Button>

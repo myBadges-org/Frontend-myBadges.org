@@ -11,6 +11,12 @@ export const REGISTER_FAIL = 'REGISTER_FAIL';
 export const REFRESH_TOKEN_FAIL = 'REFRESH_TOKEN_FAIL';
 export const REFRESH_TOKEN_SUCCESS = 'REFRESH_TOKEN_SUCCESS';
 
+// course
+export const COURSE_LOADED = 'COURSE_LOADED';
+export const COURSE_LOADING = 'COURSE_LOADING';
+export const COURSE_ERROR = 'COURSE_ERROR';
+export const SET_COURSE_PARAMS = 'SET_COURSE_PARAMS';
+
 // messages
 export const GET_ERRORS = 'GET_ERRORS';
 export const GET_SUCCESS = 'GET_SUCCESS';

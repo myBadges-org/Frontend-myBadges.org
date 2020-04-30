@@ -21,11 +21,16 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Link from '@material-ui/core/Link';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+
 
 
 export class CreateCourse extends Component {
 
   state = {
+    course: 'presence',
     open: false,
     msg: null,
     msgType: null,
@@ -36,15 +41,15 @@ export class CreateCourse extends Component {
     localbadge: [],
     courseprovider: '',
     postalcode: '',
-    adresses: [],
-    adress: '',
+    addresses: [],
+    address: '',
     coordinates: [],
     topic: '',
     description: '',
     requirements: '',
     startdate: null,
     enddate: null,
-    size: null
+    size: ''
   }
 
   componentDidMount(){
@@ -74,14 +79,14 @@ export class CreateCourse extends Component {
     }
   };
 
-  onChangeAdress = e => {
+  onChangeAddress = e => {
     if(e.target.value){
       axios.get(`https://nominatim.openstreetmap.org/search?format=json&limit=3&q=${e.target.value}`)
         .then(res => {
           if(res.data.length > 0){
-            this.setState({adresses: res.data});
+            this.setState({addresses: res.data});
           } else {
-            this.setState({adresses: ['Keine Übereinstimmung gefunden.']});
+            this.setState({addresses: ['Keine Übereinstimmung gefunden.']});
           }
         })
         .catch(err => {
@@ -89,16 +94,16 @@ export class CreateCourse extends Component {
         });
     }
     else {
-      this.setState({adresses: []});
+      this.setState({addresses: []});
     }
   };
 
-  deleteAdress = () => {
-    this.setState({ adresses: [], adress: '' });
+  deleteAddress = () => {
+    this.setState({ addresses: [], address: '' });
   };
 
-  setAdress = (adress) => {
-    this.setState({ adresses: [], adress: adress.display_name, coordinates: [adress.lon, adress.lat] });
+  setAddress = (address) => {
+    this.setState({ addresses: [], address: address.display_name, coordinates: [address.lon, address.lat] });
   };
 
   onChangeBadge = e => {
@@ -107,20 +112,59 @@ export class CreateCourse extends Component {
   };
 
   onReset = () => {
-    this.setState({ msg: null, msgType: null, file: null, url: null, lastname: this.props.user.lastname, email: this.props.user.email, city: this.props.user.city, postalcode: this.props.user.postalcode });
+    this.setState({
+      course: 'presence',
+      open: false,
+      msg: null,
+      msgType: null,
+      file: null,
+      url: null,
+      name: '',
+      globalbadge: [],
+      localbadge: [],
+      courseprovider: '',
+      postalcode: '',
+      addresses: [],
+      address: '',
+      coordinates: [],
+      topic: '',
+      description: '',
+      requirements: '',
+      startdate: null,
+      enddate: null,
+      size: ''
+    });
   };
 
   onSubmit = e => {
     e.preventDefault();
-    const { lastname, city, postalcode, email, file } = this.state;
-    var updatedUser = new FormData();
-    updatedUser.set('lastname', lastname);
-    updatedUser.set('city', city);
-    updatedUser.set('postalcode', postalcode);
-    updatedUser.set('email', email);
-    updatedUser.append('profile', file);
-    // Request Body
-    axios.put('api/v1/user/me', updatedUser)
+    const { course, name, globalbadge, localbadge, courseprovider, postalcode, address, coordinates, topic, description, requirements, startdate, enddate, size, file } = this.state;
+    var newCourse = new FormData();
+    newCourse.set('name', name);
+    newCourse.set('courseprovider', courseprovider);
+    newCourse.set('topic', topic);
+    newCourse.set('description', description);
+    newCourse.set('requirements', requirements);
+    newCourse.set('startdate', startdate);
+    newCourse.set('enddate', enddate);
+    newCourse.set('size', size);
+    globalbadge.forEach((item, i) => {
+      newCourse.append('badge[]', item);
+    });
+    localbadge.forEach((item, i) => {
+      newCourse.append('localbadge[]', item);
+    });
+    if(file){
+      newCourse.append('image', file);
+    }
+    if(course !== 'online'){
+      newCourse.set('postalcode', postalcode);
+      newCourse.set('address', address);
+      coordinates.forEach((item, i) => {
+        newCourse.append('coordinates[]', item);
+      });
+    }
+    axios.post('/api/v1/course', newCourse)
       .then(res => {
         this.setState({msgType: 'success', msg: res.data.message});
       })
@@ -133,6 +177,22 @@ export class CreateCourse extends Component {
     return(
       <div style={{maxWidth: '500px', marginLeft: 'auto', marginRight: 'auto', marginTop: '30px'}}>
         {this.state.msg ? <Alert style={{marginBottom: '10px'}} icon={false} severity={this.state.msgType}>{this.state.msg}</Alert> : null}
+        <FormControl component="fieldset">
+          <RadioGroup row name="course" value={this.state.course} onClick={this.onChange}>
+            <FormControlLabel
+              value='presence'
+              control={<Radio color="primary" />}
+              label="Präsenzkurs"
+              labelPlacement="start"
+            />
+            <FormControlLabel
+              value='online'
+              control={<Radio color="primary" />}
+              label="Online-Kurs"
+              labelPlacement="start"
+            />
+          </RadioGroup>
+        </FormControl>
         <Grid container direction="row" spacing={1}>
           <Grid item xs={6}>
             {this.state.url ?
@@ -166,47 +226,49 @@ export class CreateCourse extends Component {
               style={{marginBottom: '10px'}}
               variant='outlined'
               type='text'
-              label='Kursanbiete'
+              label='Kursanbieter'
               name='courseprovider'
               value={this.state.courseprovider}
               onChange={this.onChange}
               fullWidth={true}
             />
           </Grid>
-          <Grid item xs={12} md={6}>
-            <TextField
-              variant='outlined'
-              type='text'
-              label='Adresse'
-              name='adress'
-              value={this.state.adress}
-              onChange={this.onChange}
-              onBlur={this.onChangeAdress}
-              fullWidth={true}
-            />
-            <List style={{paddingTop: 0, paddingBottom: '10px'}}>
-            {this.state.adresses.map((adress, i) => (
-              adress === 'Keine Übereinstimmung gefunden.' ?
-                <ListItem button key={i} onClick={this.deleteAdress} style={{border: '1px solid rgba(0, 0, 0, 0.23)', borderRadius: '4px'}}>
-                  <ListItemText>{adress}</ListItemText>
+          {this.state.course !== 'online' ?
+            <Grid item xs={12} md={6}>
+              <TextField
+                variant='outlined'
+                type='text'
+                label='Adresse'
+                name='address'
+                value={this.state.address}
+                onChange={this.onChange}
+                onBlur={this.onChangeAddress}
+                fullWidth={true}
+              />
+              <List style={{paddingTop: 0, paddingBottom: '10px'}}>
+              {this.state.addresses.map((address, i) => (
+                address === 'Keine Übereinstimmung gefunden.' ?
+                  <ListItem button key={i} onClick={this.deleteAddress} style={{border: '1px solid rgba(0, 0, 0, 0.23)', borderRadius: '4px'}}>
+                    <ListItemText>{address}</ListItemText>
+                  </ListItem>
+                :
+                <ListItem button key={i} onClick={() => {this.setAddress(address)}} style={{border: '1px solid rgba(0, 0, 0, 0.23)', borderRadius: '4px'}}>
+                  <ListItemText>{address.display_name}</ListItemText>
                 </ListItem>
-              :
-              <ListItem button key={i} onClick={() => {this.setAdress(adress)}} style={{border: '1px solid rgba(0, 0, 0, 0.23)', borderRadius: '4px'}}>
-                <ListItemText>{adress.display_name}</ListItemText>
-              </ListItem>
-            ))}
-            </List>
-            <TextField
-              style={{marginBottom: '10px'}}
-              variant='outlined'
-              type='text'
-              label='Postleitzahl'
-              name='postalcode'
-              value={this.state.postalcode}
-              onChange={this.onChange}
-              fullWidth={true}
-            />
-          </Grid>
+              ))}
+              </List>
+              <TextField
+                style={{marginBottom: '10px'}}
+                variant='outlined'
+                type='text'
+                label='Postleitzahl'
+                name='postalcode'
+                value={this.state.postalcode}
+                onChange={this.onChange}
+                fullWidth={true}
+              />
+            </Grid>
+          : null}
           <Grid item xs={12} md={6}>
             <TextField
               style={{marginBottom: '10px'}}
@@ -267,6 +329,16 @@ export class CreateCourse extends Component {
               name='requirements'
               multiline
               value={this.state.requirements}
+              onChange={this.onChange}
+              fullWidth={true}
+            />
+            <TextField
+              style={{marginBottom: '10px'}}
+              variant='outlined'
+              type='text'
+              label='Kursgröße'
+              name='size'
+              value={this.state.size}
               onChange={this.onChange}
               fullWidth={true}
             />
