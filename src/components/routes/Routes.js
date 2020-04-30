@@ -10,6 +10,10 @@ import User from '../auth/User';
 import Password from '../auth/Password';
 import ResetPassword from '../auth/ResetPassword';
 import EmailConfirmation from '../auth/EmailConfirmation';
+import Course from '../course/Course';
+import CourseList from '../course/CourseList';
+import CourseListMe from '../course/CourseListMe';
+import CourseListMeCreator from '../course/CourseListMeCreator';
 import CreateCourse from '../course/CreateCourse';
 import Contact from '../contact/Contact';
 import NotFound from '../notFound/NotFound';
@@ -28,9 +32,17 @@ class Routes extends Component {
         <Route path="/user/password" exact component={Password} />
         <Route path="/user/password/reset" exact component={ResetPassword} />
         <Route path="/user/email" exact component={EmailConfirmation} />
+        <Route path="/course" exact component={CourseList}/>
+        <PrivateRoute path="/course/me" exact>
+          <CourseListMe/>
+        </PrivateRoute>
+        <PrivateRoute path="/course/me/creator" exact>
+          <CourseListMeCreator/>
+        </PrivateRoute>
         <PrivateRoute path="/course/create" exact>
           <CreateCourse/>
         </PrivateRoute>
+        <Route path="/course/:courseId" exact component={Course}/>
         <Route path="/contact" exact component={Contact} />
         <Route component={NotFound} />
       </Switch>
