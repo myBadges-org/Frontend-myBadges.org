@@ -17,7 +17,7 @@ export class CourseListMap extends Component {
     return(
       <div>
         {!this.props.online ?
-          <Map ref={(refElement) => {this.refMap = refElement}} center={[51.9606649, 7.6261347]} zoom={13} style={{with: '100%', height: '300px', marginBottom: '20px', borderRadius: '4px'}}>
+          <Map ref={(refElement) => {this.refMap = refElement}} center={[51.9606649, 7.6261347]} zoom={13} style={{width: '100%', height: '300px', marginBottom: '20px', borderRadius: '4px'}}>
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"

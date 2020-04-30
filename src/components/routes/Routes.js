@@ -10,6 +10,7 @@ import User from '../auth/User';
 import Password from '../auth/Password';
 import ResetPassword from '../auth/ResetPassword';
 import EmailConfirmation from '../auth/EmailConfirmation';
+import Course from '../course/Course';
 import CourseList from '../course/CourseList';
 import CourseListMe from '../course/CourseListMe';
 import CourseListMeCreator from '../course/CourseListMeCreator';
@@ -32,6 +33,7 @@ class Routes extends Component {
         <Route path="/user/password/reset" exact component={ResetPassword} />
         <Route path="/user/email" exact component={EmailConfirmation} />
         <Route path="/course" exact component={CourseList}/>
+        <Route path="/course/:courseId" exact component={Course}/>
         <PrivateRoute path="/course/me" exact>
           <CourseListMe/>
         </PrivateRoute>
