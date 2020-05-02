@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { loadCourse } from '../../actions/courseActions';
 
 import { withRouter } from 'react-router-dom';
 import axios from 'axios';
@@ -9,6 +10,7 @@ import moment from 'moment';
 import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
 
 import CourseBadges from '../badge/CourseBadges';
+import CourseChange from './CourseChange';
 import CourseInfo from './CourseInfo';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -37,29 +39,40 @@ const styles = () => ({
 export class Course extends Component {
 
   state = {
-    isLoading: false,
-    course: null,
     msg: null,
-    msgType: ''
+    msgType: '',
+    openCourseChange: false
   }
 
   componentDidMount(){
-    const courseId = this.props.match.params.courseId;
     if(!this.props.user){
       this.setState({msg: 'Zum Ein und Ausschreiben in den Kurs müssen Sie sich zunächst anmelden.', msgType: 'info'});
     }
-    this.setState({isLoading: true});
-    axios.get(`/api/v1/course/${courseId}`)
-      .then(res => {
-        if(!res.data.course.exists){
-          this.setState({ course: res.data.course, isLoading: false, msg: 'Dieser Kurs ist deaktiviert.', msgType: 'info' });
-        } else {
-          this.setState({ course: res.data.course, isLoading: false });
-        }
-      })
-      .catch(err => {
-        this.setState({msgType: 'error', msg: err.response.data.message, isLoading: false})
-      });
+    const courseId = this.props.match.params.courseId;
+    this.props.loadCourse(courseId);
+  }
+
+  componentDidUpdate(previousProps, previousState) {
+    if(previousState.openCourseChange === true){
+      this.setState({ openCourseChange: false });
+    }
+    const { message } = this.props;
+    if (message !== previousProps.message) {
+      if(message.id === 'COURSE_DEACTIVATED'){
+        this.setState({msg: message.msg, msgType: 'info'});
+      }
+      // Check for course update success
+      if(message.id === 'COURSE_UPDATED_SUCCESS'){
+        this.setState({msg: message.msg, msgType: 'success'});
+      }
+      // Check for course error
+      if(message.id === 'COURSE_ERROR'){
+        this.setState({msg: message.msg, msgType: 'error'});
+      }
+      // else {
+      //   this.setState({msg: null});
+      // }
+    }
   }
 
   openPopup = ref => {
@@ -78,11 +91,8 @@ export class Course extends Component {
   };
 
   render(){
-    const { course, isLoading, msg, msgType } = this.state;
-    if(course && this.props.user){
-      console.log(course.creator._id);
-      console.log(this.props.user._id);
-    }
+    const { msg, msgType } = this.state;
+    const { isLoading, course, user } = this.props;
     return(
       <div>
         {isLoading ? <LinearProgress /> : null}
@@ -118,13 +128,14 @@ export class Course extends Component {
                 <CourseInfo title='Plätze' content={`insgesamt: ${course.size}, davon sind noch ${course.size - course.participants.length} verfügbar`} />
                 <CourseBadges badges={course.badge.concat(course.localbadge)}/>
               </Paper>
-              {this.props.user && course.exists?
-                this.props.user._id === course.creator._id ?
+              {user && course.exists?
+                user._id === course.creator._id ?
                   <div>
                     <p>
-                      <Button color="primary" variant='contained' onClick={this.onSubmit} style={{width: '100%'}}>
+                      <Button color="primary" variant='contained' onClick={() => this.setState({openCourseChange: true})} style={{width: '100%'}}>
                         Bearbeiten
                       </Button>
+                      <CourseChange open={this.state.openCourseChange} course={course}/>
                     </p>
                     <p>
                       <Button color="primary" variant='contained' onClick={this.onReset} style={{width: '100%'}}>
@@ -144,7 +155,7 @@ export class Course extends Component {
                     </p>
                   </div>
                   :
-                  course.participants.includes(this.props.user._id) ?
+                  course.participants.includes(user._id) ?
                     <p>
                       <Button color="primary" variant='contained' onClick={this.onReset} style={{width: '100%'}}>
                         Abmelden
@@ -168,12 +179,18 @@ export class Course extends Component {
 }
 
 Course.propTypes = {
-  user: PropTypes.object
+  user: PropTypes.object,
+  message: PropTypes.object.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  course: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-  user: state.auth.user
+  user: state.auth.user,
+  message: state.message,
+  isLoading: state.course.isLoading,
+  course: state.course.course
 });
 
 
-export default connect(mapStateToProps, null)(withRouter(withStyles(styles)(Course)));
+export default connect(mapStateToProps, { loadCourse })(withRouter(withStyles(styles)(Course)));

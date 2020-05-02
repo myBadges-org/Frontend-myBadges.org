@@ -1,12 +1,54 @@
 import axios from 'axios';
-import { returnErrors } from './messageActions'
+import { returnErrors, returnSuccess } from './messageActions'
 
 import {
   COURSE_LOADED,
   COURSE_LOADING,
+  COURSE_UPDATED,
+  COURSES_LOADED,
+  COURSES_LOADING,
   COURSE_ERROR,
   SET_COURSE_PARAMS
 } from '../actions/types';
+
+// get one course
+export const loadCourse = (id) => (dispatch) => {
+  dispatch({
+    type: COURSE_LOADING
+  });
+  axios.get(`/api/v1/course/${id}`)
+    .then(res => {
+      if(!res.data.course.exists){
+        dispatch(returnSuccess('Dieser Kurs ist deaktiviert.', res.status, 'COURSE_DEACTIVATED'));
+      }
+      dispatch({
+        type: COURSE_LOADED,
+        payload: res.data.course
+      });
+    })
+    .catch(err => {
+      if(err.response){
+        dispatch(returnErrors(err.response.data.message, err.response.status, 'COURSE_ERROR'));
+      }
+    });
+};
+
+// update one course
+export const updateCourse = (id, updatedCourse) => (dispatch) => {
+  axios.put(`/api/v1/course/${id}`, updatedCourse)
+    .then(res => {
+      dispatch({
+        type: COURSE_UPDATED,
+        payload: res.data.course
+      });
+      dispatch(returnSuccess(res.data.message, res.status, 'COURSE_UPDATED_SUCCESS'));
+    })
+    .catch(err => {
+      if(err.response){
+        dispatch(returnErrors(err.response.data.message, err.response.status, 'COURSE_UPDATED_ERROR'));
+      }
+    });
+};
 
 
 // get courses
@@ -27,20 +69,20 @@ export const loadCourses = (url, params) => (dispatch, getState) => {
     });
   }
   dispatch({
-    type: COURSE_LOADING
+    type: COURSES_LOADING
   });
   const config = {
     params: params
   };
   axios.get(url, config)
     .then(res => dispatch({
-        type: COURSE_LOADED,
+        type: COURSES_LOADED,
         payload: res.data.courses
       })
     )
     .catch(err => {
       if(err.response){
-        dispatch(returnErrors(err.response.data.message, err.response.status, 'COURSE_ERROR'));
+        dispatch(returnErrors(err.response.data.message, err.response.status, 'COURSES_ERROR'));
       }
       dispatch({
         type: COURSE_ERROR

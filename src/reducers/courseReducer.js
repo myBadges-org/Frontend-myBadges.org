@@ -1,8 +1,9 @@
-import { COURSE_LOADED, COURSE_LOADING, SET_COURSE_PARAMS, COURSE_ERROR } from '../actions/types';
+import { COURSES_LOADED, COURSES_LOADING, COURSE_UPDATED, COURSE_LOADED, COURSE_LOADING, SET_COURSE_PARAMS, COURSE_ERROR } from '../actions/types';
 
 
 const initialState = {
   courses: null,
+  course: null,
   isLoading: false,
   params: {
     type: '',
@@ -27,6 +28,22 @@ export default function(state = initialState, action){
         isLoading: true
       };
     case COURSE_LOADED:
+      return {
+        ...state,
+        isLoading: false,
+        course: action.payload
+      };
+    case COURSE_UPDATED:
+      return {
+        ...state,
+        course: action.payload
+      };
+    case COURSES_LOADING:
+      return {
+        ...state,
+        isLoading: true
+      };
+    case COURSES_LOADED:
       return {
         ...state,
         isLoading: false,

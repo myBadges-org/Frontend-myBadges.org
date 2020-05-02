@@ -33,7 +33,7 @@ export class CourseList extends Component {
     const { message } = this.props;
     if (message !== prevProps.message) {
       // Check for course error
-      if(message.id === 'COURSE_ERROR'){
+      if(message.id === 'COURSES_ERROR'){
         this.setState({msg: message.msg, msgType: 'error'});
       }
       else {
@@ -98,7 +98,7 @@ export class CourseList extends Component {
 }
 
 CourseList.propTypes = {
-  course: PropTypes.object.isRequired,
+  course: PropTypes.object,
   message: PropTypes.object.isRequired,
   loadCourses: PropTypes.func.isRequired,
   clearParams: PropTypes.func.isRequired
