@@ -33,22 +33,22 @@ export class CourseBadges extends Component {
 
   render(){
     return(
-      <div>
-        <ExpansionPanel style={{borderRadius: '4px'}}>
-          <ExpansionPanelSummary
-            expandIcon={
-              <FontAwesomeIcon icon={faChevronDown} />
-            }
-          >
-            <Badge badgeContent={this.props.badges.length} color="primary">
-              <Typography><b>verknüpfte Badges</b></Typography>
-            </Badge>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
+      <ExpansionPanel style={{borderRadius: '4px'}}>
+        <ExpansionPanelSummary
+          expandIcon={
+            <FontAwesomeIcon icon={faChevronDown} />
+          }
+        >
+          <Badge badgeContent={this.props.badges.length} color="primary">
+            <Typography><b>verknüpfte Badges</b></Typography>
+          </Badge>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
           <Grid container spacing={2}>
+            <BadgeDetails open={this.state.open} badge={this.state.badge}/>
             <Grid item container xs={12}>
               <Grid item xs={12}>
-                <Typography variant="h5" style={{marginBottom: '10px'}}><b>Global</b></Typography>
+                <Typography variant="h5" style={{margin: '0 4px 10px 4px'}}><b>Global</b></Typography>
               </Grid>
               {this.props.badges.filter(badge => (badge.global === true)).map(badge => (
                 <Grid item xs={12} sm={6} md={4} key={badge._id}>
@@ -68,7 +68,7 @@ export class CourseBadges extends Component {
             </Grid>
             <Grid item container xs={12}>
               <Grid item xs={12}>
-                <Typography variant="h5" style={{marginBottom: '10px'}}><b>Lokal</b></Typography>
+                <Typography variant="h5" style={{margin: '0 4px 10px 4px'}}><b>Lokal</b></Typography>
               </Grid>
               {this.props.badges.filter(badge => (badge.global === false)).map(badge => (
                 <Grid item xs={12} sm={6} md={4} key={badge._id}>
@@ -83,11 +83,9 @@ export class CourseBadges extends Component {
                 </Grid>
               ))}
             </Grid>
-            </Grid>
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
-        <BadgeDetails open={this.state.open} badge={this.state.badge}/>
-      </div>
+          </Grid>
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
     );
   }
 }
