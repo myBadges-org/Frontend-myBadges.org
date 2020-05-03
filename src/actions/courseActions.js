@@ -5,6 +5,8 @@ import {
   COURSE_LOADED,
   COURSE_LOADING,
   COURSE_UPDATED,
+  COURSE_USER_SIGNIN,
+  COURSE_USER_SIGNOUT,
   COURSES_LOADED,
   COURSES_LOADING,
   COURSE_ERROR,
@@ -40,6 +42,44 @@ export const updateCourse = (id, updatedCourse) => (dispatch) => {
       dispatch({
         type: COURSE_UPDATED,
         payload: res.data.course
+      });
+      dispatch(returnSuccess(res.data.message, res.status, 'COURSE_UPDATED_SUCCESS'));
+    })
+    .catch(err => {
+      if(err.response){
+        dispatch(returnErrors(err.response.data.message, err.response.status, 'COURSE_UPDATED_ERROR'));
+      }
+    });
+};
+
+// user signs in
+export const signIn = (id) => (dispatch, getState) => {
+  var course = getState().course.course;
+  axios.put(`/api/v1/course/${id}/user/registration`)
+    .then(res => {
+      course.participants.push(getState().auth.user._id);
+      dispatch({
+        type: COURSE_USER_SIGNIN,
+        payload: course
+      });
+      dispatch(returnSuccess(res.data.message, res.status, 'COURSE_UPDATED_SUCCESS'));
+    })
+    .catch(err => {
+      if(err.response){
+        dispatch(returnErrors(err.response.data.message, err.response.status, 'COURSE_UPDATED_ERROR'));
+      }
+    });
+};
+
+// user signs out
+export const signOut = (id) => (dispatch, getState) => {
+  var course = getState().course.course;
+  axios.put(`/api/v1/course/${id}/user/deregistration`)
+    .then(res => {
+      course.participants = course.participants.filter(userId => getState().auth.user._id !== userId);
+      dispatch({
+        type: COURSE_USER_SIGNOUT,
+        payload: course
       });
       dispatch(returnSuccess(res.data.message, res.status, 'COURSE_UPDATED_SUCCESS'));
     })

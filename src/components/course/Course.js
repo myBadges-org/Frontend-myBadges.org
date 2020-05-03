@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { loadCourse } from '../../actions/courseActions';
+import { loadCourse, signIn, signOut } from '../../actions/courseActions';
 
 import { withRouter } from 'react-router-dom';
 import axios from 'axios';
@@ -53,6 +53,7 @@ export class Course extends Component {
   }
 
   componentDidUpdate(previousProps, previousState) {
+    console.log('participants', this.props.course ? this.props.course.participants : '');
     if(previousState.openCourseChange === true){
       this.setState({ openCourseChange: false });
     }
@@ -67,9 +68,10 @@ export class Course extends Component {
       // Check for course update success
       if(message.id === 'COURSE_UPDATED_SUCCESS'){
         this.setState({msg: message.msg, msgType: 'success'});
+        window.scrollTo(0, 0);
       }
       // Check for course error
-      if(message.id === 'COURSE_ERROR'){
+      if(message.id === 'COURSE_ERROR' || message.id === 'COURSE_UPDATED_ERROR'){
         this.setState({msg: message.msg, msgType: 'error'});
       }
       // else {
@@ -83,6 +85,28 @@ export class Course extends Component {
   }
 
   onDelete = (e) => {
+    e.preventDefault();
+    axios.put(`/api/v1/course/${this.props.match.params.courseId}/deactivation`)
+      .then(res => {
+        this.props.history.push('/course/me/creator');
+      })
+      .catch(err => {
+        this.setState({msgType: 'error', msg: err.response.data.message});
+      });
+  };
+
+  onSignIn = (e) => {
+    e.preventDefault();
+    axios.put(`/api/v1/course/${this.props.match.params.courseId}/deactivation`)
+      .then(res => {
+        this.props.history.push('/course/me/creator');
+      })
+      .catch(err => {
+        this.setState({msgType: 'error', msg: err.response.data.message});
+      });
+  };
+
+  onSignOut = (e) => {
     e.preventDefault();
     axios.put(`/api/v1/course/${this.props.match.params.courseId}/deactivation`)
       .then(res => {
@@ -161,13 +185,13 @@ export class Course extends Component {
                   :
                   course.participants.includes(user._id) ?
                     <p>
-                      <Button color="primary" variant='contained' onClick={this.onReset} style={{width: '100%'}}>
+                      <Button color="primary" variant='contained' onClick={() => this.props.signOut(course._id)} style={{width: '100%'}}>
                         Abmelden
                       </Button>
                     </p>
                   :
                     <p>
-                      <Button color="primary" variant='contained' onClick={this.onReset} style={{width: '100%'}}>
+                      <Button color="primary" variant='contained' onClick={() => this.props.signIn(course._id)} style={{width: '100%'}}>
                         Anmelden
                       </Button>
                     </p>
@@ -186,7 +210,10 @@ Course.propTypes = {
   user: PropTypes.object,
   message: PropTypes.object.isRequired,
   isLoading: PropTypes.bool.isRequired,
-  course: PropTypes.object
+  course: PropTypes.object,
+  loadCourse: PropTypes.func.isRequired,
+  signIn: PropTypes.func.isRequired,
+  signOut: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -197,4 +224,4 @@ const mapStateToProps = state => ({
 });
 
 
-export default connect(mapStateToProps, { loadCourse })(withRouter(withStyles(styles)(Course)));
+export default connect(mapStateToProps, { loadCourse, signIn, signOut })(withRouter(withStyles(styles)(Course)));
