@@ -58,7 +58,7 @@ class Navbar extends Component {
             belegte Kurse
           </Button>
         : null}
-        {this.props.isAuthenticated && this.props.user.role == 'issuer' ?
+        {this.props.isAuthenticated && this.props.user.role[0] === 'issuer' ?
           <Button component={NavLink} to={'/course/me/creator'} activeStyle={{fontWeight: "bold"}} color="inherit">
             erstellte Kurse
           </Button>
@@ -66,6 +66,11 @@ class Navbar extends Component {
         {this.props.isAuthenticated ?
           <Button component={NavLink} to={'/course/create'} activeStyle={{fontWeight: "bold"}} color="inherit">
             Kurs erstellen
+          </Button>
+        : null}
+        {this.props.isAuthenticated ?
+          <Button component={NavLink} to={'/badges'} activeStyle={{fontWeight: "bold"}} color="inherit">
+            meine Badges
           </Button>
         : null}
         <Button component={NavLink} to={'/contact'} activeStyle={{fontWeight: "bold"}} color="inherit">

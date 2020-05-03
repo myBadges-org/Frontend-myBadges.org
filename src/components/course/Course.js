@@ -9,7 +9,7 @@ import moment from 'moment';
 
 import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
 
-import CourseBadges from '../badge/CourseBadges';
+import Badges from '../badge/Badges';
 import CourseChange from './CourseChange';
 import Participants from './Participants';
 import CourseInfo from './CourseInfo';
@@ -22,6 +22,7 @@ import Typography from '@material-ui/core/Typography';
 import Alert from '@material-ui/lab/Alert';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Divider from '@material-ui/core/Divider';
+import Badge from '@material-ui/core/Badge';
 
 
 const styles = () => ({
@@ -70,7 +71,7 @@ export class Course extends Component {
         window.scrollTo(0, 0);
       }
       // Check for course error
-      if(message.id === 'COURSE_ERROR' || message.id === 'COURSE_UPDATED_ERROR'){
+      if(message.id === 'COURSE_ERROR'){
         this.setState({msg: message.msg, msgType: 'error'});
       }
       // else {
@@ -119,6 +120,7 @@ export class Course extends Component {
   render(){
     const { msg, msgType } = this.state;
     const { isLoading, course, user } = this.props;
+    const badges = course ? course.badge.concat(course.localbadge) : null;
     return(
       <div>
         {isLoading ? <LinearProgress /> : null}
@@ -152,7 +154,13 @@ export class Course extends Component {
                 <CourseInfo title='Beschreibung' content={course.description} />
                 <CourseInfo title='Voraussetzungen' content={course.requirements} />
                 <CourseInfo title='Plätze' content={`insgesamt: ${course.size}, davon sind noch ${course.size - course.participants.length} verfügbar`} />
-                <CourseBadges badges={course.badge.concat(course.localbadge)}/>
+                <CourseInfo title={
+                  <Badge badgeContent={badges.length} color="primary">
+                    <b>verknüpfte Badges</b>
+                  </Badge>
+                }>
+                  <Badges badges={badges}/>
+                </CourseInfo>
               </Paper>
               {user && course.exists?
                 user._id === course.creator._id ?
@@ -197,8 +205,7 @@ export class Course extends Component {
                 : null
                 }
             </div>
-          :
-            null}
+          : null}
         </div>
       </div>
     );

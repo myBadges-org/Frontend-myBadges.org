@@ -15,6 +15,7 @@ import CourseList from '../course/CourseList';
 import CourseListMe from '../course/CourseListMe';
 import CourseListMeCreator from '../course/CourseListMeCreator';
 import CreateCourse from '../course/CreateCourse';
+import BadgesMe from '../badge/BadgesMe';
 import Contact from '../contact/Contact';
 import NotFound from '../notFound/NotFound';
 
@@ -43,6 +44,9 @@ class Routes extends Component {
           <CreateCourse/>
         </PrivateRoute>
         <Route path="/course/:courseId" exact component={Course}/>
+        <PrivateRoute path="/badges" exact>
+          <BadgesMe/>
+        </PrivateRoute>
         <Route path="/contact" exact component={Contact} />
         <Route component={NotFound} />
       </Switch>
