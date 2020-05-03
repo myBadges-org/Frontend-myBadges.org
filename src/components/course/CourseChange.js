@@ -64,7 +64,7 @@ export class CourseChange extends Component {
     if(previousState.openBadgeCreator === true){
       this.setState({ openBadgeCreator: false });
     }
-    if(previousProps.open !== this.props.open){
+    if(previousProps.open !== this.props.open && this.props.open === true){
       this.setState({ open: true });
     }
     const { message } = this.props;

@@ -11,6 +11,7 @@ import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
 
 import CourseBadges from '../badge/CourseBadges';
 import CourseChange from './CourseChange';
+import Participants from './Participants';
 import CourseInfo from './CourseInfo';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -18,8 +19,6 @@ import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import Avatar from '@material-ui/core/Avatar';
 import Alert from '@material-ui/lab/Alert';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Divider from '@material-ui/core/Divider';
@@ -41,7 +40,8 @@ export class Course extends Component {
   state = {
     msg: null,
     msgType: '',
-    openCourseChange: false
+    openCourseChange: false,
+    openParticipants: false
   }
 
   componentDidMount(){
@@ -55,6 +55,9 @@ export class Course extends Component {
   componentDidUpdate(previousProps, previousState) {
     if(previousState.openCourseChange === true){
       this.setState({ openCourseChange: false });
+    }
+    if(previousState.openParticipants === true){
+      this.setState({ openParticipants: false });
     }
     const { message } = this.props;
     if (message !== previousProps.message) {
@@ -105,7 +108,7 @@ export class Course extends Component {
                   {course.name}
                 </Typography>
                 {course.image && course.image.path ?
-                  <img src={`/media/${course.image.path}`} style={{width: '100%', height: '300px', objectFit: 'cover'}}/>
+                  <img src={`/media/${course.image.path}`} alt={`Bild vom Kurs ${course.name}`} style={{width: '100%', height: '300px', objectFit: 'cover'}}/>
                 : null}
                 {course.coordinates ?
                   <CourseInfo title='Adresse'>
@@ -138,9 +141,10 @@ export class Course extends Component {
                       <CourseChange open={this.state.openCourseChange} course={course}/>
                     </p>
                     <p>
-                      <Button color="primary" variant='contained' onClick={this.onReset} style={{width: '100%'}}>
+                      <Button color="primary" variant='contained' onClick={() => this.setState({openParticipants: true})} style={{width: '100%'}}>
                         Teilnehmer anzeigen
                       </Button>
+                      <Participants open={this.state.openParticipants} courseName={course.name}/>
                     </p>
                     <p>
                       <Button color="primary" variant='contained' style={{width: '100%'}}>
