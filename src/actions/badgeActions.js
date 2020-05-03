@@ -24,7 +24,6 @@ export const addBadge = (newBadge) => (dispatch, getState) => {
     .then(res => {
       var badges = getState().badge.badges;
       badges.push(res.data.badge);
-      console.log(badges);
       dispatch(returnErrors(res.data.message, res.status, 'ADD_BADGE_SUCCESS'));
       dispatch({
         type: ADD_BADGE,

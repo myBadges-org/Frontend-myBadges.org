@@ -53,7 +53,6 @@ export class Course extends Component {
   }
 
   componentDidUpdate(previousProps, previousState) {
-    console.log('participants', this.props.course ? this.props.course.participants : '');
     if(previousState.openCourseChange === true){
       this.setState({ openCourseChange: false });
     }

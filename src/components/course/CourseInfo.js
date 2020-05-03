@@ -10,7 +10,6 @@ import Typography from '@material-ui/core/Typography';
 export class CourseInfo extends Component {
 
   render(){
-    console.log(this.props.children)
     return(
       <ExpansionPanel style={{borderRadius: '4px'}}>
         <ExpansionPanelSummary

@@ -32,7 +32,6 @@ export class Contact extends Component {
   };
 
   onChangeBadge = e => {
-    console.log(e.target)
     this.setState({ [e.target.name]: e.target.value });
   };
 

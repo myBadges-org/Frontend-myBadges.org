@@ -1,4 +1,4 @@
-import { COURSES_LOADED, COURSES_LOADING, COURSE_UPDATED, COURSE_USER_SIGNIN, COURSE_USER_SIGNOUT, COURSE_LOADED, COURSE_LOADING, SET_COURSE_PARAMS, COURSE_ERROR } from '../actions/types';
+import { COURSES_LOADED, COURSES_LOADING, COURSE_UPDATED, COURSE_USER_SIGNIN, COURSE_USER_SIGNOUT, GET_PARTICIPANTS, ASSIGNE_BADGE, UNASSIGNE_BADGE, COURSE_LOADED, COURSE_LOADING, SET_COURSE_PARAMS, COURSE_ERROR } from '../actions/types';
 
 
 const initialState = {
@@ -36,6 +36,9 @@ export default function(state = initialState, action){
     case COURSE_UPDATED:
     case COURSE_USER_SIGNIN:
     case COURSE_USER_SIGNOUT:
+    case GET_PARTICIPANTS:
+    case ASSIGNE_BADGE:
+    case UNASSIGNE_BADGE:
       return {
         ...state,
         course: action.payload

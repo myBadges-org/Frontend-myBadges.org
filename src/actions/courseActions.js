@@ -7,6 +7,9 @@ import {
   COURSE_UPDATED,
   COURSE_USER_SIGNIN,
   COURSE_USER_SIGNOUT,
+  GET_PARTICIPANTS,
+  ASSIGNE_BADGE,
+  UNASSIGNE_BADGE,
   COURSES_LOADED,
   COURSES_LOADING,
   COURSE_ERROR,
@@ -90,6 +93,68 @@ export const signOut = (id) => (dispatch, getState) => {
     });
 };
 
+export const getParticipants = (courseId) => (dispatch, getState) => {
+  var course = getState().course.course;
+  axios.get(`/api/v1/course/${courseId}/participants`)
+    .then(res => {
+      course.participants = res.data.participants;
+      dispatch({
+        type: GET_PARTICIPANTS,
+        payload: course
+      });
+      dispatch(returnSuccess(res.data.message, res.status, 'COURSE_PARTICIPANTS_SUCCESS'));
+    })
+    .catch(err => {
+      if(err.response){
+        dispatch(returnErrors(err.response.data.message, err.response.status, 'COURSE_PARTICIPANTS_ERROR'));
+      }
+    });
+}
+
+export const assigneBadge = (badgeId, courseId, userId) => (dispatch, getState) => {
+  var course = getState().course.course;
+  axios.put(`/api/v1/badge/${badgeId}/course/${courseId}/assigne/user/${userId}`)
+    .then(res => {
+      const index = course.participants.findIndex(user => user._id === userId);
+      var badge = 'localbadge';
+      const globalBadge = course.badge.some(badge => badge._id === badgeId);
+      if(globalBadge) badge = 'badge';
+      course.participants[index][badge].push(badgeId);
+      dispatch({
+        type: ASSIGNE_BADGE,
+        payload: course
+      });
+      dispatch(returnSuccess(res.data.message, res.status, 'ASSIGNE_SUCCESS'));
+    })
+    .catch(err => {
+      if(err.response){
+        dispatch(returnErrors(err.response.data.message, err.response.status, 'ASSIGNE_ERROR'));
+      }
+    });
+};
+
+export const unassigneBadge = (badgeId, courseId, userId) => (dispatch, getState) => {
+  var course = getState().course.course;
+  axios.put(`/api/v1/badge/${badgeId}/course/${courseId}/unassigne/user/${userId}`)
+    .then(res => {
+      const index = course.participants.findIndex(user => user._id === userId);
+      var badge = 'localbadge';
+      const globalBadge = course.badge.some(badge => badge._id === badgeId);
+      if(globalBadge) badge = 'badge';
+      var updatedBadges = course.participants[index][badge].filter(bId => bId !== badgeId);
+      course.participants[index][badge] = updatedBadges;
+      dispatch({
+        type: UNASSIGNE_BADGE,
+        payload: course
+      });
+      dispatch(returnSuccess(res.data.message, res.status, 'UNASSIGNE_SUCCESS'));
+    })
+    .catch(err => {
+      if(err.response){
+        dispatch(returnErrors(err.response.data.message, err.response.status, 'UNASSIGNE_ERROR'));
+      }
+    });
+};
 
 // get courses
 export const loadCourses = (url, params) => (dispatch, getState) => {

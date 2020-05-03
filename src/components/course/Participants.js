@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
-
-import axios from 'axios';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { getParticipants } from '../../actions/courseActions';
 
 import { withRouter } from 'react-router-dom';
+
+import AssigneBadge from '../badge/AssigneBadge';
+import UnassigneBadge from '../badge/UnassigneBadge';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -23,23 +27,25 @@ export class Participants extends Component {
       open: false,
       msg: null,
       msgType: null,
-      participants: null
-    }
+      participants: null,
+      openAssigneBadge: false,
+      openUnassigneBadge: false
+    };
   }
 
   componentDidMount(){
-    axios.get(`/api/v1/course/${this.props.match.params.courseId}/participants`)
-      .then(res => {
-        this.setState({ participants: res.data.participants });
-      })
-      .catch(err => {
-        this.setState({ msg: err.response.message, msgType: 'error' });
-      });
+    this.props.getParticipants(this.props.match.params.courseId);
   }
 
   componentDidUpdate(previousProps, previousState) {
     if(previousProps.open !== this.props.open && this.props.open === true){
       this.setState({ open: true });
+    }
+    if(previousState.openAssigneBadge === true){
+      this.setState({ openAssigneBadge: false });
+    }
+    if(previousState.openUnassigneBadge === true){
+      this.setState({ openUnassigneBadge: false });
     }
     // if(!previousState.participants ){
     //   axios.get(`/api/v1/course/${this.props.match.params.courseId}/participants`)
@@ -50,6 +56,12 @@ export class Participants extends Component {
     //       this.setState({ msg: err.response.message, msgType: 'error' });
     //     });
     // }
+    const { message, course } = this.props;
+    if (message !== previousProps.message) {
+      if(message.id === 'COURSE_PARTICIPANTS_SUCCESS'){
+        this.setState({ participants: course.participants});
+      }
+    }
   }
 
   toggle = () => {
@@ -70,7 +82,7 @@ export class Participants extends Component {
               {this.state.msg ? <Alert style={{marginBottom: '10px'}} icon={false} severity={this.state.msgType}>{this.state.msg}</Alert> : null}
               {participants.length > 0 ?
                 participants.map(user => (
-                  <Paper style={{marginBottom: '15px'}}>
+                  <Paper key={user._id} style={{marginBottom: '15px'}}>
                     <Grid container spacing={2}>
                       <Grid item>
                         {(user.image && user.image.path) ?
@@ -84,6 +96,18 @@ export class Participants extends Component {
                             <Typography gutterBottom variant="subtitle1">
                               {user.lastname}, {user.firstname}
                             </Typography>
+                          </Grid>
+                          <Grid item xs>
+                            <Button variant="contained" color="primary" onClick={() => this.setState({ openAssigneBadge: true })}>
+                              Badge vergeben
+                            </Button>
+                            <AssigneBadge open={this.state.openAssigneBadge} participant={user}/>
+                          </Grid>
+                          <Grid item xs>
+                            <Button variant="contained" color="primary" onClick={() => this.setState({ openUnassigneBadge: true })}>
+                              Badge entziehen
+                            </Button>
+                            <UnassigneBadge open={this.state.openUnassigneBadge} participant={user}/>
                           </Grid>
                         </Grid>
                       </Grid>
@@ -105,4 +129,15 @@ export class Participants extends Component {
   }
 }
 
-export default withRouter(Participants);
+Participants.propTypes = {
+  course: PropTypes.object,
+  message: PropTypes.object.isRequired,
+  getParticipants: PropTypes.func.isRequired
+};
+
+const mapStateToProps = state => ({
+  message: state.message,
+  course: state.course.course
+});
+
+export default connect(mapStateToProps, { getParticipants })(withRouter(Participants));
