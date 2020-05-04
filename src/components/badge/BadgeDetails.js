@@ -16,7 +16,7 @@ export class BadgeDetails extends Component {
   }
 
   componentDidUpdate(previousProps) {
-    if(previousProps.open !== this.props.open){
+    if(previousProps.open !== this.props.open && this.props.open === true){
       this.setState({ open: true });
     }
   }

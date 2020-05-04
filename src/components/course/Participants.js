@@ -47,19 +47,10 @@ export class Participants extends Component {
     if(previousState.openUnassigneBadge === true){
       this.setState({ openUnassigneBadge: false });
     }
-    // if(!previousState.participants ){
-    //   axios.get(`/api/v1/course/${this.props.match.params.courseId}/participants`)
-    //     .then(res => {
-    //       this.setState({ participants: res.data.participants });
-    //     })
-    //     .catch(err => {
-    //       this.setState({ msg: err.response.message, msgType: 'error' });
-    //     });
-    // }
     const { message, course } = this.props;
     if (message !== previousProps.message) {
       if(message.id === 'COURSE_PARTICIPANTS_SUCCESS'){
-        this.setState({ participants: course.participants});
+        this.setState({ participants: course.participants });
       }
     }
   }
@@ -98,16 +89,16 @@ export class Participants extends Component {
                             </Typography>
                           </Grid>
                           <Grid item xs>
-                            <Button variant="contained" color="primary" onClick={() => this.setState({ openAssigneBadge: true })}>
+                            <Button variant="contained" color="primary" onClick={() => this.setState({ openAssigneBadge: true, participant: user })}>
                               Badge vergeben
                             </Button>
-                            <AssigneBadge open={this.state.openAssigneBadge} participant={user}/>
+                            <AssigneBadge open={this.state.openAssigneBadge && this.state.participant._id === user._id} participant={user}/>
                           </Grid>
                           <Grid item xs>
-                            <Button variant="contained" color="primary" onClick={() => this.setState({ openUnassigneBadge: true })}>
+                            <Button variant="contained" color="primary" onClick={() => this.setState({ openUnassigneBadge: true, participant: user })}>
                               Badge entziehen
                             </Button>
-                            <UnassigneBadge open={this.state.openUnassigneBadge} participant={user}/>
+                            <UnassigneBadge open={this.state.openUnassigneBadge  && this.state.participant._id === user._id} participant={user}/>
                           </Grid>
                         </Grid>
                       </Grid>
