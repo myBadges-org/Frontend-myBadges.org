@@ -10,6 +10,7 @@ import {
   GET_PARTICIPANTS,
   ASSIGNE_BADGE,
   UNASSIGNE_BADGE,
+  ASSIGNE_MULTIPLE_BADGES,
   COURSES_LOADED,
   COURSES_LOADING,
   COURSE_ERROR,
@@ -69,7 +70,7 @@ export const signIn = (id) => (dispatch, getState) => {
     })
     .catch(err => {
       if(err.response){
-        dispatch(returnErrors(err.response.data.message, err.response.status, 'COURSE_UPDATED_ERROR'));
+        dispatch(returnErrors(err.response.data.message, err.response.status, 'COURSE_REGISTRATION_ERROR'));
       }
     });
 };
@@ -88,7 +89,7 @@ export const signOut = (id) => (dispatch, getState) => {
     })
     .catch(err => {
       if(err.response){
-        dispatch(returnErrors(err.response.data.message, err.response.status, 'COURSE_UPDATED_ERROR'));
+        dispatch(returnErrors(err.response.data.message, err.response.status, 'COURSE_REGISTRATION_ERROR'));
       }
     });
 };
@@ -152,6 +153,35 @@ export const unassigneBadge = (badgeId, courseId, userId) => (dispatch, getState
     .catch(err => {
       if(err.response){
         dispatch(returnErrors(err.response.data.message, err.response.status, 'UNASSIGNE_ERROR'));
+      }
+    });
+};
+
+export const assigneMultipleBadges = (courseId, badges) => (dispatch, getState) => {
+  var course = getState().course.course;
+  var body = {
+    badges: badges
+  };
+  axios.put(`/api/v1/badge/course/${courseId}/assigne`, body)
+    .then(res => {
+      Object.keys(badges).map(userId => {
+        const index = course.participants.findIndex(user => user._id === userId);
+        badges[userId].map(badgeId => {
+          var badge = 'localbadge';
+          const globalBadge = course.badge.some(badge => badge._id === badgeId);
+          if(globalBadge) badge = 'badge';
+          course.participants[index][badge].push(badgeId);
+        });
+      });
+      dispatch({
+        type: ASSIGNE_MULTIPLE_BADGES,
+        payload: course
+      });
+      dispatch(returnSuccess(res.data.message, res.status, 'MULTIPLE_ASSIGNE_SUCCESS'));
+    })
+    .catch(err => {
+      if(err.response){
+        dispatch(returnErrors(err.response.data.message, err.response.status, 'MULTIPLE_ASSIGNE_ERROR'));
       }
     });
 };

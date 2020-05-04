@@ -10,6 +10,7 @@ import moment from 'moment';
 import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
 
 import Badges from '../badge/Badges';
+import AssigneMultipleBadges from '../badge/AssigneMultipleBadges';
 import CourseChange from './CourseChange';
 import Participants from './Participants';
 import CourseInfo from './CourseInfo';
@@ -42,7 +43,8 @@ export class Course extends Component {
     msg: null,
     msgType: '',
     openCourseChange: false,
-    openParticipants: false
+    openParticipants: false,
+    openAssigneBadges: false
   }
 
   componentDidMount(){
@@ -60,6 +62,9 @@ export class Course extends Component {
     if(previousState.openParticipants === true){
       this.setState({ openParticipants: false });
     }
+    if(previousState.openAssigneBadges === true){
+      this.setState({ openAssigneBadges: false });
+    }
     const { message } = this.props;
     if (message !== previousProps.message) {
       if(message.id === 'COURSE_DEACTIVATED'){
@@ -71,8 +76,9 @@ export class Course extends Component {
         window.scrollTo(0, 0);
       }
       // Check for course error
-      if(message.id === 'COURSE_ERROR'){
+      if(message.id === 'COURSE_ERROR' || message.id === 'COURSE_REGISTRATION_ERROR'){
         this.setState({msg: message.msg, msgType: 'error'});
+        window.scrollTo(0, 0);
       }
       // else {
       //   this.setState({msg: null});
@@ -95,27 +101,27 @@ export class Course extends Component {
       });
   };
 
-  onSignIn = (e) => {
-    e.preventDefault();
-    axios.put(`/api/v1/course/${this.props.match.params.courseId}/deactivation`)
-      .then(res => {
-        this.props.history.push('/course/me/creator');
-      })
-      .catch(err => {
-        this.setState({msgType: 'error', msg: err.response.data.message});
-      });
-  };
-
-  onSignOut = (e) => {
-    e.preventDefault();
-    axios.put(`/api/v1/course/${this.props.match.params.courseId}/deactivation`)
-      .then(res => {
-        this.props.history.push('/course/me/creator');
-      })
-      .catch(err => {
-        this.setState({msgType: 'error', msg: err.response.data.message});
-      });
-  };
+  // onSignIn = (e) => {
+  //   e.preventDefault();
+  //   axios.put(`/api/v1/course/${this.props.match.params.courseId}/deactivation`)
+  //     .then(res => {
+  //       this.props.history.push('/course/me/creator');
+  //     })
+  //     .catch(err => {
+  //       this.setState({msgType: 'error', msg: err.response.data.message});
+  //     });
+  // };
+  //
+  // onSignOut = (e) => {
+  //   e.preventDefault();
+  //   axios.put(`/api/v1/course/${this.props.match.params.courseId}/deactivation`)
+  //     .then(res => {
+  //       this.props.history.push('/course/me/creator');
+  //     })
+  //     .catch(err => {
+  //       this.setState({msgType: 'error', msg: err.response.data.message});
+  //     });
+  // };
 
   render(){
     const { msg, msgType } = this.state;
@@ -178,9 +184,10 @@ export class Course extends Component {
                       <Participants open={this.state.openParticipants} courseName={course.name}/>
                     </p>
                     <p>
-                      <Button color="primary" variant='contained' style={{width: '100%'}}>
+                      <Button color="primary" variant='contained' onClick={() => this.setState({openAssigneBadges: true})} style={{width: '100%'}}>
                         Badges vergeben
                       </Button>
+                      <AssigneMultipleBadges open={this.state.openAssigneBadges}/>
                     </p>
                     <Divider variant='fullWidth'/>
                     <p>

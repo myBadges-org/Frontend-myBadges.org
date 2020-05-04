@@ -87,7 +87,7 @@ export class Participants extends Component {
                       <Grid item>
                         {(user.image && user.image.path) ?
                           <Avatar src={`/media/${user.image.path}`} style={{width: '200px', height: '200px'}}/>
-                        : <Avatar style={{width: '200px', height: '200px'}}>{user.firstname.charAt(0)}{this.state.lastname.charAt(0)}</Avatar>
+                        : <Avatar style={{width: '200px', height: '200px'}}>{user.firstname.charAt(0)}{user.lastname.charAt(0)}</Avatar>
                         }
                       </Grid>
                       <Grid item xs={12} sm container>
