@@ -1,4 +1,4 @@
-import { USER_LOADED, USER_LOADING, AUTH_ERROR, LOGIN_SUCCESS, LOGIN_FAIL, LOGOUT_SUCCESS, LOGOUT_FAIL, REGISTER_FAIL, REGISTER_SUCCESS, REFRESH_TOKEN_SUCCESS, REFRESH_TOKEN_FAIL } from '../actions/types';
+import { USER_LOADED, USER_LOADING, AUTH_ERROR, LOGIN_SUCCESS, LOGIN_FAIL, LOGOUT_SUCCESS, LOGOUT_FAIL, REGISTER_FAIL, REGISTER_SUCCESS, REFRESH_TOKEN_SUCCESS } from '../actions/types';
 
 
 const initialState = {
@@ -36,7 +36,6 @@ export default function(state = initialState, action){
     case AUTH_ERROR:
     case LOGIN_FAIL:
     case REGISTER_FAIL:
-    case REFRESH_TOKEN_FAIL:
     case LOGOUT_SUCCESS:
     case LOGOUT_FAIL:
       localStorage.removeItem('token');

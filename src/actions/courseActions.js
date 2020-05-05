@@ -41,17 +41,27 @@ export const loadCourse = (id) => (dispatch) => {
 
 // update one course
 export const updateCourse = (id, updatedCourse) => (dispatch) => {
-  axios.put(`/api/v1/course/${id}`, updatedCourse)
-    .then(res => {
+  const config = {
+    success: res => {
       dispatch({
         type: COURSE_UPDATED,
         payload: res.data.course
       });
       dispatch(returnSuccess(res.data.message, res.status, 'COURSE_UPDATED_SUCCESS'));
-    })
-    .catch(err => {
+    },
+    error: err => {
       if(err.response){
         dispatch(returnErrors(err.response.data.message, err.response.status, 'COURSE_UPDATED_ERROR'));
+      }
+    }
+  };
+  axios.put(`/api/v1/course/${id}`, updatedCourse, config)
+    .then(res => {
+      res.config.success(res);
+    })
+    .catch(err => {
+      if(err.response.status !== 401){
+        err.config.error(err);
       }
     });
 };
@@ -59,18 +69,28 @@ export const updateCourse = (id, updatedCourse) => (dispatch) => {
 // user signs in
 export const signIn = (id) => (dispatch, getState) => {
   var course = getState().course.course;
-  axios.put(`/api/v1/course/${id}/user/registration`)
-    .then(res => {
+  const config = {
+    success: res => {
       course.participants.push(getState().auth.user._id);
       dispatch({
         type: COURSE_USER_SIGNIN,
         payload: course
       });
       dispatch(returnSuccess(res.data.message, res.status, 'COURSE_UPDATED_SUCCESS'));
-    })
-    .catch(err => {
+    },
+    error: err => {
       if(err.response){
         dispatch(returnErrors(err.response.data.message, err.response.status, 'COURSE_REGISTRATION_ERROR'));
+      }
+    }
+  };
+  axios.put(`/api/v1/course/${id}/user/registration`, {}, config)
+    .then(res => {
+      res.config.success(res);
+    })
+    .catch(err => {
+      if(err.response.status !== 401){
+        err.config.error(err);
       }
     });
 };
@@ -78,44 +98,64 @@ export const signIn = (id) => (dispatch, getState) => {
 // user signs out
 export const signOut = (id) => (dispatch, getState) => {
   var course = getState().course.course;
-  axios.put(`/api/v1/course/${id}/user/deregistration`)
-    .then(res => {
+  const config = {
+    success: res => {
       course.participants = course.participants.filter(userId => getState().auth.user._id !== userId);
       dispatch({
         type: COURSE_USER_SIGNOUT,
         payload: course
       });
       dispatch(returnSuccess(res.data.message, res.status, 'COURSE_UPDATED_SUCCESS'));
-    })
-    .catch(err => {
+    },
+    error: err => {
       if(err.response){
         dispatch(returnErrors(err.response.data.message, err.response.status, 'COURSE_REGISTRATION_ERROR'));
+      }
+    }
+  };
+  axios.put(`/api/v1/course/${id}/user/deregistration`, {}, config)
+    .then(res => {
+      res.config.success(res);
+    })
+    .catch(err => {
+      if(err.response.status !== 401){
+        err.config.error(err);
       }
     });
 };
 
 export const getParticipants = (courseId) => (dispatch, getState) => {
   var course = getState().course.course;
-  axios.get(`/api/v1/course/${courseId}/participants`)
-    .then(res => {
+  const config = {
+    success: res => {
       course.participants = res.data.participants;
       dispatch({
         type: GET_PARTICIPANTS,
         payload: course
       });
       dispatch(returnSuccess(res.data.message, res.status, 'COURSE_PARTICIPANTS_SUCCESS'));
-    })
-    .catch(err => {
+    },
+    error: err => {
       if(err.response){
         dispatch(returnErrors(err.response.data.message, err.response.status, 'COURSE_PARTICIPANTS_ERROR'));
+      }
+    }
+  };
+  axios.get(`/api/v1/course/${courseId}/participants`, config)
+    .then(res => {
+      res.config.success(res);
+    })
+    .catch(err => {
+      if(err.response.status !== 401){
+        err.config.error(err);
       }
     });
 }
 
 export const assigneBadge = (badgeId, courseId, userId) => (dispatch, getState) => {
   var course = getState().course.course;
-  axios.put(`/api/v1/badge/${badgeId}/course/${courseId}/assigne/user/${userId}`)
-    .then(res => {
+  const config = {
+    success: res => {
       const index = course.participants.findIndex(user => user._id === userId);
       var badge = 'localbadge';
       const globalBadge = course.badge.some(badge => badge._id === badgeId);
@@ -126,18 +166,28 @@ export const assigneBadge = (badgeId, courseId, userId) => (dispatch, getState) 
         payload: course
       });
       dispatch(returnSuccess(res.data.message, res.status, 'ASSIGNE_SUCCESS'));
-    })
-    .catch(err => {
+    },
+    error: err => {
       if(err.response){
         dispatch(returnErrors(err.response.data.message, err.response.status, 'ASSIGNE_ERROR'));
+      }
+    }
+  };
+  axios.put(`/api/v1/badge/${badgeId}/course/${courseId}/assigne/user/${userId}`, {}, config)
+    .then(res => {
+      res.config.success(res);
+    })
+    .catch(err => {
+      if(err.response.status !== 401){
+        err.config.error(err);
       }
     });
 };
 
 export const unassigneBadge = (badgeId, courseId, userId) => (dispatch, getState) => {
   var course = getState().course.course;
-  axios.put(`/api/v1/badge/${badgeId}/course/${courseId}/unassigne/user/${userId}`)
-    .then(res => {
+  const config = {
+    success: res => {
       const index = course.participants.findIndex(user => user._id === userId);
       var badge = 'localbadge';
       const globalBadge = course.badge.some(badge => badge._id === badgeId);
@@ -149,10 +199,20 @@ export const unassigneBadge = (badgeId, courseId, userId) => (dispatch, getState
         payload: course
       });
       dispatch(returnSuccess(res.data.message, res.status, 'UNASSIGNE_SUCCESS'));
-    })
-    .catch(err => {
+    },
+    error: err => {
       if(err.response){
         dispatch(returnErrors(err.response.data.message, err.response.status, 'UNASSIGNE_ERROR'));
+      }
+    }
+  };
+  axios.put(`/api/v1/badge/${badgeId}/course/${courseId}/unassigne/user/${userId}`, {}, config)
+    .then(res => {
+      res.config.success(res);
+    })
+    .catch(err => {
+      if(err.response.status !== 401){
+        err.config.error(err);
       }
     });
 };
@@ -162,8 +222,8 @@ export const assigneMultipleBadges = (courseId, badges) => (dispatch, getState) 
   var body = {
     badges: badges
   };
-  axios.put(`/api/v1/badge/course/${courseId}/assigne`, body)
-    .then(res => {
+  const config = {
+    success: res => {
       Object.keys(badges).map(userId => {
         const index = course.participants.findIndex(user => user._id === userId);
         badges[userId].map(badgeId => {
@@ -178,10 +238,20 @@ export const assigneMultipleBadges = (courseId, badges) => (dispatch, getState) 
         payload: course
       });
       dispatch(returnSuccess(res.data.message, res.status, 'MULTIPLE_ASSIGNE_SUCCESS'));
-    })
-    .catch(err => {
+    },
+    error: err => {
       if(err.response){
         dispatch(returnErrors(err.response.data.message, err.response.status, 'MULTIPLE_ASSIGNE_ERROR'));
+      }
+    }
+  };
+  axios.put(`/api/v1/badge/course/${courseId}/assigne`, body, config)
+    .then(res => {
+      res.config.success(res);
+    })
+    .catch(err => {
+      if(err.response.status !== 401){
+        err.config.error(err);
       }
     });
 };
@@ -207,21 +277,31 @@ export const loadCourses = (url, params) => (dispatch, getState) => {
     type: COURSES_LOADING
   });
   const config = {
-    params: params
-  };
-  axios.get(url, config)
-    .then(res => dispatch({
+    params: params,
+    success: res => {
+      dispatch(returnSuccess(res.data.message, res.status));
+      dispatch({
         type: COURSES_LOADED,
         payload: res.data.courses
       })
-    )
-    .catch(err => {
+    },
+    error: err => {
       if(err.response){
         dispatch(returnErrors(err.response.data.message, err.response.status, 'COURSES_ERROR'));
       }
       dispatch({
         type: COURSE_ERROR
       });
+    }
+  };
+  axios.get(url, config)
+    .then(res => {
+      res.config.success(res);
+    })
+    .catch(err => {
+      if(err.response.status !== 401){
+        err.config.error(err);
+      }
     });
 };
 

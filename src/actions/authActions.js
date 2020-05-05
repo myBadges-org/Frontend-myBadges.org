@@ -11,7 +11,6 @@ import {
   LOGOUT_FAIL,
   REGISTER_FAIL,
   REGISTER_SUCCESS,
-  REFRESH_TOKEN_FAIL,
   REFRESH_TOKEN_SUCCESS
 } from '../actions/types';
 
@@ -22,19 +21,21 @@ export const loadUser = () => (dispatch) => {
   dispatch({
     type: USER_LOADING
   });
-  axios.get('api/v1/user/me', dispatch(authInterceptor()))
+  axios.get('/api/v1/user/me', dispatch(authInterceptor()))
     .then(res => dispatch({
         type: USER_LOADED,
-        payload: res.data
+        payload: res.data.user
       })
     )
     .catch(err => {
-      if(err.response){
-        dispatch(returnErrors(err.response.data.message, err.response.status));
+      if(err.response.status !== 401){
+        if(err.response){
+          dispatch(returnErrors(err.response.data.message, err.response.status));
+        }
+        dispatch({
+          type: AUTH_ERROR
+        });
       }
-      dispatch({
-        type: AUTH_ERROR
-      });
     });
 };
 
@@ -48,7 +49,7 @@ export const register = ({ firstname, lastname, city, postalcode, birthday, emai
   };
   // Request Body
   const body = JSON.stringify({ firstname, lastname, city, postalcode, birthday, email, username, password, confirmPassword });
-  axios.post('api/v1/user/signup', body, config)
+  axios.post('/api/v1/user/signup', body, config)
     .then(res => {
       dispatch(returnSuccess(res.data.message, res.status, 'REGISTER_SUCCESS'));
       dispatch({
@@ -76,7 +77,7 @@ export const login = ({ username, password }) => (dispatch) => {
   };
   // Request Body
   const body = JSON.stringify({ username, password });
-  axios.post('api/v1/user/signin', body, config)
+  axios.post('/api/v1/user/signin', body, config)
   .then(res => {
     // Logout automatically if refreshToken "expired"
     const logoutTimer = () => setTimeout(
@@ -107,7 +108,7 @@ export const logout = () => (dispatch) => {
       'Content-Type': 'application/json'
     }
   };
-  axios.post('api/v1/user/signout', config)
+  axios.post('/api/v1/user/signout', config)
   .then(res => {
     dispatch({
       type: LOGOUT_SUCCESS
@@ -151,8 +152,7 @@ export const authInterceptor = () => (dispatch, getState) => {
       const refreshToken = getState().auth.refreshToken;
       if(refreshToken){
         // try to refresh the token failed
-        if (error.response.status === 401 &&
-            originalRequest.url === 'api/v1/user/token/refresh') {
+        if (error.response.status === 401 && originalRequest._retry) {
               // router.push('/login');
               return Promise.reject(error);
         }
@@ -161,24 +161,32 @@ export const authInterceptor = () => (dispatch, getState) => {
           originalRequest._retry = true;
           const refreshToken = getState().auth.refreshToken;
           // request to refresh the token, in request-body is the refreshToken
-          axios.post('api/v1/user/token/refresh', {"refreshToken": refreshToken})
+          axios.post('/api/v1/user/token/refresh', {"refreshToken": refreshToken})
                .then(res => {
-                 if (res.status === 201) {
+                 if (res.status === 200) {
                    dispatch({
                      type: REFRESH_TOKEN_SUCCESS,
                      payload: res.data
                    });
                    axios.defaults.headers.common['Authorization'] = 'Bearer ' + getState().auth.token;
                    // request was successfull, new request with the old parameters and the refreshed token
-                   return axios(originalRequest);
+                   return axios(originalRequest)
+                          .then(res => {
+                             originalRequest.success(res);
+                           })
+                           .catch(err => {
+                             originalRequest.error(err);
+                           });
                  }
                  return Promise.reject(error);
                })
                .catch(err => {
                  // request failed, token could not be refreshed
-                 dispatch(returnErrors(err.response.data, err.response.status, 'REFRESH_TOKEN_FAIL'));
+                 if(err.response){
+                   dispatch(returnErrors(err.response.data.message, err.response.status));
+                 }
                  dispatch({
-                   type: REFRESH_TOKEN_FAIL
+                   type: AUTH_ERROR
                  });
                  return Promise.reject(error);
                });
