@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { setPanel } from '../../actions/helperActions';
 
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -11,7 +14,7 @@ export class CourseInfo extends Component {
 
   render(){
     return(
-      <ExpansionPanel style={{borderRadius: '4px'}}>
+      <ExpansionPanel expanded={this.props.expanded === this.props.panel} onChange={() => this.props.setPanel(this.props.expanded)} style={{borderRadius: '4px'}}>
         <ExpansionPanelSummary
           expandIcon={
             <FontAwesomeIcon icon={faChevronDown} />
@@ -28,5 +31,14 @@ export class CourseInfo extends Component {
   }
 }
 
+CourseInfo.propTypes = {
+  panel: PropTypes.string.isRequired,
+  setPanel: PropTypes.func.isRequired
+};
 
-export default CourseInfo;
+const mapStateToProps = state => ({
+  panel: state.helper.panel
+});
+
+
+export default connect(mapStateToProps, { setPanel })(CourseInfo);

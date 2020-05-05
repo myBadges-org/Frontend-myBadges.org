@@ -101,28 +101,6 @@ export class Course extends Component {
       });
   };
 
-  // onSignIn = (e) => {
-  //   e.preventDefault();
-  //   axios.put(`/api/v1/course/${this.props.match.params.courseId}/deactivation`)
-  //     .then(res => {
-  //       this.props.history.push('/course/me/creator');
-  //     })
-  //     .catch(err => {
-  //       this.setState({msgType: 'error', msg: err.response.data.message});
-  //     });
-  // };
-  //
-  // onSignOut = (e) => {
-  //   e.preventDefault();
-  //   axios.put(`/api/v1/course/${this.props.match.params.courseId}/deactivation`)
-  //     .then(res => {
-  //       this.props.history.push('/course/me/creator');
-  //     })
-  //     .catch(err => {
-  //       this.setState({msgType: 'error', msg: err.response.data.message});
-  //     });
-  // };
-
   render(){
     const { msg, msgType } = this.state;
     const { isLoading, course, user } = this.props;
@@ -142,7 +120,10 @@ export class Course extends Component {
                   <img src={`/media/${course.image.path}`} alt={`Bild vom Kurs ${course.name}`} style={{width: '100%', height: '300px', objectFit: 'cover'}}/>
                 : null}
                 {course.coordinates ?
-                  <CourseInfo title='Adresse'>
+                  <CourseInfo
+                    title='Adresse'
+                    expanded='address'
+                  >
                     <Map center={[course.coordinates.coordinates[1], course.coordinates.coordinates[0]]} zoom={13} style={{width: '100%', height: '300px', borderRadius: '4px'}}>
                       <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -153,18 +134,41 @@ export class Course extends Component {
                       </Marker>
                     </Map>
                   </CourseInfo>
-                  : null
+                : null
                 }
-                <CourseInfo title='Zeitraum' content={`vom ${moment(course.startdate).format('DD. MMMM YYYY')} bis ${moment(course.enddate).format('DD. MMMM YYYY')}`} />
-                <CourseInfo title='Thema' content={course.topic} />
-                <CourseInfo title='Beschreibung' content={course.description} />
-                <CourseInfo title='Voraussetzungen' content={course.requirements} />
-                <CourseInfo title='Plätze' content={`insgesamt: ${course.size}, davon sind noch ${course.size - course.participants.length} verfügbar`} />
-                <CourseInfo title={
-                  <Badge badgeContent={badges.length} color="primary">
-                    <b>verknüpfte Badges</b>
-                  </Badge>
-                }>
+                <CourseInfo
+                  title='Zeitraum'
+                  expanded='time'
+                  content={`vom ${moment(course.startdate).format('DD. MMMM YYYY')} bis ${moment(course.enddate).format('DD. MMMM YYYY')}`}
+                />
+                <CourseInfo
+                  title='Thema'
+                  expanded='topic'
+                  content={course.topic}
+                />
+                <CourseInfo
+                  title='Beschreibung'
+                  expanded='description'
+                  content={course.description}
+                />
+                <CourseInfo
+                  title='Voraussetzungen'
+                  expanded='requirements'
+                  content={course.requirements}
+                />
+                <CourseInfo
+                  title='Plätze'
+                  expanded='size'
+                  content={`insgesamt: ${course.size}, davon sind noch ${course.size - course.participants.length} verfügbar`}
+                />
+                <CourseInfo
+                  title={
+                    <Badge badgeContent={badges.length} color="primary">
+                      <b>verknüpfte Badges</b>
+                    </Badge>
+                  }
+                  expanded='badge'
+                >
                   <Badges badges={badges}/>
                 </CourseInfo>
               </Paper>
