@@ -25,7 +25,7 @@ export class BadgesMe extends Component {
         this.setState({msgType: 'error', msg: err.response.data.message, isLoading: false});
       }
     };
-    axios.get('/api/v1/badge/me')
+    axios.get('/api/v1/badge/me', config)
       .then(res => {
         res.config.success(res);
       })

@@ -1,7 +1,7 @@
 import { GET_BADGES, ADD_BADGE } from './types';
 
 import axios from 'axios';
-import { returnErrors, returnSuccess } from './messageActions'
+import { returnErrors } from './messageActions'
 
 // get badges from API
 export const getBadges = () => (dispatch) => {

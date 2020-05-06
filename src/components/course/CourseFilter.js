@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { paramsOnChange, sliderOnChange, onChangeAddress, deleteAddress, setAddress, onReset, onFilter } from '../../actions/courseActions';
 
-import axios from 'axios';
 import moment from 'moment';
 
 import Button from '@material-ui/core/Button';
@@ -16,7 +15,6 @@ import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';

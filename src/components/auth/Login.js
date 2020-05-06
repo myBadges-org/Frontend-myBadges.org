@@ -29,10 +29,6 @@ export class Login extends Component {
     };
   }
 
-  componentDidMount(){
-    if(this.props.isAuthenticated) this.props.history.replace('/');
-  }
-
   componentDidUpdate(prevProps){
     const { message } = this.props;
     if (message !== prevProps.message) {
@@ -131,14 +127,12 @@ export class Login extends Component {
 }
 
 Login.propTypes = {
-  isAuthenticated: PropTypes.bool,
   message: PropTypes.object.isRequired,
   login: PropTypes.func.isRequired,
   clearMessages: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
-  isAuthenticated: state.auth.isAuthenticated,
   message: state.message
 });
 

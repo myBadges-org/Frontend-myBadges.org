@@ -223,14 +223,12 @@ export class Registration extends Component {
 }
 
 Registration.propTypes = {
-  isAuthenticated: PropTypes.bool,
   message: PropTypes.object.isRequired,
   register: PropTypes.func.isRequired,
   clearMessages: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
-  isAuthenticated: state.auth.isAuthenticated,
   message: state.message
 });
 

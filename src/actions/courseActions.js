@@ -224,9 +224,9 @@ export const assigneMultipleBadges = (courseId, badges) => (dispatch, getState) 
   };
   const config = {
     success: res => {
-      Object.keys(badges).map(userId => {
+      Object.keys(badges).forEach((userId, i) => {
         const index = course.participants.findIndex(user => user._id === userId);
-        badges[userId].map(badgeId => {
+        badges[userId].forEach((badgeId, i) => {
           var badge = 'localbadge';
           const globalBadge = course.badge.some(badge => badge._id === badgeId);
           if(globalBadge) badge = 'badge';
