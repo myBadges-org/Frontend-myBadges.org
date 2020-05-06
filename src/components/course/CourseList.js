@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { loadCourses, clearParams } from '../../actions/courseActions';
 
+import moment from 'moment';
 import { Link } from 'react-router-dom';
 
 import CourseFilter from './CourseFilter';
@@ -19,17 +20,23 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 
 export class CourseList extends Component {
 
-  state = {
-    msg: null,
-    msgType: ''
+  constructor(props){
+    super(props);
+    this.state = {
+      msg: null,
+      msgType: '',
+    };
   }
 
   componentDidMount(){
     this.props.clearParams();
-    this.props.loadCourses('/api/v1/course');
+    this.props.loadCourses(this.props.url);
   }
 
   componentDidUpdate(prevProps){
+    if(prevProps.url !== this.props.url){
+      this.props.loadCourses(this.props.url);
+    }
     const { message } = this.props;
     if (message !== prevProps.message) {
       // Check for course error
@@ -50,7 +57,7 @@ export class CourseList extends Component {
           {this.state.msg ? <Alert style={{marginBottom: '10px'}} icon={false} severity={this.state.msgType}>{this.state.msg}</Alert> : null}
           {!this.props.course.isLoading ?
             <div>
-            <CourseFilter url={'/api/v1/course'}/>
+            <CourseFilter url={this.props.url}/>
             <CourseListMap />
             {this.props.course.courses && this.props.course.courses.length > 0 ?
               this.props.course.courses.map(course => (
@@ -66,11 +73,11 @@ export class CourseList extends Component {
                       <Grid item xs={12} sm container>
                         <Grid item xs container direction="column" spacing={2}>
                           <Grid item xs>
-                            <Typography gutterBottom variant="subtitle1">
-                              {course.name}
+                            <Typography gutterBottom variant="body1">
+                              <b>{course.name}</b>
                             </Typography>
                             <Typography variant="body2">
-                              Zeitraum von {course.startdate} bis {course.enddate}
+                              Zeitraum von {moment(course.startdate).format('LL')} bis {moment(course.enddate).format('LL')}
                             </Typography>
                             <Typography variant="body2">
                               Thema: {course.topic}

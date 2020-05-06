@@ -17,12 +17,22 @@ export class BadgesMe extends Component {
   }
 
   componentDidMount(){
+    const config = {
+      success: res => {
+        this.setState({ badges: res.data.badges, isLoading: false});
+      },
+      error: err => {
+        this.setState({msgType: 'error', msg: err.response.data.message, isLoading: false});
+      }
+    };
     axios.get('/api/v1/badge/me')
       .then(res => {
-        this.setState({ badges: res.data.badges, isLoading: false});
+        res.config.success(res);
       })
       .catch(err => {
-        this.setState({msgType: 'error', msg: err.response.data.message, isLoading: false});
+        if(err.response.status !== 401){
+          err.config.error(err);
+        }
       });
   }
 

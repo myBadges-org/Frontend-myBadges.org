@@ -9,6 +9,7 @@ import Navbar from './components/header/Navbar';
 import Footer from './components/footer/Footer';
 import Routes from './components/routes/Routes';
 
+import './App.css';
 
 class App extends Component {
 
@@ -20,9 +21,11 @@ class App extends Component {
     return(
       <Provider store={store}>
         <Router>
-          <Navbar />
-          <Routes />
-          <Footer />
+          <div className="wrapper">
+            <Navbar />
+            <Routes />
+            <Footer />
+          </div>
         </Router>
       </Provider>
     );

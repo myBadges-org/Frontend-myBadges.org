@@ -29,6 +29,10 @@ export class Login extends Component {
     };
   }
 
+  componentDidMount(){
+    if(this.props.isAuthenticated) this.props.history.replace('/');
+  }
+
   componentDidUpdate(prevProps){
     const { message } = this.props;
     if (message !== prevProps.message) {

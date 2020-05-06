@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import { Route, Switch } from 'react-router-dom';
 import PrivateRoute from './PrivateRoute';
+import IsLoggedRoute from './IsLoggedRoute';
 
 import Home from '../home/Home';
 import Registration from '../auth/Registration';
@@ -12,8 +13,6 @@ import ResetPassword from '../auth/ResetPassword';
 import EmailConfirmation from '../auth/EmailConfirmation';
 import Course from '../course/Course';
 import CourseList from '../course/CourseList';
-import CourseListMe from '../course/CourseListMe';
-import CourseListMeCreator from '../course/CourseListMeCreator';
 import CreateCourse from '../course/CreateCourse';
 import BadgesMe from '../badge/BadgesMe';
 import Contact from '../contact/Contact';
@@ -25,20 +24,26 @@ class Routes extends Component {
     return (
       <Switch>
         <Route path="/" exact component={Home} />
-        <Route path="/login" exact component={Login} />
-        <Route path="/register" exact component={Registration} />
+        <IsLoggedRoute path="/login" exact>
+          <Login/>
+        </IsLoggedRoute>
+        <IsLoggedRoute path="/register" exact>
+          <Registration/>
+        </IsLoggedRoute>
         <PrivateRoute path="/user" exact>
           <User/>
         </PrivateRoute>
         <Route path="/user/password" exact component={Password} />
         <Route path="/user/password/reset" exact component={ResetPassword} />
         <Route path="/user/email" exact component={EmailConfirmation} />
-        <Route path="/course" exact component={CourseList}/>
+        <Route path="/course" exact>
+          <CourseList url='/api/v1/course'/>
+        </Route>
         <PrivateRoute path="/course/me" exact>
-          <CourseListMe/>
+          <CourseList url='/api/v1/course/me'/>
         </PrivateRoute>
         <PrivateRoute path="/course/me/creator" exact>
-          <CourseListMeCreator/>
+          <CourseList url='/api/v1/course/creator/me'/>
         </PrivateRoute>
         <PrivateRoute path="/course/create" exact>
           <CreateCourse/>
