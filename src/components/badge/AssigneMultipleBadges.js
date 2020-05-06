@@ -80,10 +80,13 @@ export class AssigneMultipleBadges extends Component {
   render(){
     const { participants } = this.state;
     const badges = this.props.course.badge.concat(this.props.course.localbadge);
+    const disabled = !Object.keys(this.state.assigned).length > 0;
     return (
       participants ?
         <Dialog
           open={this.state.open}
+          maxWidth='md'
+          fullWidth
           onClose={this.toggle}
         >
           <DialogTitle>Badges vergeben</DialogTitle>
@@ -153,7 +156,7 @@ export class AssigneMultipleBadges extends Component {
             <Button color="default" variant='contained' onClick={this.toggle}>
               Abbrechen
             </Button>
-            <Button color="primary" variant='contained' onClick={this.onSubmit}>
+            <Button color="primary" disabled={disabled} variant='contained' onClick={this.onSubmit}>
               Bestätigen
             </Button>
           </DialogActions>

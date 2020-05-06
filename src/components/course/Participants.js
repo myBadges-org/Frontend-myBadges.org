@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getParticipants } from '../../actions/courseActions';
 
+import moment from 'moment';
+import localization from 'moment/locale/de';
 import { withRouter } from 'react-router-dom';
 
 import AssigneBadge from '../badge/AssigneBadge';
@@ -61,10 +63,13 @@ export class Participants extends Component {
 
   render(){
     const { participants } = this.state;
+    moment.locale('de', localization);
     return (
       participants ?
         <Dialog
           open={this.state.open}
+          maxWidth='md'
+          fullWidth
           onClose={this.toggle}
         >
           <DialogTitle>Teilnehmer vom Kurs {this.props.courseName}</DialogTitle>
@@ -84,21 +89,34 @@ export class Participants extends Component {
                       <Grid item xs={12} sm container>
                         <Grid item xs container direction="column" spacing={2}>
                           <Grid item xs>
-                            <Typography gutterBottom variant="subtitle1">
-                              {user.lastname}, {user.firstname}
+                            <Typography gutterBottom variant="body1">
+                              <b>{user.lastname}, {user.firstname}</b>
+                            </Typography>
+                            <Typography gutterBottom variant="body2">
+                              Geburtsdatum: {moment(user.birthday).format('LL')}
+                            </Typography>
+                            <Typography gutterBottom variant="body2">
+                              Email: <a href={`mailto:${user.email}`}>{user.email}</a>
+                            </Typography>
+                            <Typography gutterBottom variant="body2">
+                              Stadt: {user.city}, PLZ: {user.postalcode}
+                            </Typography>
+                            <Typography gutterBottom variant="body2">
+                              erhaltene Badges: <b>{user.badge.concat(user.localbadge).length}</b>
+                            </Typography>
+                            <Typography gutterBottom variant="body2">
+                              registriert seit {moment(user.date).format('LLLL')}
                             </Typography>
                           </Grid>
-                          <Grid item xs>
-                            <Button variant="contained" color="primary" onClick={() => this.setState({ openAssigneBadge: true, participant: user })}>
-                              Badge vergeben
-                            </Button>
-                            <AssigneBadge open={this.state.openAssigneBadge && this.state.participant._id === user._id} participant={user}/>
-                          </Grid>
-                          <Grid item xs>
-                            <Button variant="contained" color="primary" onClick={() => this.setState({ openUnassigneBadge: true, participant: user })}>
+                          <Grid item xs container justify="flex-end" alignItems="flex-end">
+                            <Button variant="contained" color="default" onClick={() => this.setState({ openUnassigneBadge: true, participant: user })} style={{marginRight: '10px'}}>
                               Badge entziehen
                             </Button>
                             <UnassigneBadge open={this.state.openUnassigneBadge  && this.state.participant._id === user._id} participant={user}/>
+                            <Button variant="contained" color="primary" onClick={() => this.setState({ openAssigneBadge: true, participant: user })} style={{marginRight: '-8px'}}>
+                              Badge vergeben
+                            </Button>
+                            <AssigneBadge open={this.state.openAssigneBadge && this.state.participant._id === user._id} participant={user}/>
                           </Grid>
                         </Grid>
                       </Grid>

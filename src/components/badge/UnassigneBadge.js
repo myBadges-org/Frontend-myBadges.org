@@ -71,25 +71,27 @@ export class UnassigneBadge extends Component {
         <DialogTitle>Badge entziehen</DialogTitle>
         <DialogContent>
           {this.state.msg ? <Alert style={{marginBottom: '10px'}} icon={false} severity={this.state.msgType}>{this.state.msg}</Alert> : null}
-          <Typography gutterBottom variant="subtitle1">
-            {this.props.participant.lastname}, {this.props.participant.firstname}
-          </Typography>
           {userBadges.length > 0 ?
-            <FormControl variant="outlined" fullWidth style={{marginBottom: '10px'}}>
-              <InputLabel id="select-badge">Badge</InputLabel>
-              <Select
-                labelId="select-badge"
-                label="Badge"
-                name='badge'
-                value={this.state.badge}
-                onChange={this.onChange}
-              >
-                {userBadges.map(badge => (
-                  <MenuItem key={badge._id} value={badge._id}>{badge.name}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          : 'Der Nutzer hat noch keine Badges erhalten.'}
+            <div>
+              <Typography gutterBottom variant="subtitle1">
+                {this.props.participant.lastname}, {this.props.participant.firstname}
+              </Typography>
+              <FormControl variant="outlined" fullWidth style={{marginBottom: '10px'}}>
+                <InputLabel id="select-badge">Badge</InputLabel>
+                <Select
+                  labelId="select-badge"
+                  label="Badge"
+                  name='badge'
+                  value={this.state.badge}
+                  onChange={this.onChange}
+                >
+                  {userBadges.map(badge => (
+                    <MenuItem key={badge._id} value={badge._id}>{badge.name}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </div>
+          : `${this.props.participant.firstname} ${this.props.participant.lastname} hat noch keine Badges vom Kurs erhalten.`}
         </DialogContent>
         <DialogActions>
           <Button color="default" variant='contained' onClick={this.toggle}>

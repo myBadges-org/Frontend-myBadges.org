@@ -24,6 +24,7 @@ import Alert from '@material-ui/lab/Alert';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Divider from '@material-ui/core/Divider';
 import Badge from '@material-ui/core/Badge';
+import Link from '@material-ui/core/Link';
 
 
 const styles = () => ({
@@ -48,14 +49,14 @@ export class Course extends Component {
   }
 
   componentDidMount(){
-    if(!this.props.user){
-      this.setState({msg: 'Zum Ein und Ausschreiben in den Kurs müssen Sie sich zunächst anmelden.', msgType: 'info'});
-    }
     const courseId = this.props.match.params.courseId;
     this.props.loadCourse(courseId);
   }
 
   componentDidUpdate(previousProps, previousState) {
+    if((previousProps.isAuthenticated === null && this.props.isAuthenticated === false) || (previousProps.isAuthenticated && this.props.isAuthenticated === false)){
+      this.setState({msg: <div>Zum Ein- und Ausschreiben in den Kurs müssen Sie sich zunächst <Link href="/login">einloggen</Link>.</div>, msgType: 'info'});
+    }
     if(previousState.openCourseChange === true){
       this.setState({ openCourseChange: false });
     }
@@ -236,6 +237,7 @@ export class Course extends Component {
 Course.propTypes = {
   user: PropTypes.object,
   message: PropTypes.object.isRequired,
+  isAuthenticated: PropTypes.bool,
   isLoading: PropTypes.bool.isRequired,
   course: PropTypes.object,
   loadCourse: PropTypes.func.isRequired,
@@ -247,6 +249,7 @@ const mapStateToProps = state => ({
   user: state.auth.user,
   message: state.message,
   isLoading: state.course.isLoading,
+  isAuthenticated: state.auth.isAuthenticated,
   course: state.course.course
 });
 

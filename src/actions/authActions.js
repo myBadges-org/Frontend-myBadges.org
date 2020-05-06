@@ -73,7 +73,7 @@ export const register = ({ firstname, lastname, city, postalcode, birthday, emai
 
 
 var logoutTimerId;
-const timeToLogout = 0.5*60*1000;
+const timeToLogout = 14.9*60*1000; // nearly 15 minutes correspondign to the API
 
 // Login user
 export const login = ({ username, password }) => (dispatch) => {

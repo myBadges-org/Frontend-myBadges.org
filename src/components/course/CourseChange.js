@@ -52,7 +52,7 @@ export class CourseChange extends Component {
       requirements: props.course.requirements,
       startdate: props.course.startdate,
       enddate: props.course.enddate,
-      size: props.course.size
+      size: props.course.size,
     }
   }
 
@@ -128,6 +128,19 @@ export class CourseChange extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
+  // isChanged = () => {
+  //   var { size, enddate, startdate, requirements, description, topic, coordinates, address, postalcode, courseprovider, localbadge, globalbadge, name, url } = this.state;
+  //   const changedCourse = {
+  //     size, enddate, startdate, requirements, description, topic, coordinates, address, postalcode, courseprovider, localbadge, badge: globalbadge, name, url
+  //   };
+  //
+  //   var { size, enddate, startdate, requirements, description, topic, coordinates, address, postalcode, courseprovider, localbadge, badge, name, image } = this.props.course;
+  //   const originalCourse = {
+  //     size, enddate, startdate, requirements, description, topic, coordinates, address, postalcode, courseprovider, localbadge, badge, name, url: image ? `/media/${image.path}` : ''
+  //   };
+  //   this.setState({ changed: originalCourse === changedCourse });
+  // }
+
   onReset = () => {
     this.setState({
       open: false,
@@ -194,6 +207,8 @@ export class CourseChange extends Component {
       course ?
         <Dialog
           open={this.state.open}
+          maxWidth='md'
+          fullWidth
           onClose={this.toggle}
         >
           <DialogTitle>"{course.name}" bearbeiten</DialogTitle>
@@ -393,10 +408,10 @@ export class CourseChange extends Component {
             </div>
           </DialogContent>
           <DialogActions>
-            <Button color="default" variant='contained' onClick={this.onReset} style={{width: '100%'}}>
+            <Button color="default" variant='contained' onClick={this.onReset}>
               Abbrechen
             </Button>
-            <Button color="primary" variant='contained' onClick={this.onSubmit} style={{width: '100%'}}>
+            <Button color="primary" variant='contained' onClick={this.onSubmit}>
               Kurs ändern
             </Button>
           </DialogActions>
