@@ -77,30 +77,50 @@ export class User extends Component {
     updatedUser.set('email', email);
     updatedUser.append('profile', file);
     // Request Body
-    axios.put('api/v1/user/me', updatedUser)
-      .then(res => {
+    const config = {
+      success: res => {
         this.props.dispatch({
           type: USER_LOADED,
           payload: res.data.user
         })
         this.setState({msgType: 'success', msg: res.data.message});
+      },
+      error: err => {
+        this.setState({msgType: 'error', msg: err.response.data.message});
+      }
+    };
+    axios.put('/api/v1/user/me', updatedUser, config)
+      .then(res => {
+        res.config.success(res);
       })
       .catch(err => {
-        this.setState({msgType: 'error', msg: err.response.data.message});
+        if(err.response.status !== 401){
+          err.config.error(err);
+        }
       });
   };
 
   onDelete = (e) => {
     e.preventDefault();
-    axios.delete('api/v1/user/me')
-      .then(res => {
+    const config = {
+      success: res => {
         this.props.dispatch({
           type: LOGOUT_SUCCESS
         })
         this.setState({msgType: 'success', msg: res.data.message});
+      },
+      error: err => {
+        this.setState({msgType: 'error', msg: err.response.data.message});
+      }
+    };
+    axios.delete('/api/v1/user/me', config)
+      .then(res => {
+        res.config.success(res);
       })
       .catch(err => {
-        this.setState({msgType: 'error', msg: err.response.data.message});
+        if(err.response.status !== 401){
+          err.config.error(err);
+        }
       });
   };
 

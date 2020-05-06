@@ -20,8 +20,8 @@ export const getBadges = () => (dispatch) => {
 
 // add badge to API
 export const addBadge = (newBadge) => (dispatch, getState) => {
-  axios.post('/api/v1/badge', newBadge)
-    .then(res => {
+  const config = {
+    success: res => {
       var badges = getState().badge.badges;
       badges.push(res.data.badge);
       dispatch(returnErrors(res.data.message, res.status, 'ADD_BADGE_SUCCESS'));
@@ -29,10 +29,20 @@ export const addBadge = (newBadge) => (dispatch, getState) => {
         type: ADD_BADGE,
         payload: badges
       });
-    })
-    .catch(err => {
+    },
+    error: err => {
       if(err.response){
         dispatch(returnErrors(err.response.data.message, err.response.status, 'ADD_BADGE_FAIL'));
+      }
+    }
+  };
+  axios.post('/api/v1/badge', newBadge, config)
+    .then(res => {
+      res.config.success(res);
+    })
+    .catch(err => {
+      if(err.response.status !== 401){
+        err.config.error(err);
       }
     });
 };

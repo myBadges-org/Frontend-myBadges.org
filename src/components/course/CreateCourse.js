@@ -164,12 +164,22 @@ export class CreateCourse extends Component {
         newCourse.append('coordinates[]', item);
       });
     }
-    axios.post('/api/v1/course', newCourse)
-      .then(res => {
+    const config = {
+      success: res => {
         this.setState({msgType: 'success', msg: res.data.message});
+      },
+      error: err => {
+        this.setState({msgType: 'error', msg: err.response.data.message});
+      }
+    };
+    axios.post('/api/v1/course', newCourse, config)
+      .then(res => {
+        res.config.success(res);
       })
       .catch(err => {
-        this.setState({msgType: 'error', msg: err.response.data.message});
+        if(err.response.status !== 401){
+          err.config.error(err);
+        }
       });
   };
 

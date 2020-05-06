@@ -92,12 +92,22 @@ export class Course extends Component {
 
   onDelete = (e) => {
     e.preventDefault();
-    axios.put(`/api/v1/course/${this.props.match.params.courseId}/deactivation`)
-      .then(res => {
+    const config = {
+      success: res => {
         this.props.history.push('/course/me/creator');
+      },
+      error: err => {
+        this.setState({msgType: 'error', msg: err.response.data.message});
+      }
+    };
+    axios.put(`/api/v1/course/${this.props.match.params.courseId}/deactivation`, {}, config)
+      .then(res => {
+        res.config.success(res);
       })
       .catch(err => {
-        this.setState({msgType: 'error', msg: err.response.data.message});
+        if(err.response.status !== 401){
+          err.config.error(err);
+        }
       });
   };
 

@@ -21,21 +21,28 @@ export const loadUser = () => (dispatch) => {
   dispatch({
     type: USER_LOADING
   });
-  axios.get('/api/v1/user/me', dispatch(authInterceptor()))
-    .then(res => dispatch({
+  const config = {
+    success: res => {
+      dispatch({
         type: USER_LOADED,
         payload: res.data.user
-      })
-    )
-    .catch(err => {
-      if(err.response.status !== 401){
-        if(err.response){
-          dispatch(returnErrors(err.response.data.message, err.response.status));
-        }
-        dispatch({
-          type: AUTH_ERROR
-        });
+      });
+    },
+    error: err => {
+      if(err.response){
+        dispatch(returnErrors(err.response.data.message, err.response.status));
       }
+      dispatch({
+        type: AUTH_ERROR
+      });
+    }
+  };
+  axios.get('/api/v1/user/me', config, dispatch(authInterceptor()))
+    .then(res => {
+      res.config.success(res);
+    })
+    .catch(err => {
+      err.config.error(err);
     });
 };
 
@@ -66,6 +73,7 @@ export const register = ({ firstname, lastname, city, postalcode, birthday, emai
 
 
 var logoutTimerId;
+const timeToLogout = 0.5*60*1000;
 
 // Login user
 export const login = ({ username, password }) => (dispatch) => {
@@ -82,7 +90,7 @@ export const login = ({ username, password }) => (dispatch) => {
     // Logout automatically if refreshToken "expired"
     const logoutTimer = () => setTimeout(
       () => dispatch(logout()),
-      5*60*1000
+      timeToLogout
     );
     logoutTimerId = logoutTimer();
     dispatch(returnSuccess(res.data.message, res.status, 'LOGIN_SUCCESS'));
@@ -102,25 +110,29 @@ export const login = ({ username, password }) => (dispatch) => {
 
 // Logout User
 export const logout = () => (dispatch) => {
-  // Headers
   const config = {
-    headers: {
-      'Content-Type': 'application/json'
+    success: res => {
+      dispatch({
+        type: LOGOUT_SUCCESS
+      });
+      clearTimeout(logoutTimerId);
+    },
+    error: err => {
+      dispatch(returnErrors(err.response.data.message, err.response.status, 'LOGIN_FAIL'));
+      dispatch({
+        type: LOGOUT_FAIL
+      });
+      clearTimeout(logoutTimerId);
     }
   };
-  axios.post('/api/v1/user/signout', config)
+  axios.post('/api/v1/user/signout', {}, config)
   .then(res => {
-    dispatch({
-      type: LOGOUT_SUCCESS
-    });
-    clearTimeout(logoutTimerId);
+    res.config.success(res);
   })
   .catch(err => {
-    dispatch(returnErrors(err.response.data.message, err.response.status, 'LOGIN_FAIL'));
-    dispatch({
-      type: LOGOUT_FAIL
-    });
-    clearTimeout(logoutTimerId);
+    if(err.response.status !== 401){
+      err.config.error(err);
+    }
   });
 };
 
@@ -164,6 +176,12 @@ export const authInterceptor = () => (dispatch, getState) => {
           axios.post('/api/v1/user/token/refresh', {"refreshToken": refreshToken})
                .then(res => {
                  if (res.status === 200) {
+                   clearTimeout(logoutTimerId);
+                   const logoutTimer = () => setTimeout(
+                     () => dispatch(logout()),
+                     timeToLogout
+                   );
+                   logoutTimerId = logoutTimer();
                    dispatch({
                      type: REFRESH_TOKEN_SUCCESS,
                      payload: res.data

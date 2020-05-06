@@ -26,24 +26,25 @@ class Navbar extends Component {
 
   render(){
 
-    const authNavbar = (this.props.isAuthenticated && this.props.user ? (
-      <div style={{display: 'flex'}}>
-        <Logout/>
-        <Button component={NavLink} to={"/user"} strict replace color="inherit">
-          {this.props.user.image && this.props.user.image.path ?
-            <Avatar src={`/media/${this.props.user.image.path}`}/>
-          : <Avatar classes={{root: this.props.classes.avatar}}>{this.props.user.firstname.charAt(0)}{this.props.user.lastname.charAt(0)}</Avatar>
-          }
-        </Button>
-      </div>
-    ) : (
-      <div>
-        <Button component={NavLink} to={"/login"} activeStyle={{fontWeight: "bold"}} strict replace color="inherit">Anmelden</Button>
-        <Button component={NavLink} to={"/register"} activeStyle={{fontWeight: "bold"}} exact replace color="inherit">Registrieren</Button>
-      </div>
-    ));
+    const authNavbar = this.props.isAuthenticated !== null ?
+      this.props.isAuthenticated ?
+        <div style={{display: 'flex'}}>
+          <Logout/>
+          <Button component={NavLink} to={"/user"} strict replace color="inherit">
+            {this.props.user.image && this.props.user.image.path ?
+              <Avatar src={`/media/${this.props.user.image.path}`}/>
+            : <Avatar classes={{root: this.props.classes.avatar}}>{this.props.user.firstname.charAt(0)}{this.props.user.lastname.charAt(0)}</Avatar>
+            }
+          </Button>
+        </div>
+       :
+        <div>
+          <Button component={NavLink} to={"/login"} activeStyle={{fontWeight: "bold"}} strict replace color="inherit">Anmelden</Button>
+          <Button component={NavLink} to={"/register"} activeStyle={{fontWeight: "bold"}} exact replace color="inherit">Registrieren</Button>
+        </div>
+      : null;
 
-    const drawer = (
+    const drawer = this.props.isAuthenticated !== null ?
       <div style={{flexGrow: 1}}>
         <Button component={NavLink} exact to={'/'} activeStyle={{fontWeight: "bold"}} color="inherit">
           <Typography variant="inherit">
@@ -77,7 +78,7 @@ class Navbar extends Component {
           Kontakt
         </Button>
       </div>
-    );
+    : null;
 
     return (
       <Fragment>
