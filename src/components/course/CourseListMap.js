@@ -14,9 +14,9 @@ export class CourseListMap extends Component {
   }
 
   render(){
+    const isCourseLocated = this.props.courses ? this.props.courses.filter(course => course.coordinates).length > 0 : false;
     return(
-      <div>
-        {!this.props.online ?
+        isCourseLocated ?
           <Map ref={(refElement) => {this.refMap = refElement}} center={[51.9606649, 7.6261347]} zoom={13} style={{width: '100%', height: '300px', marginBottom: '20px', borderRadius: '4px'}}>
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -44,8 +44,7 @@ export class CourseListMap extends Component {
               </FeatureGroup >
             : null}
           </Map>
-        : null}
-      </div>
+        : null
     );
   }
 }

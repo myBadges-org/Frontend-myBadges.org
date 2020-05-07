@@ -69,8 +69,11 @@ class Navbar extends Component {
             Kurs erstellen
           </Button>
         : null}
+        <Button component={NavLink} to={'/badges'} activeStyle={{fontWeight: "bold"}} color="inherit">
+          Badges
+        </Button>
         {this.props.isAuthenticated ?
-          <Button component={NavLink} to={'/badges'} activeStyle={{fontWeight: "bold"}} color="inherit">
+          <Button component={NavLink} to={'/badges/me'} activeStyle={{fontWeight: "bold"}} color="inherit">
             meine Badges
           </Button>
         : null}

@@ -390,7 +390,10 @@ export class CreateCourse extends Component {
                 </Select>
               </FormControl>
             </Grid>
-            : null
+            : <Link color="primary" onClick={() => {this.setState({ open: true });}} style={{cursor: 'pointer'}}>
+              Erstelle den ersten Badge.
+              <CreateBadge open={this.state.open}/>
+            </Link>
           }
         </Grid>
         <p>

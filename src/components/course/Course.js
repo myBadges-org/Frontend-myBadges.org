@@ -57,13 +57,13 @@ export class Course extends Component {
     if((previousProps.isAuthenticated === null && this.props.isAuthenticated === false) || (previousProps.isAuthenticated && this.props.isAuthenticated === false)){
       this.setState({msg: <div>Zum Ein- und Ausschreiben in den Kurs müssen Sie sich zunächst <Link href="/login">einloggen</Link>.</div>, msgType: 'info'});
     }
-    if(previousState.openCourseChange === true){
+    if(this.state.openCourseChange === true){
       this.setState({ openCourseChange: false });
     }
-    if(previousState.openParticipants === true){
+    if(this.state.openParticipants === true){
       this.setState({ openParticipants: false });
     }
-    if(previousState.openAssigneBadges === true){
+    if(this.state.openAssigneBadges === true){
       this.setState({ openAssigneBadges: false });
     }
     const { message } = this.props;

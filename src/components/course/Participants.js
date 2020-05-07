@@ -43,10 +43,10 @@ export class Participants extends Component {
     if(previousProps.open !== this.props.open && this.props.open === true){
       this.setState({ open: true });
     }
-    if(previousState.openAssigneBadge === true){
+    if(this.state.openAssigneBadge === true){
       this.setState({ openAssigneBadge: false });
     }
-    if(previousState.openUnassigneBadge === true){
+    if(this.state.openUnassigneBadge === true){
       this.setState({ openUnassigneBadge: false });
     }
     const { message, course } = this.props;

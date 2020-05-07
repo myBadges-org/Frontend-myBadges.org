@@ -15,8 +15,8 @@ export class CourseBadges extends Component {
     badge: null
   }
 
-  componentDidUpdate(previousProps, previousState) {
-    if(previousState.open === true){
+  componentDidUpdate() {
+    if(this.state.open === true){
       this.setState({ open: false });
     }
   }
