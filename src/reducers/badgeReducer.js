@@ -1,15 +1,23 @@
-import { GET_BADGES, ADD_BADGE } from '../actions/types';
+import { GET_BADGES, ADD_BADGE, BADGES_LOADING } from '../actions/types';
 
 
 const initialState = {
-  badges: []
+  badges: [],
+  isLoading: false
 };
 
 export default function(state = initialState, action){
   switch(action.type){
-    case GET_BADGES:
-    case ADD_BADGE:
+    case BADGES_LOADING:
       return {
+        ...state,
+        isLoading: true
+      };
+    case ADD_BADGE:
+    case GET_BADGES:
+      return {
+        ...state,
+        isLoading: false,
         badges: action.payload,
       };
     default:

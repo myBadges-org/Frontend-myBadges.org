@@ -34,6 +34,7 @@ export const CLEAR_MESSAGES = 'CLEAR_MESSAGES';
 // badge
 export const GET_BADGES = 'GET_BADGES';
 export const ADD_BADGE = 'ADD_BADGE';
+export const BADGES_LOADING = 'BADGES_LOADING';
 
 // helper
 export const SET_PANEL = 'SET_PANEL';

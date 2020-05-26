@@ -12,6 +12,10 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Alert from '@material-ui/lab/Alert';
 import Avatar from '@material-ui/core/Avatar';
+import FormControl from '@material-ui/core/FormControl';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 export class CreateBadge extends Component {
 
@@ -25,7 +29,9 @@ export class CreateBadge extends Component {
       url: null,
       name: '',
       description: '',
-      criteria: ''
+      criteria: '',
+      global: null,
+      independent: null
     };
   }
 
@@ -71,19 +77,35 @@ export class CreateBadge extends Component {
       url: null,
       name: '',
       description: '',
-      criteria: ''
+      criteria: '',
+      global: null,
+      independent: null
     });
   };
 
   onSubmit = e => {
     e.preventDefault();
-    const { name, description, criteria, file } = this.state;
+    const { name, description, criteria, file, global, independent } = this.state;
     var newBadge = new FormData();
     newBadge.set('name', name);
     newBadge.set('description', description);
     newBadge.set('criteria', criteria);
+    if(this.props.admin){
+      newBadge.set('global', global);
+      newBadge.set('independent', independent);
+    }
     newBadge.append('image', file);
-    this.props.addBadge(newBadge);
+    if(name !== '' && description !== '' && criteria !== ''){
+      if(global !== null && independent !== null){
+        this.props.addBadge(newBadge, this.props.admin);
+      }
+      else {
+        this.setState({msgType: 'error', msg: 'Geben Sie an, ob es sich um einen globalen oder lokalen Badge handelt und ob dieser Kurs-bezogen ist.'})
+      }
+    }
+    else {
+      this.setState({msgType: 'error', msg: 'Füllen Sie alle angegebenen Felder aus.'})
+    }
   };
 
   render(){
@@ -111,6 +133,38 @@ export class CreateBadge extends Component {
               <Button color="primary" variant='contained' onClick={() => this.fileInput.click()}>Bild auswählen</Button>
             </Grid>
           </Grid>
+          {this.props.admin ?
+            <FormControl component="fieldset">
+              <RadioGroup row name="independent" value={this.state.independent} onClick={this.onChange}>
+                <FormControlLabel
+                  value='false'
+                  control={<Radio color="primary" />}
+                  label="Kurs-Bezogen"
+                  labelPlacement="start"
+                />
+                <FormControlLabel
+                  value='true'
+                  control={<Radio color="primary" />}
+                  label="für sich stehend"
+                  labelPlacement="start"
+                />
+              </RadioGroup>
+              <RadioGroup row name="global" value={this.state.global} onClick={this.onChange}>
+                <FormControlLabel
+                  value='true'
+                  control={<Radio color="primary" />}
+                  label="Global"
+                  labelPlacement="start"
+                />
+                <FormControlLabel
+                  value='false'
+                  control={<Radio color="primary" />}
+                  label="Lokal"
+                  labelPlacement="start"
+                />
+              </RadioGroup>
+            </FormControl>
+          : null}
           <TextField
             style={{marginBottom: '10px', marginTop: '10px'}}
             variant='outlined'

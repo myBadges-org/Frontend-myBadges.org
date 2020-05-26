@@ -1,16 +1,19 @@
-import { GET_BADGES, ADD_BADGE } from './types';
+import { GET_BADGES, ADD_BADGE, BADGES_LOADING } from './types';
 
 import axios from 'axios';
-import { returnErrors } from './messageActions'
+import { returnErrors, returnSuccess } from './messageActions'
 
 // get badges from API
-export const getBadges = () => (dispatch) => {
-  axios.get('/api/v1/badge')
-    .then(res => dispatch({
+export const getBadges = (params) => (dispatch) => {
+  dispatch({type: BADGES_LOADING});
+  axios.get('/api/v1/badge', {params: params})
+    .then(res => {
+      dispatch({
         type: GET_BADGES,
         payload: res.data.badges
-      })
-    )
+      });
+      dispatch(returnSuccess(res.data.message, res.status, 'GET_BADGES_SUCCESS'));
+    })
     .catch(err => {
       if(err.response){
         dispatch(returnErrors(err.response.data.message, err.response.status, 'GET_BADGES_FAIL'));
@@ -19,7 +22,7 @@ export const getBadges = () => (dispatch) => {
 };
 
 // add badge to API
-export const addBadge = (newBadge) => (dispatch, getState) => {
+export const addBadge = (newBadge, admin) => (dispatch, getState) => {
   const config = {
     success: res => {
       var badges = getState().badge.badges;
@@ -36,7 +39,9 @@ export const addBadge = (newBadge) => (dispatch, getState) => {
       }
     }
   };
-  axios.post('/api/v1/badge', newBadge, config)
+  var url = '/api/v1/badge';
+  if(admin) url = 'api/v1/admin/badge';
+  axios.post(url, newBadge, config)
     .then(res => {
       res.config.success(res);
     })

@@ -53,7 +53,7 @@ export class CreateCourse extends Component {
   }
 
   componentDidMount(){
-    this.props.getBadges();
+    this.props.getBadges({independent: false});
   }
 
   componentDidUpdate(previousProps, previousState) {
