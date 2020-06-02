@@ -57,7 +57,7 @@ export class CourseChange extends Component {
   }
 
   componentDidMount(){
-    this.props.getBadges();
+    this.props.getBadges({issuer: this.props.user._id});
   }
 
   componentDidUpdate(previousProps, previousState) {
@@ -422,6 +422,7 @@ export class CourseChange extends Component {
 }
 
 CourseChange.propTypes = {
+  user: PropTypes.object.isRequired,
   badges: PropTypes.array.isRequired,
   message: PropTypes.object.isRequired,
   getBadges: PropTypes.func.isRequired,
@@ -429,6 +430,7 @@ CourseChange.propTypes = {
 };
 
 const mapStateToProps = state => ({
+  user: state.auth.user,
   badges: state.badge.badges,
   message: state.message
 });
