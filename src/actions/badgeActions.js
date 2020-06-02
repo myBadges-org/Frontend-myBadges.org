@@ -1,4 +1,4 @@
-import { GET_BADGES, ADD_BADGE, BADGES_LOADING } from './types';
+import { GET_BADGES, ADD_BADGE, BADGES_LOADING, ACCEPT_ISSUER, DECLINE_ISSUER, REQUEST_BADGE_PERMISSION } from './types';
 
 import axios from 'axios';
 import { returnErrors, returnSuccess } from './messageActions'
@@ -47,6 +47,111 @@ export const addBadge = (newBadge, admin) => (dispatch, getState) => {
     })
     .catch(err => {
       if(err.response.status !== 401){
+        err.config.error(err);
+      }
+    });
+};
+
+
+// accecpt issuer-request
+export const acceptIssuerRequest = (badgeId, userId) => (dispatch, getState) => {
+  const config = {
+    success: res => {
+      var badges = getState().badge.badges;
+      const badgeIndex = badges.map(badge => badge._id).indexOf(badgeId);
+      badges[badgeIndex].issuer.push(badges[badgeIndex].request.filter(user => user._id === userId)[0]);
+      badges[badgeIndex].request = badges[badgeIndex].request.filter(user => user._id !== userId);
+      dispatch({
+        type: ACCEPT_ISSUER,
+        payload: badges
+      });
+      dispatch(returnSuccess(res.data.message, res.status, 'ACCEPT_ISSUER_SUCCESS'));
+    },
+    error: err => {
+      if(err.response){
+        dispatch(returnErrors(err.response.data.message, err.response.status, 'ACCEPT_ISSUER_ERROR'));
+      }
+    }
+  };
+  axios.put(`/api/v1/badge/${badgeId}/grant/${userId}`, {}, config)
+    .then(res => {
+      res.config.success(res);
+    })
+    .catch(err => {
+      if(err.response && err.response.status !== 401){
+        err.config.error(err);
+      }
+    });
+};
+
+// decline issuer-request
+export const declineIssuerRequest = (badgeId, userId) => (dispatch, getState) => {
+  const config = {
+    success: res => {
+      var badges = getState().badge.badges;
+      const badgeIndex = badges.map(badge => badge._id).indexOf(badgeId);
+      badges[badgeIndex].issuer = badges[badgeIndex].issuer.filter(user => user._id !== userId);
+      dispatch({
+        type: DECLINE_ISSUER,
+        payload: badges
+      });
+      dispatch(returnSuccess(res.data.message, res.status, 'DECLINE_ISSUER_SUCCESS'));
+    },
+    error: err => {
+      if(err.response){
+        if(err.response.status === 400){
+          var badges = getState().badge.badges;
+          const badgeIndex = badges.map(badge => badge._id).indexOf(badgeId);
+          badges[badgeIndex].request = badges[badgeIndex].request.filter(user => user._id !== userId);
+          dispatch({
+            type: DECLINE_ISSUER,
+            payload: badges
+          });
+          dispatch(returnSuccess(err.response.data.message, err.response.status, 'DECLINE_ISSUER_SUCCESS'));
+        } else {
+          dispatch(returnErrors(err.response.data.message, err.response.status, 'DECLINE_ISSUER_ERROR'));
+        }
+      }
+    }
+  };
+  axios.put(`/api/v1/badge/${badgeId}/revoke/${userId}`, {}, config)
+    .then(res => {
+      res.config.success(res);
+    })
+    .catch(err => {
+      if(err.response && err.response.status !== 401){
+        err.config.error(err);
+      }
+    });
+};
+
+
+// request badge permission
+export const requestBadgePermission = (badgeId) => (dispatch, getState) => {
+  const config = {
+    success: res => {
+      var badges = getState().badge.badges;
+      const badgeIndex = badges.map(badge => badge._id).indexOf(badgeId);
+      const user = getState().auth.user;
+      badges[badgeIndex].request.push({_id: user._id, firstname: user.firstname, lastname: user.lastname});
+      dispatch({
+        type: REQUEST_BADGE_PERMISSION,
+        payload: badges
+      });
+      dispatch(returnSuccess(res.data.message, res.status, 'REQUEST_BADGE_PERMISSION_SUCCESS'));
+    },
+    error: err => {
+      if(err.response){
+        dispatch(returnErrors(err.response.data.message, err.response.status, 'REQUEST_BADGE_PERMISSION_ERROR'));
+      }
+    }
+  };
+  axios.put(`/api/v1/badge/${badgeId}/request`, {}, config)
+    .then(res => {
+      res.config.success(res);
+    })
+    .catch(err => {
+      if(err.response && err.response.status !== 401){
         err.config.error(err);
       }
     });

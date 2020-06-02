@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getBadges } from '../../actions/badgeActions';
 
-import axios from 'axios';
-
 import Badges from './Badges';
 import CreateBadge from './CreateBadge';
 
@@ -53,7 +51,7 @@ export class BadgesAll extends Component {
             </Button>
           : null}
           {!this.props.isLoading && this.props.badges ?
-            <Badges badges={this.props.badges}/>
+            <Badges badges={this.props.badges} settings/>
           : null}
         </div>
       </div>

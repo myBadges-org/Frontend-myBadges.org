@@ -59,7 +59,7 @@ class Navbar extends Component {
             belegte Kurse
           </Button>
         : null}
-        {this.props.isAuthenticated && this.props.user.role[0] === 'issuer' ?
+        {this.props.isAuthenticated && this.props.user.role[0] !== 'earner' ?
           <Button component={NavLink} to={'/course/me/creator'} activeStyle={{fontWeight: "bold"}} color="inherit">
             erstellte Kurse
           </Button>

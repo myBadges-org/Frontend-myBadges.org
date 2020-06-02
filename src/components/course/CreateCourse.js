@@ -26,7 +26,6 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 
-
 export class CreateCourse extends Component {
 
   state = {
@@ -53,7 +52,7 @@ export class CreateCourse extends Component {
   }
 
   componentDidMount(){
-    this.props.getBadges({independent: false});
+    this.props.getBadges({issuer: this.props.user._id});
   }
 
   componentDidUpdate(previousProps, previousState) {
@@ -164,22 +163,12 @@ export class CreateCourse extends Component {
         newCourse.append('coordinates[]', item);
       });
     }
-    const config = {
-      success: res => {
-        this.setState({msgType: 'success', msg: res.data.message});
-      },
-      error: err => {
-        this.setState({msgType: 'error', msg: err.response.data.message});
-      }
-    };
-    axios.post('/api/v1/course', newCourse, config)
+    axios.post('/api/v1/course', newCourse)
       .then(res => {
-        res.config.success(res);
+        this.setState({msgType: 'success', msg: res.data.message});
       })
       .catch(err => {
-        if(err.response.status !== 401){
-          err.config.error(err);
-        }
+        this.setState({msgType: 'error', msg: err.response.data.message});
       });
   };
 
@@ -187,6 +176,7 @@ export class CreateCourse extends Component {
     return(
       <div style={{maxWidth: '500px', marginLeft: 'auto', marginRight: 'auto', marginTop: '30px'}}>
         {this.state.msg ? <Alert style={{marginBottom: '10px'}} icon={false} severity={this.state.msgType}>{this.state.msg}</Alert> : null}
+        <Alert style={{marginBottom: '10px'}} icon={false} severity={'info'}><div>Beachten Sie, dass beim Erstellen eines Kurses ausschließlich Badges auswählbar sind, die man selbstständig vergeben darf. Einen Überblick über alle Badges erhalten Sie <Link href="/badges">hier</Link>.</div></Alert>
         <FormControl component="fieldset">
           <RadioGroup row name="course" value={this.state.course} onClick={this.onChange}>
             <FormControlLabel
@@ -390,10 +380,7 @@ export class CreateCourse extends Component {
                 </Select>
               </FormControl>
             </Grid>
-            : <Link color="primary" onClick={() => {this.setState({ open: true });}} style={{cursor: 'pointer'}}>
-              Erstelle den ersten Badge.
-              <CreateBadge open={this.state.open}/>
-            </Link>
+            : null
           }
         </Grid>
         <p>

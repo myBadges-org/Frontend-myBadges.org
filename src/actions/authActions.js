@@ -115,10 +115,11 @@ export const logout = () => (dispatch) => {
       dispatch({
         type: LOGOUT_SUCCESS
       });
+      dispatch(returnSuccess(res.data.message, res.status, 'LOGOUT_SUCCESS'));
       clearTimeout(logoutTimerId);
     },
     error: err => {
-      dispatch(returnErrors(err.response.data.message, err.response.status, 'LOGIN_FAIL'));
+      dispatch(returnErrors(err.response.data.message, err.response.status, 'LOGOUT_FAIL'));
       dispatch({
         type: LOGOUT_FAIL
       });

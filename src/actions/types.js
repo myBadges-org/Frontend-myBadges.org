@@ -35,6 +35,9 @@ export const CLEAR_MESSAGES = 'CLEAR_MESSAGES';
 export const GET_BADGES = 'GET_BADGES';
 export const ADD_BADGE = 'ADD_BADGE';
 export const BADGES_LOADING = 'BADGES_LOADING';
+export const ACCEPT_ISSUER = 'ACCEPT_ISSUER';
+export const DECLINE_ISSUER = 'DECLINE_ISSUER';
+export const REQUEST_BADGE_PERMISSION = 'REQUEST_BADGE_PERMISSION';
 
 // helper
 export const SET_PANEL = 'SET_PANEL';

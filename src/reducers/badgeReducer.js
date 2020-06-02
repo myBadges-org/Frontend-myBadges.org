@@ -1,4 +1,4 @@
-import { GET_BADGES, ADD_BADGE, BADGES_LOADING } from '../actions/types';
+import { GET_BADGES, ADD_BADGE, BADGES_LOADING, ACCEPT_ISSUER, DECLINE_ISSUER, REQUEST_BADGE_PERMISSION } from '../actions/types';
 
 
 const initialState = {
@@ -15,6 +15,9 @@ export default function(state = initialState, action){
       };
     case ADD_BADGE:
     case GET_BADGES:
+    case ACCEPT_ISSUER:
+    case DECLINE_ISSUER:
+    case REQUEST_BADGE_PERMISSION:
       return {
         ...state,
         isLoading: false,
