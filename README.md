@@ -13,5 +13,8 @@ This project was created with [Create React App](https://github.com/facebook/cre
     * run ``npm start``
 4. open  [localhost:3000](http://localhost:3000)
 
+## Troubleshoot
+Ensure that you have installed [Redux DevTools Extension](http://extension.remotedev.io/).
+
 ## Demo
 Further information about demo data can be found in the belonging [backend repository](https://github.com/sensebox/Backend-OpenBadges#demo).
