@@ -18,6 +18,8 @@ import BadgesMe from '../badge/BadgesMe';
 import BadgesAll from '../badge/BadgesAll';
 import Contact from '../contact/Contact';
 import Imprint from '../imprint/Imprint';
+import AboutUs from '../aboutUs/AboutUs';
+import Faq from '../faq/Faq';
 import NotFound from '../notFound/NotFound';
 
 class Routes extends Component {
@@ -57,6 +59,8 @@ class Routes extends Component {
         </PrivateRoute>
         <Route path="/contact" exact component={Contact} />
         <Route path="/imprint" exact component={Imprint} />
+        <Route path="/aboutus" exact component={AboutUs} />
+        <Route path="/faq" exact component={Faq} />
         <Route component={NotFound} />
       </Switch>
     );

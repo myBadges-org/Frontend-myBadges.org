@@ -12,8 +12,12 @@ class Footer extends Component {
           showLabels={true}
           style={{height:'30px', backgroundColor:'lightgrey'}}
         >
-          <div style={{marginTop: 'auto', marginBottom: 'auto'}}>
-            <Link to={"/imprint"} style={{textDecoration: 'none', color: 'grey'}}>Impressum</Link>
+          <div style={{color: 'grey', marginTop: 'auto', marginBottom: 'auto'}}>
+            <Link to={"/imprint"} style={{textDecoration: 'none', color: 'inherit'}}>Impressum</Link>
+            <text style={{margin: '0px 10px 0px 10px'}}>|</text>
+            <Link to={"/aboutus"} style={{textDecoration: 'none', color: 'inherit'}}>Über uns</Link>
+            <text style={{margin: '0px 10px 0px 10px'}}>|</text>
+            <Link to={"/faq"} style={{textDecoration: 'none', color: 'inherit'}}>FAQ</Link>
           </div>
         </BottomNavigation>
       </footer>
