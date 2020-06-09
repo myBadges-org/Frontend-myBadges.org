@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import moment from 'moment';
+import { Link } from 'react-router-dom';
 
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 
@@ -10,13 +10,10 @@ class Footer extends Component {
       <footer style={{position:'absolute', bottom: '0', width: '100%'}}>
         <BottomNavigation
           showLabels={true}
-          style={{height:'25px', backgroundColor:'lightgrey'}}
+          style={{height:'30px', backgroundColor:'lightgrey'}}
         >
-          <div style={{flexGrow: 1, marginLeft: '24px', color: 'grey', marginTop: 'auto', marginBottom: 'auto'}}>
-            © OpenBadges {moment().format('YYYY')}
-          </div>
-          <div style={{marginRight: '24px', marginTop: 'auto', marginBottom: 'auto'}}>
-            <a href="https://github.com/Delucse" target="_blank" rel="noopener noreferrer" style={{textDecoration: 'none',  color: 'grey'}}>delucse</a>
+          <div style={{marginTop: 'auto', marginBottom: 'auto'}}>
+            <Link to={"/imprint"} style={{textDecoration: 'none', color: 'grey'}}>Impressum</Link>
           </div>
         </BottomNavigation>
       </footer>
