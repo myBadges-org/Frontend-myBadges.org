@@ -30,8 +30,7 @@ export class CreateBadge extends Component {
       name: '',
       description: '',
       criteria: '',
-      global: null,
-      independent: null
+      global: null
     };
   }
 
@@ -78,8 +77,7 @@ export class CreateBadge extends Component {
       name: '',
       description: '',
       criteria: '',
-      global: null,
-      independent: null
+      global: null
     });
   };
 
@@ -100,7 +98,7 @@ export class CreateBadge extends Component {
         this.props.addBadge(newBadge, this.props.admin);
       }
       else {
-        this.setState({msgType: 'error', msg: 'Geben Sie an, ob es sich um einen globalen oder lokalen Badge handelt und ob dieser Kurs-bezogen ist.'})
+        this.setState({msgType: 'error', msg: 'Geben Sie an, ob es sich um einen globalen oder lokalen Badge handelt.'})
       }
     }
     else {
@@ -135,20 +133,6 @@ export class CreateBadge extends Component {
           </Grid>
           {this.props.admin ?
             <FormControl component="fieldset">
-              <RadioGroup row name="independent" value={this.state.independent} onClick={this.onChange}>
-                <FormControlLabel
-                  value='false'
-                  control={<Radio color="primary" />}
-                  label="Kurs-Bezogen"
-                  labelPlacement="start"
-                />
-                <FormControlLabel
-                  value='true'
-                  control={<Radio color="primary" />}
-                  label="für sich stehend"
-                  labelPlacement="start"
-                />
-              </RadioGroup>
               <RadioGroup row name="global" value={this.state.global} onClick={this.onChange}>
                 <FormControlLabel
                   value='true'
