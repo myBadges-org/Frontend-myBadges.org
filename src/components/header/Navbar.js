@@ -48,7 +48,7 @@ class Navbar extends Component {
       <div style={{flexGrow: 1}}>
         <Button component={NavLink} exact to={'/'} activeStyle={{fontWeight: "bold"}} color="inherit">
           <Typography variant="inherit">
-            OpenBadges
+            Badges&Portfolio
           </Typography>
         </Button>
         <Button component={NavLink} to={'/course'} activeStyle={{fontWeight: "bold"}} color="inherit">
