@@ -9,7 +9,14 @@ class Home extends Component {
   render() {
     return (
       <div style={{margin: '0px 24px'}}>
-        <h1 style={{textAlign: 'center'}}>Unser Ansatz</h1>
+        <h1 style={{textAlign: 'center'}}>Unsere Idee</h1>
+        <div style={{backgroundColor: 'lightgrey', padding: '15px', margin: '0 -24px', textAlign: 'center'}}>
+          <div style={{margin: '0px 10%'}}>
+            <p>Mit Hilfe der Open Badges von Mozilla, entwickeln wir ein offenes und skalierbares Dokumentations-System, zum Nachweis von erworbenen Kompetenzen und Fähigkeiten im schulischen sowie außerschulischen Umfeld.</p>
+            <p>Durch ein E-Portfolio werden die Badges kontextualisiert und die Lernleistungen dokumentiert.</p>
+          </div>
+        </div>
+        <h1 style={{textAlign: 'center', marginTop: '50px'}}>Unser Ansatz</h1>
         <div style={{backgroundColor: 'lightgrey', padding: '15px', margin: '0 -24px', textAlign: 'center'}}>
           <div style={{margin: '0px 10%'}}>
             <p>Unser Feedbacksystem motiviert die Teilnehmenden mit Freude zu lernen und verhilft ihnen zu einer realistischen Selbsteinschätzung ihres eigenen Fortschritts. Gleichzeitig bietet es der Lernbegleitung Orientierung über den Leistungsstand und bildet damit eine wichtige Grundlage für die weitere didaktisch-pädagogische Planung des Lernprozesses.</p>
