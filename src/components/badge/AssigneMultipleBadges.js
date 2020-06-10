@@ -149,7 +149,7 @@ export class AssigneMultipleBadges extends Component {
                   </Table>
                 </TableContainer>
               :
-                'Es sind zurzeit keine Nutzer in den Kurs eingeschrieben.'}
+                'Es sind zurzeit keine Nutzer dem Projekt zugeordnet.'}
             </div>
           </DialogContent>
           <DialogActions>

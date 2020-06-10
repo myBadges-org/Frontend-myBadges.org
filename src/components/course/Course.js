@@ -55,7 +55,7 @@ export class Course extends Component {
 
   componentDidUpdate(previousProps, previousState) {
     if((previousProps.isAuthenticated === null && this.props.isAuthenticated === false) || (previousProps.isAuthenticated && this.props.isAuthenticated === false)){
-      this.setState({msg: <div>Zum Ein- und Ausschreiben in den Kurs müssen Sie sich zunächst <Link href="/login">einloggen</Link>.</div>, msgType: 'info'});
+      this.setState({msg: <div>Zum Ein- und Ausschreiben in das Projekt müssen Sie sich zunächst <Link href="/login">einloggen</Link>.</div>, msgType: 'info'});
     }
     if(this.state.openCourseChange === true){
       this.setState({ openCourseChange: false });
@@ -128,7 +128,7 @@ export class Course extends Component {
                   {course.name}
                 </Typography>
                 {course.image && course.image.path ?
-                  <img src={`/media/${course.image.path}`} alt={`Bild vom Kurs ${course.name}`} style={{width: '100%', height: '300px', objectFit: 'cover'}}/>
+                  <img src={`/media/${course.image.path}`} alt={`Bild vom Projekt ${course.name}`} style={{width: '100%', height: '300px', objectFit: 'cover'}}/>
                 : null}
                 {course.coordinates ?
                   <CourseInfo

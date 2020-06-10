@@ -176,19 +176,19 @@ export class CreateCourse extends Component {
     return(
       <div style={{maxWidth: '500px', marginLeft: 'auto', marginRight: 'auto', marginTop: '30px'}}>
         {this.state.msg ? <Alert style={{marginBottom: '10px'}} icon={false} severity={this.state.msgType}>{this.state.msg}</Alert> : null}
-        <Alert style={{marginBottom: '10px'}} icon={false} severity={'info'}><div>Beachten Sie, dass beim Erstellen eines Kurses ausschließlich Badges auswählbar sind, die man selbstständig vergeben darf. Einen Überblick über alle Badges erhalten Sie <Link href="/badges">hier</Link>.</div></Alert>
+        <Alert style={{marginBottom: '10px'}} icon={false} severity={'info'}><div>Beachten Sie, dass beim Erstellen eines Projektes ausschließlich Badges auswählbar sind, die man selbstständig vergeben darf. Einen Überblick über alle Badges erhalten Sie <Link href="/badges">hier</Link>.</div></Alert>
         <FormControl component="fieldset">
           <RadioGroup row name="course" value={this.state.course} onClick={this.onChange}>
             <FormControlLabel
               value='presence'
               control={<Radio color="primary" />}
-              label="Präsenzkurs"
+              label="Projekt in Präsenz"
               labelPlacement="start"
             />
             <FormControlLabel
               value='online'
               control={<Radio color="primary" />}
-              label="Online-Kurs"
+              label="Online-Projekt"
               labelPlacement="start"
             />
           </RadioGroup>
@@ -226,7 +226,7 @@ export class CreateCourse extends Component {
               style={{marginBottom: '10px'}}
               variant='outlined'
               type='text'
-              label='Kursanbieter'
+              label='Anbieter des Projektes'
               name='courseprovider'
               value={this.state.courseprovider}
               onChange={this.onChange}
@@ -336,7 +336,7 @@ export class CreateCourse extends Component {
               style={{marginBottom: '10px'}}
               variant='outlined'
               type='text'
-              label='Kursgröße'
+              label='maximale Teilnehmeranzahl'
               name='size'
               value={this.state.size}
               onChange={this.onChange}
@@ -385,7 +385,7 @@ export class CreateCourse extends Component {
         </Grid>
         <p>
           <Button color="primary" variant='contained' onClick={this.onSubmit} style={{width: '100%'}}>
-            Kurs erstellen
+            Projekt erstellen
           </Button>
         </p>
         <p>

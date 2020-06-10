@@ -91,7 +91,7 @@ export class UnassigneBadge extends Component {
                 </Select>
               </FormControl>
             </div>
-          : `${this.props.participant.firstname} ${this.props.participant.lastname} hat noch keine Badges vom Kurs erhalten.`}
+          : `${this.props.participant.firstname} ${this.props.participant.lastname} hat noch keine Badges vom Projekt erhalten.`}
         </DialogContent>
         <DialogActions>
           <Button color="default" variant='contained' onClick={this.toggle}>

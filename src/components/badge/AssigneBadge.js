@@ -91,7 +91,7 @@ export class AssigneBadge extends Component {
                 </Select>
               </FormControl>
             </div>
-            : `${this.props.participant.firstname} ${this.props.participant.lastname} hat bereits alle Badges vom Kurs erhalten.`}
+            : `${this.props.participant.firstname} ${this.props.participant.lastname} hat bereits alle Badges vom Projekt erhalten.`}
         </DialogContent>
         <DialogActions>
           <Button color="default" variant='contained' onClick={this.toggle}>

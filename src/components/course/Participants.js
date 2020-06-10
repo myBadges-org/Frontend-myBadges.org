@@ -72,7 +72,7 @@ export class Participants extends Component {
           fullWidth
           onClose={this.toggle}
         >
-          <DialogTitle>Teilnehmer vom Kurs {this.props.courseName}</DialogTitle>
+          <DialogTitle>Teilnehmer vom Projekt {this.props.courseName}</DialogTitle>
           <DialogContent>
             <div>
               {this.state.msg ? <Alert style={{marginBottom: '10px'}} icon={false} severity={this.state.msgType}>{this.state.msg}</Alert> : null}
@@ -124,7 +124,7 @@ export class Participants extends Component {
                   </Paper>
                 ))
               :
-                'Es sind zurzeit keine Nutzer in den Kurs eingeschrieben.'}
+                'Es sind zurzeit keine Nutzer dem Projekt zugeordnet.'}
             </div>
           </DialogContent>
           <DialogActions>

@@ -38,7 +38,7 @@ export class CourseFilter extends Component {
           <Badge badgeContent={this.props.parameter > 0 ? this.props.parameter : null} color="primary">
             <Typography>Filter</Typography>
           </Badge>
-          {this.props.courses ? <Typography style={{marginLeft: '30px', color: 'grey'}}>{this.props.courses.length} Kurse</Typography> : null}
+          {this.props.courses ? <Typography style={{marginLeft: '30px', color: 'grey'}}>{this.props.courses.length} Projekte</Typography> : null}
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <Grid container spacing={1}>
@@ -53,13 +53,13 @@ export class CourseFilter extends Component {
               <FormControlLabel
                 value='presence'
                 control={<Radio color="primary" />}
-                label="Präsenzkurs"
+                label="Projekt in Präsenz"
                 labelPlacement="start"
               />
               <FormControlLabel
                 value='online'
                 control={<Radio color="primary" />}
-                label="Online-Kurs"
+                label="Online-Projekt"
                 labelPlacement="start"
               />
             </RadioGroup>

@@ -92,7 +92,7 @@ export class CourseList extends Component {
                 </Link>
               ))
             :
-              'Es sind zurzeit keine Kurse verfügbar'}
+              'Es sind zurzeit keine Projekte verfügbar.'}
             </div>
           :
             null

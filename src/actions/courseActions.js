@@ -25,7 +25,7 @@ export const loadCourse = (id) => (dispatch) => {
   axios.get(`/api/v1/course/${id}`)
     .then(res => {
       if(!res.data.course.exists){
-        dispatch(returnSuccess('Dieser Kurs ist deaktiviert.', res.status, 'COURSE_DEACTIVATED'));
+        dispatch(returnSuccess('Dieses Projekt ist deaktiviert.', res.status, 'COURSE_DEACTIVATED'));
       }
       dispatch({
         type: COURSE_LOADED,

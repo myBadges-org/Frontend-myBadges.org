@@ -52,21 +52,21 @@ class Navbar extends Component {
           </Typography>
         </Button>
         <Button component={NavLink} to={'/course'} activeStyle={{fontWeight: "bold"}} color="inherit">
-          Kursliste
+          Projekte
         </Button>
         {this.props.isAuthenticated ?
           <Button component={NavLink} to={'/course/me'} activeStyle={{fontWeight: "bold"}} color="inherit">
-            belegte Kurse
+            belegte Projekte
           </Button>
         : null}
         {this.props.isAuthenticated && this.props.user.role[0] !== 'earner' ?
           <Button component={NavLink} to={'/course/me/creator'} activeStyle={{fontWeight: "bold"}} color="inherit">
-            erstellte Kurse
+            erstellte Projekte
           </Button>
         : null}
         {this.props.isAuthenticated ?
           <Button component={NavLink} to={'/course/create'} activeStyle={{fontWeight: "bold"}} color="inherit">
-            Kurs erstellen
+            Projekt erstellen
           </Button>
         : null}
         <Button component={NavLink} to={'/badges'} activeStyle={{fontWeight: "bold"}} color="inherit">

@@ -248,7 +248,7 @@ export class CourseChange extends Component {
                     style={{marginBottom: '10px'}}
                     variant='outlined'
                     type='text'
-                    label='Kursanbieter'
+                    label='Anbieter des Projektes'
                     name='courseprovider'
                     value={this.state.courseprovider}
                     onChange={this.onChange}
@@ -358,7 +358,7 @@ export class CourseChange extends Component {
                     style={{marginBottom: '10px'}}
                     variant='outlined'
                     type='text'
-                    label='Kursgröße'
+                    label='maximale Teilnehmeranzahl'
                     name='size'
                     value={this.state.size}
                     onChange={this.onChange}
@@ -412,7 +412,7 @@ export class CourseChange extends Component {
               Abbrechen
             </Button>
             <Button color="primary" variant='contained' onClick={this.onSubmit}>
-              Kurs ändern
+              Projekt ändern
             </Button>
           </DialogActions>
         </Dialog>
