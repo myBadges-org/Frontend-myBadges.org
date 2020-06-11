@@ -145,7 +145,7 @@ export class User extends Component {
               type="file"
               ref={fileInput => this.fileInput = fileInput}
             />
-            <Button color="primary" variant='contained' onClick={() => this.fileInput.click()}>Bild auswählen</Button>
+            <Button color="primary" variant='contained' onClick={() => this.fileInput.click()} style={{top: '50%', transform: 'translateY(-50%)'}}>Bild auswählen</Button>
           </Grid>
           <Grid item xs={12} md={6}>
             <TextField
