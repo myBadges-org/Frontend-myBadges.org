@@ -16,16 +16,25 @@ import './App.css';
 
 const theme = createMuiTheme({
   palette: {
+    background: {
+      default: '#fffbf5'
+    },
     primary: {
-      main: '#880e4f'
-    }
+      main: '#aed9c8',
+    },
+    secondary: {
+      main: '#ffebce'
+    },
+    text: {
+      primary: '#3c3f38'
+    },
   },
   shape: {
     borderRadius: '0.75rem',
   },
   typography: {
     fontFamily: [
-      '"Nunito"',
+      '"Open Sans"',
       'BlinkMacSystemFont',
       '"Segoe UI"',
       'Roboto',
@@ -36,7 +45,13 @@ const theme = createMuiTheme({
       '"Segoe UI Emoji"',
       '"Segoe UI Symbol"',
     ].join(','),
+    fontSize: 16
   },
+  overrides: {
+    MuiPaper: {
+      elevation4: 'none'
+    }
+  }
 });
 
 class App extends Component {

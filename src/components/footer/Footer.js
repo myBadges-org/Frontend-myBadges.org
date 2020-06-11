@@ -10,7 +10,7 @@ class Footer extends Component {
       <footer style={{position:'absolute', bottom: '0', width: '100%'}}>
         <BottomNavigation
           showLabels={true}
-          style={{height:'30px', backgroundColor:'lightgrey'}}
+          style={{height:'30px', backgroundColor:'#ffebce'}}
         >
           <div style={{color: 'grey', marginTop: 'auto', marginBottom: 'auto'}}>
             <Link to={"/imprint"} style={{textDecoration: 'none', color: 'inherit'}}>Impressum</Link>
