@@ -21,7 +21,7 @@ export class CourseBadges extends Component {
             globalBadges.map(badge => (
             <BadgePaper content={badge} key={badge._id} settings={this.props.settings}/>
           ))
-          : 'Keine globalen Badges verfübar.'}
+          : 'Keine Badges verfübar.'}
         </Grid>
         {/* <Grid item container xs={12}>
           <Grid item xs={12}>
