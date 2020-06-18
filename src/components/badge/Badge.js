@@ -58,7 +58,7 @@ export class BadgePaper extends Component {
         <BadgeDetails open={this.state.open} badge={this.state.badge}/>
         <BadgeSettings open={this.state.settingsOpen} badge={this.state.badge}/>
         <BadgeAssignment open={this.state.assignmentOpen} badge={this.state.badge}/>
-        <Paper style={{margin: '4px', cursor: 'pointer'}}>
+        <Paper style={{margin: '4px', cursor: 'pointer', textAlign: 'center'}}>
           <div onClick={() => {this.badgeDetails(badge)}}>
             {badge.image && badge.image.path ?
               <Avatar src={`/media/${badge.image.path}`} style={{width: '200px', height: '200px', marginLeft: 'auto', marginRight: 'auto'}}/>
