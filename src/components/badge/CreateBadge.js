@@ -83,26 +83,30 @@ export class CreateBadge extends Component {
 
   onSubmit = e => {
     e.preventDefault();
-    const { name, description, criteria, file, global, independent } = this.state;
+    const { name, description, criteria, file, global } = this.state;
     var newBadge = new FormData();
     newBadge.set('name', name);
     newBadge.set('description', description);
     newBadge.set('criteria', criteria);
     if(this.props.admin){
       newBadge.set('global', global);
-      newBadge.set('independent', independent);
     }
     newBadge.append('image', file);
     if(name !== '' && description !== '' && criteria !== ''){
-      if(global !== null && independent !== null){
-        this.props.addBadge(newBadge, this.props.admin);
+      if(this.props.admin){
+        if(global !== null){
+          this.props.addBadge(newBadge, this.props.admin);
+        }
+        else {
+          this.setState({msgType: 'error', msg: 'Geben Sie an, ob es sich um einen globalen oder lokalen Badge handelt.'});
+        }
       }
       else {
-        this.setState({msgType: 'error', msg: 'Geben Sie an, ob es sich um einen globalen oder lokalen Badge handelt.'})
+        this.props.addBadge(newBadge);
       }
     }
     else {
-      this.setState({msgType: 'error', msg: 'Füllen Sie alle angegebenen Felder aus.'})
+      this.setState({msgType: 'error', msg: 'Füllen Sie alle angegebenen Felder aus.'});
     }
   };
 

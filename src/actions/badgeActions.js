@@ -26,7 +26,10 @@ export const addBadge = (newBadge, admin) => (dispatch, getState) => {
   const config = {
     success: res => {
       var badges = getState().badge.badges;
-      badges.push(res.data.badge);
+      var badge = res.data.badge;
+      var user = getState().auth.user;
+      badge.issuer[0] = {_id: user._id, firstname: user.firstname, lastname: user.lastname};
+      badges.push(badge);
       dispatch(returnErrors(res.data.message, res.status, 'ADD_BADGE_SUCCESS'));
       dispatch({
         type: ADD_BADGE,

@@ -45,7 +45,7 @@ export class BadgesAll extends Component {
         <div style={{maxWidth: '1000px', marginLeft: 'auto', marginRight: 'auto', marginTop: '30px'}}>
           {this.state.msg ? <Alert style={{marginBottom: '10px'}} icon={false} severity={this.state.msgType}>{this.state.msg}</Alert> : null}
           {this.props.user && this.props.user.role[0] ?
-            <Button variant="outlined" color="primary" onClick={() => this.setState({ open: true })} style={{marginBottom: '30px'}}>
+            <Button variant="contained" color="primary" onClick={() => this.setState({ open: true })} style={{marginBottom: '30px'}}>
               Neuer Badge
               <CreateBadge open={this.state.open} admin={this.props.user.role[0] === 'admin'}/>
             </Button>
