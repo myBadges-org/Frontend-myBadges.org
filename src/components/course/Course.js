@@ -51,6 +51,10 @@ export class Course extends Component {
   componentDidMount(){
     const courseId = this.props.match.params.courseId;
     this.props.loadCourse(courseId);
+    if(this.props.message.id === 'ADD_COURSE_SUCCESS'){
+      this.setState({msg: this.props.message.msg, msgType: 'success'});
+      window.scrollTo(0, 0);
+    }
   }
 
   componentDidUpdate(previousProps, previousState) {
@@ -115,7 +119,7 @@ export class Course extends Component {
   render(){
     const { msg, msgType } = this.state;
     const { isLoading, course, user } = this.props;
-    const badges = course ? course.badge.concat(course.localbadge) : null;
+    const badges = course ? course.badge : null;
     return(
       <div>
         {isLoading ? <LinearProgress /> : null}

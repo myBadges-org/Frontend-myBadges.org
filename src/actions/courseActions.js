@@ -157,10 +157,7 @@ export const assigneBadge = (badgeId, courseId, userId) => (dispatch, getState) 
   const config = {
     success: res => {
       const index = course.participants.findIndex(user => user._id === userId);
-      var badge = 'localbadge';
-      const globalBadge = course.badge.some(badge => badge._id === badgeId);
-      if(globalBadge) badge = 'badge';
-      course.participants[index][badge].push(badgeId);
+      course.participants[index].badge.push(badgeId);
       dispatch({
         type: ASSIGNE_BADGE,
         payload: course
@@ -189,11 +186,8 @@ export const unassigneBadge = (badgeId, courseId, userId) => (dispatch, getState
   const config = {
     success: res => {
       const index = course.participants.findIndex(user => user._id === userId);
-      var badge = 'localbadge';
-      const globalBadge = course.badge.some(badge => badge._id === badgeId);
-      if(globalBadge) badge = 'badge';
-      var updatedBadges = course.participants[index][badge].filter(bId => bId !== badgeId);
-      course.participants[index][badge] = updatedBadges;
+      var updatedBadges = course.participants[index].badge.filter(bId => bId !== badgeId);
+      course.participants[index].badge = updatedBadges;
       dispatch({
         type: UNASSIGNE_BADGE,
         payload: course
@@ -227,10 +221,7 @@ export const assigneMultipleBadges = (courseId, badges) => (dispatch, getState) 
       Object.keys(badges).forEach((userId, i) => {
         const index = course.participants.findIndex(user => user._id === userId);
         badges[userId].forEach((badgeId, i) => {
-          var badge = 'localbadge';
-          const globalBadge = course.badge.some(badge => badge._id === badgeId);
-          if(globalBadge) badge = 'badge';
-          course.participants[index][badge].push(badgeId);
+          course.participants[index].badge.push(badgeId);
         });
       });
       dispatch({

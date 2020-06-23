@@ -102,7 +102,7 @@ export class Participants extends Component {
                               Stadt: {user.city}, PLZ: {user.postalcode}
                             </Typography>
                             <Typography gutterBottom variant="body2">
-                              erhaltene Badges: <b>{user.badge.concat(user.localbadge).length}</b>
+                              erhaltene Badges: <b>{user.badge.length}</b>
                             </Typography>
                             <Typography gutterBottom variant="body2">
                               registriert seit {moment(user.date).format('LLLL')}

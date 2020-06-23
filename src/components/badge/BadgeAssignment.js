@@ -77,7 +77,7 @@ export class BadgeAssignment extends Component {
         this.setState({msg: res.data.message, msgType: 'success'});
       },
       error: err => {
-        if(err.response.data.message === 'Local Badge is already assigned to user.' || err.response.data.message === 'Global Badge is already assigned to user.'){
+        if(err.response.data.message === 'Badge is already assigned to user.'){
           this.setState({msgType: 'info', msg: err.response.data.message});
         }
         else {
@@ -102,7 +102,7 @@ export class BadgeAssignment extends Component {
         this.setState({msg: res.data.message, msgType: 'success'});
       },
       error: err => {
-        if(err.response.data.message === 'Local Badge is already unassigned to user.' || err.response.data.message === 'Global Badge is already unassigned to user.'){
+        if(err.response.data.message === 'Badge is already unassigned to user.'){
           this.setState({msgType: 'info', msg: err.response.data.message});
         }
         else {

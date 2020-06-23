@@ -47,6 +47,15 @@ export class BadgeDetails extends Component {
               style={{marginBottom: '10px', marginTop: '10px'}}
               variant='outlined'
               type='text'
+              label='Kategorie'
+              disabled
+              value={badge.category === 'achievement' ? 'Erfolg' : badge.category === 'professional skill' ? 'Fachkompetenz' : badge.category === 'meta skill' ? 'Meta-Kompetenz' : null}
+              fullWidth={true}
+            />
+            <TextField
+              style={{marginBottom: '10px'}}
+              variant='outlined'
+              type='text'
               label='Name'
               disabled
               value={badge.name}

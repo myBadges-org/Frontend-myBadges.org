@@ -79,7 +79,7 @@ export class AssigneMultipleBadges extends Component {
 
   render(){
     const { participants } = this.state;
-    const badges = this.props.course.badge.concat(this.props.course.localbadge);
+    const badges = this.props.course.badge;
     const disabled = !Object.keys(this.state.assigned).length > 0;
     return (
       participants ?
@@ -103,11 +103,6 @@ export class AssigneMultipleBadges extends Component {
                       </TableRow>
                       <TableRow>
                         <TableCell></TableCell>
-                        <TableCell align="center" colSpan={this.props.course.badge.length}>global</TableCell>
-                        <TableCell align="center" colSpan={this.props.course.localbadge.length}>lokal</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell></TableCell>
                         {badges.map(badge => (
                           <TableCell align="center" key={badge._id}>{badge.name}</TableCell>
                         ))}
@@ -119,19 +114,6 @@ export class AssigneMultipleBadges extends Component {
                           <TableCell align="center">{participant.lastname}, {participant.firstname}</TableCell>
                           {this.props.course.badge.map(badge => {
                             const disabled = participant.badge.includes(badge._id);
-                            return (
-                              <TableCell key={badge._id} align="center">
-                                <Checkbox
-                                  checked={(this.state.assigned && this.state.assigned[participant._id] && this.state.assigned[participant._id].includes(badge._id)) || disabled}
-                                  onChange={(e) => this.onChange(e, participant._id, badge._id)}
-                                  disabled={disabled}
-                                  color="primary"
-                                />
-                              </TableCell>
-                            );
-                          })}
-                          {this.props.course.localbadge.map(badge => {
-                            const disabled = participant.localbadge.includes(badge._id);
                             return (
                               <TableCell key={badge._id} align="center">
                                 <Checkbox

@@ -13,9 +13,9 @@ import TextField from '@material-ui/core/TextField';
 import Alert from '@material-ui/lab/Alert';
 import Avatar from '@material-ui/core/Avatar';
 import FormControl from '@material-ui/core/FormControl';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
 
 export class CreateBadge extends Component {
 
@@ -30,7 +30,7 @@ export class CreateBadge extends Component {
       name: '',
       description: '',
       criteria: '',
-      global: null
+      category: ''
     };
   }
 
@@ -77,33 +77,21 @@ export class CreateBadge extends Component {
       name: '',
       description: '',
       criteria: '',
-      global: null
+      category: ''
     });
   };
 
   onSubmit = e => {
     e.preventDefault();
-    const { name, description, criteria, file, global } = this.state;
+    const { name, description, criteria, file, category } = this.state;
     var newBadge = new FormData();
     newBadge.set('name', name);
     newBadge.set('description', description);
     newBadge.set('criteria', criteria);
-    if(this.props.admin){
-      newBadge.set('global', global);
-    }
+    newBadge.set('category', category);
     newBadge.append('image', file);
-    if(name !== '' && description !== '' && criteria !== ''){
-      if(this.props.admin){
-        if(global !== null){
-          this.props.addBadge(newBadge, this.props.admin);
-        }
-        else {
-          this.setState({msgType: 'error', msg: 'Geben Sie an, ob es sich um einen globalen oder lokalen Badge handelt.'});
-        }
-      }
-      else {
-        this.props.addBadge(newBadge);
-      }
+    if(name !== '' && description !== '' && criteria !== '' && category !== ''){
+      this.props.addBadge(newBadge);
     }
     else {
       this.setState({msgType: 'error', msg: 'Füllen Sie alle angegebenen Felder aus.'});
@@ -135,26 +123,26 @@ export class CreateBadge extends Component {
               <Button color="primary" variant='contained' onClick={() => this.fileInput.click()} style={{top: '50%', transform: 'translateY(-50%)'}}>Bild auswählen</Button>
             </Grid>
           </Grid>
-          {this.props.admin ?
-            <FormControl component="fieldset">
-              <RadioGroup row name="global" value={this.state.global} onClick={this.onChange}>
-                <FormControlLabel
-                  value='true'
-                  control={<Radio color="primary" />}
-                  label="Global"
-                  labelPlacement="start"
-                />
-                <FormControlLabel
-                  value='false'
-                  control={<Radio color="primary" />}
-                  label="Lokal"
-                  labelPlacement="start"
-                />
-              </RadioGroup>
-            </FormControl>
-          : null}
-          <TextField
+          <FormControl
             style={{marginBottom: '10px', marginTop: '10px'}}
+            variant="outlined"
+            fullWidth={true}
+          >
+            <InputLabel id='category'>Kategorie</InputLabel>
+            <Select
+              labelId='category'
+              value={this.state.category}
+              onChange={this.onChange}
+              label='Kategorie'
+              name='category'
+            >
+              <MenuItem value={'achievement'}>{'Erfolg'}</MenuItem>
+              <MenuItem value={'professional skill'}>{'Fachkompetenz'}</MenuItem>
+              <MenuItem value={'meta skill'}>{'Meta-Kompetenz'}</MenuItem>
+            </Select>
+          </FormControl>
+          <TextField
+            style={{marginBottom: '10px'}}
             variant='outlined'
             type='text'
             label='Name'

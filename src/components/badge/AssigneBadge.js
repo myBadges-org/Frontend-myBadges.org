@@ -60,8 +60,8 @@ export class AssigneBadge extends Component {
   };
 
   render(){
-    const courseBadgesAll = this.props.course.badge.concat(this.props.course.localbadge);
-    const userBadgesIds = this.props.participant.badge.concat(this.props.participant.localbadge);
+    const courseBadgesAll = this.props.course.badge;
+    const userBadgesIds = this.props.participant.badge;
     const courseBadges = courseBadgesAll.filter(badge => !userBadgesIds.includes(badge._id));
     return(
       <Dialog

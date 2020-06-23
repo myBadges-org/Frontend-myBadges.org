@@ -30,7 +30,7 @@ export const addBadge = (newBadge, admin) => (dispatch, getState) => {
       var user = getState().auth.user;
       badge.issuer[0] = {_id: user._id, firstname: user.firstname, lastname: user.lastname};
       badges.push(badge);
-      dispatch(returnErrors(res.data.message, res.status, 'ADD_BADGE_SUCCESS'));
+      dispatch(returnSuccess(res.data.message, res.status, 'ADD_BADGE_SUCCESS'));
       dispatch({
         type: ADD_BADGE,
         payload: badges

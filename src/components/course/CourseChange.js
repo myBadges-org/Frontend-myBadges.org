@@ -40,8 +40,7 @@ export class CourseChange extends Component {
       file: null,
       url: props.course.image ? `/media/${props.course.image.path}` : '',
       name: props.course.name,
-      globalbadge: props.course.badge.map(badge => {return badge._id}),
-      localbadge: props.course.localbadge.map(badge => {return badge._id}),
+      badge: props.course.badge.map(badge => {return badge._id}),
       courseprovider: props.course.courseprovider,
       postalcode: props.course.postalcode,
       addresses: [],
@@ -123,10 +122,6 @@ export class CourseChange extends Component {
     this.setState({ addresses: [], address: address.display_name, coordinates: [address.lon, address.lat] });
   };
 
-  onChangeBadge = e => {
-    // https://stackoverflow.com/questions/61115871/finddomnode-error-on-react-material-ui-select-menu
-    this.setState({ [e.target.name]: e.target.value });
-  };
 
   // isChanged = () => {
   //   var { size, enddate, startdate, requirements, description, topic, coordinates, address, postalcode, courseprovider, localbadge, globalbadge, name, url } = this.state;
@@ -150,8 +145,7 @@ export class CourseChange extends Component {
       file: null,
       url: this.props.course.image ? `/media/${this.props.course.image.path}` : null,
       name: this.props.course.name,
-      globalbadge: this.props.course.badge,
-      localbadge: this.props.course.localbadge,
+      badge: this.props.course.badge,
       courseprovider: this.props.course.courseprovider,
       postalcode: this.props.course.postalcode ? this.props.course.postalcode : '',
       addresses: [],
@@ -168,7 +162,7 @@ export class CourseChange extends Component {
 
   onSubmit = e => {
     e.preventDefault();
-    const { name, globalbadge, localbadge, courseprovider, postalcode, address, coordinates, topic, description, requirements, startdate, enddate, size, file } = this.state;
+    const { name, badge, courseprovider, postalcode, address, coordinates, topic, description, requirements, startdate, enddate, size, file } = this.state;
     var updatedCourse = new FormData();
     updatedCourse.set('name', name);
     updatedCourse.set('courseprovider', courseprovider);
@@ -178,11 +172,8 @@ export class CourseChange extends Component {
     updatedCourse.set('startdate', startdate);
     updatedCourse.set('enddate', enddate);
     updatedCourse.set('size', size);
-    globalbadge.forEach((item, i) => {
+    badge.forEach((item, i) => {
       updatedCourse.append('badge[]', item);
-    });
-    localbadge.forEach((item, i) => {
-      updatedCourse.append('localbadge[]', item);
     });
     if(file){
       updatedCourse.append('image', file);
@@ -368,38 +359,23 @@ export class CourseChange extends Component {
                 {this.props.badges.length > 0 ?
                   <Grid item xs={12} md={6}>
                     <FormControl variant="outlined" fullWidth style={{marginBottom: '10px'}}>
-                      <InputLabel id="select-localbadge">Lokale Badges</InputLabel>
+                      <InputLabel id="select-badge">Badges</InputLabel>
                       <Select
-                        labelId="select-localbadge"
-                        label="Lokale Badges"
-                        name='localbadge'
-                        value={this.state.localbadge}
-                        onChange={this.onChangeBadge}
+                        labelId="select-badge"
+                        label="Badges"
+                        name='badge'
+                        value={this.state.badge}
+                        onChange={this.onChange}
                         multiple
                       >
                         {this.props.badges.map(badge => (
-                          badge.global ? null : <MenuItem key={badge._id} value={badge._id}>{badge.name}</MenuItem>
+                          <MenuItem key={badge._id} value={badge._id}>{badge.name}</MenuItem>
                         ))}
                       </Select>
                       <Link color="primary" onClick={() => {this.setState({ openBadgeCreator: true });}} style={{cursor: 'pointer'}}>
                         Nicht der richtige Badge dabei?
                         <CreateBadge open={this.state.openBadgeCreator}/>
                       </Link>
-                    </FormControl>
-                    <FormControl variant="outlined" fullWidth style={{marginBottom: '10px'}}>
-                      <InputLabel id="select-globalbadge">Globale Badges</InputLabel>
-                      <Select
-                        labelId="select-globalbadge"
-                        label="Globale Badges"
-                        name='globalbadge'
-                        value={this.state.globalbadge}
-                        onChange={this.onChangeBadge}
-                        multiple
-                      >
-                        {this.props.badges.map(badge => (
-                          badge.global ? <MenuItem key={badge._id} value={badge._id}>{badge.name}</MenuItem> : null
-                        ))}
-                      </Select>
                     </FormControl>
                   </Grid>
                   : null
