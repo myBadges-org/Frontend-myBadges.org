@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import axios from 'axios';
 
@@ -186,4 +188,13 @@ export class BadgeAssignment extends Component {
   }
 }
 
-export default BadgeAssignment;
+
+BadgeAssignment.propTypes = {
+  badge: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = state => ({
+  badge: state.badge.badge
+});
+
+export default connect(mapStateToProps, null)(BadgeAssignment);

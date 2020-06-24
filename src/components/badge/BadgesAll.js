@@ -47,11 +47,11 @@ export class BadgesAll extends Component {
           {this.props.user && this.props.user.role[0] ?
             <Button variant="contained" color="primary" onClick={() => this.setState({ open: true })} style={{marginBottom: '30px'}}>
               Neuer Badge
-              <CreateBadge open={this.state.open} admin={this.props.user.role[0] === 'admin'}/>
+              <CreateBadge open={this.state.open}/>
             </Button>
           : null}
           {!this.props.isLoading && this.props.badges ?
-            <Badges badges={this.props.badges} settings/>
+            <Badges settings/>
           : null}
         </div>
       </div>
@@ -62,6 +62,7 @@ export class BadgesAll extends Component {
 BadgesAll.propTypes = {
   user: PropTypes.object,
   badges: PropTypes.array.isRequired,
+  message: PropTypes.object.isRequired,
   isLoading: PropTypes.bool.isRequired,
   getBadges: PropTypes.func.isRequired
 };

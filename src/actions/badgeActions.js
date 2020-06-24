@@ -1,4 +1,4 @@
-import { GET_BADGES, ADD_BADGE, BADGES_LOADING, ACCEPT_ISSUER, DECLINE_ISSUER, REQUEST_BADGE_PERMISSION } from './types';
+import { GET_BADGES, ADD_BADGE, CHANGE_BADGE, CHANGE_BADGES, BADGES_LOADING, ACCEPT_ISSUER, DECLINE_ISSUER, REQUEST_BADGE_PERMISSION } from './types';
 
 import axios from 'axios';
 import { returnErrors, returnSuccess } from './messageActions'
@@ -21,14 +21,23 @@ export const getBadges = (params) => (dispatch) => {
     });
 };
 
+
+// get badge from UI
+export const getBadge = (badge) => (dispatch) => {
+  dispatch({
+    type: CHANGE_BADGE,
+    payload: badge
+  });
+};
+
 // add badge to API
-export const addBadge = (newBadge, admin) => (dispatch, getState) => {
+export const addBadge = (newBadge) => (dispatch, getState) => {
   const config = {
     success: res => {
       var badges = getState().badge.badges;
       var badge = res.data.badge;
-      var user = getState().auth.user;
-      badge.issuer[0] = {_id: user._id, firstname: user.firstname, lastname: user.lastname};
+      // var user = getState().auth.user;
+      // badge.issuer[0] = {_id: user._id, firstname: user.firstname, lastname: user.lastname};
       badges.push(badge);
       dispatch(returnSuccess(res.data.message, res.status, 'ADD_BADGE_SUCCESS'));
       dispatch({
@@ -42,9 +51,45 @@ export const addBadge = (newBadge, admin) => (dispatch, getState) => {
       }
     }
   };
-  var url = '/api/v1/badge';
-  if(admin) url = 'api/v1/admin/badge';
-  axios.post(url, newBadge, config)
+  axios.post('/api/v1/badge', newBadge, config)
+    .then(res => {
+      res.config.success(res);
+    })
+    .catch(err => {
+      if(err.response.status !== 401){
+        err.config.error(err);
+      }
+    });
+};
+
+
+// change badge
+export const changeBadge = (id, updatedBadge) => (dispatch, getState) => {
+  const config = {
+    success: res => {
+      var badges = getState().badge.badges;
+      var badge = res.data.badge;
+      // var user = getState().auth.user;
+      // badge.issuer[0] = {_id: user._id, firstname: user.firstname, lastname: user.lastname};
+      const badgeIndex = badges.map(badge => badge._id).indexOf(id);
+      badges[badgeIndex] = badge;
+      dispatch(returnSuccess(res.data.message, res.status, 'CHANGE_BADGE_SUCCESS'));
+      dispatch({
+        type: CHANGE_BADGES,
+        payload: badges
+      });
+      dispatch({
+        type: CHANGE_BADGE,
+        payload: badge
+      });
+    },
+    error: err => {
+      if(err.response){
+        dispatch(returnErrors(err.response.data.message, err.response.status, 'CHANGE_BADGE_FAIL'));
+      }
+    }
+  };
+  axios.put(`/api/v1/badge/${id}`, updatedBadge, config)
     .then(res => {
       res.config.success(res);
     })

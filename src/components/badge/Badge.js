@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { requestBadgePermission } from '../../actions/badgeActions';
+import { requestBadgePermission, getBadge } from '../../actions/badgeActions';
 
 import BadgeDetails from './BadgeDetails';
 import BadgeSettings from './BadgeSettings';
@@ -24,7 +24,6 @@ export class BadgePaper extends Component {
     open: false,
     settingsOpen: false,
     assignmentOpen: false,
-    badge: null
   }
 
   componentDidUpdate() {
@@ -40,24 +39,45 @@ export class BadgePaper extends Component {
   }
 
   badgeDetails = (badge) => {
-    this.setState({ open: true, badge: badge });
+    this.setState({ open: true });
+    this.props.getBadge(badge);
   }
 
   badgeSettings = (badge) => {
-    this.setState({ settingsOpen: true, badge: badge });
+    this.setState({ settingsOpen: true });
+    this.props.getBadge(badge);
   }
 
   badgeAssignment = (badge) => {
-    this.setState({ assignmentOpen: true, badge: badge });
+    this.setState({ assignmentOpen: true });
+    this.props.getBadge(badge);
   }
 
   render(){
     const badge = this.props.content
+    var isIssuer, isMentor, isRequester, isNothing;
+    if(this.props.user && this.props.settings){
+      if(badge.issuer.map(issuer => issuer._id).indexOf(this.props.user._id) > -1){
+        if(badge.issuer[0]._id === this.props.user._id){
+          isIssuer = true; isMentor = false; isRequester = false; isNothing = false;
+        }
+        else{
+          isMentor = true; isIssuer = false; isRequester = false; isNothing = false;
+        }
+      }
+      else if(badge.request.map(requester => requester._id).indexOf(this.props.user._id) > -1){
+        isRequester = true; isIssuer = false; isIssuer = false; isNothing = false;
+      }
+      else {
+        isNothing = true; isIssuer = false; isMentor = false; isIssuer = false;
+      }
+    }
+
     return(
       <Grid item xs={12} sm={6} md={4}>
-        <BadgeDetails open={this.state.open} badge={this.state.badge}/>
-        <BadgeSettings open={this.state.settingsOpen} badge={this.state.badge}/>
-        <BadgeAssignment open={this.state.assignmentOpen} badge={this.state.badge}/>
+        <BadgeDetails open={this.state.open} isIssuer={isIssuer}/>
+        <BadgeSettings open={this.state.settingsOpen}/>
+        <BadgeAssignment open={this.state.assignmentOpen}/>
         <Paper style={{margin: '4px', cursor: 'pointer', textAlign: 'center'}}>
           <div onClick={() => {this.badgeDetails(badge)}}>
             {badge.image && badge.image.path ?
@@ -65,41 +85,40 @@ export class BadgePaper extends Component {
             : <Avatar style={{width: '200px', height: '200px', marginLeft: 'auto', marginRight: 'auto'}}></Avatar>}
           </div>
           <Typography variant='h6' style={{display: 'flex', cursor: 'default', paddingBottom: '6px'}}>
-            <div style={{flexGrow:1, marginLeft: '10px'}}>{badge.name}</div>
-            {this.props.user && this.props.settings ?
-              badge.issuer.map(issuer => issuer._id).indexOf(this.props.user._id) > -1 ?
-                badge.issuer[0]._id === this.props.user._id ?
-                  <div>
-                    <Tooltip title="Badge vergeben">
-                      <IconButton onClick={() => {this.badgeAssignment(badge)}} style={{padding: 0, marginRight: '5px'}}>
-                        <FontAwesomeIcon icon={faUserPlus}/>
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Badge verwalten">
-                      <Badge color="secondary" badgeContent={badge.request.length} style={{marginRight: '10px'}}>
-                        <IconButton onClick={() => {this.badgeSettings(badge)}} style={{padding: 0}}>
-                          <FontAwesomeIcon icon={faCog}/>
-                        </IconButton>
-                      </Badge>
-                    </Tooltip>
-                  </div>
-                : <Tooltip title="Badge vergeben">
-                    <IconButton onClick={() => {this.badgeAssignment(badge)}} style={{padding: 0, marginRight: '5px'}}>
-                      <FontAwesomeIcon icon={faUserPlus}/>
-                    </IconButton>
-                  </Tooltip>
-              : badge.request.map(issuer => issuer._id).indexOf(this.props.user._id) > -1 ?
-                <Tooltip title="Anfrage läuft">
-                  <IconButton style={{padding: 0, marginRight: '10px', cursor: 'default'}}>
-                    <CircularProgress size={24}/>
+            <div style={{flexGrow:1, marginLeft: '10px', marginRight: '10px'}}>{badge.name}</div>
+            {isIssuer ?
+              <div>
+                <Tooltip title="Badge vergeben">
+                  <IconButton onClick={() => {this.badgeAssignment(badge)}} style={{padding: 0, marginRight: '5px'}}>
+                    <FontAwesomeIcon icon={faUserPlus}/>
                   </IconButton>
                 </Tooltip>
-                : <Tooltip title="Badge-Issuer werden">
-                    <IconButton onClick={() => this.props.requestBadgePermission(badge._id)} style={{padding: 0, marginRight: '10px'}}>
-                      <FontAwesomeIcon icon={faPlus}/>
+                <Tooltip title="Badge verwalten">
+                  <Badge color="secondary" badgeContent={badge.request.length} style={{marginRight: '10px'}}>
+                    <IconButton onClick={() => {this.badgeSettings(badge)}} style={{padding: 0}}>
+                      <FontAwesomeIcon icon={faCog}/>
                     </IconButton>
-                  </Tooltip>
-              : null}
+                  </Badge>
+                </Tooltip>
+              </div> : null}
+            {isMentor ?
+              <Tooltip title="Badge vergeben">
+                <IconButton onClick={() => {this.badgeAssignment(badge)}} style={{padding: 0, marginRight: '5px'}}>
+                  <FontAwesomeIcon icon={faUserPlus}/>
+                </IconButton>
+              </Tooltip> : null}
+            {isRequester ?
+              <Tooltip title="Anfrage läuft">
+                <IconButton style={{padding: 0, marginRight: '10px', cursor: 'default'}}>
+                  <CircularProgress size={24}/>
+                </IconButton>
+              </Tooltip> : null}
+            {isNothing ?
+              <Tooltip title="Badge-Issuer werden">
+                <IconButton onClick={() => this.props.requestBadgePermission(badge._id)} style={{padding: 0, marginRight: '10px'}}>
+                  <FontAwesomeIcon icon={faPlus}/>
+                </IconButton>
+              </Tooltip> : null}
           </Typography>
         </Paper>
       </Grid>
@@ -110,12 +129,15 @@ export class BadgePaper extends Component {
 BadgePaper.propTypes = {
   user: PropTypes.object,
   message: PropTypes.object.isRequired,
-  requestBadgePermission: PropTypes.func.isRequired
+  badge: PropTypes.object.isRequired,
+  requestBadgePermission: PropTypes.func.isRequired,
+  getBadge: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   user: state.auth.user,
-  message: state.message
+  message: state.message,
+  badge: state.badge.badge
 });
 
-export default connect(mapStateToProps, { requestBadgePermission })(BadgePaper);
+export default connect(mapStateToProps, { requestBadgePermission, getBadge })(BadgePaper);

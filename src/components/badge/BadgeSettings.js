@@ -3,6 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { acceptIssuerRequest, declineIssuerRequest } from '../../actions/badgeActions';
 
+import CreateBadge from '../badge/CreateBadge';
+
+import { withStyles } from '@material-ui/core/styles';
+
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -22,23 +26,44 @@ import IconButton from '@material-ui/core/IconButton';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTimes, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import Tooltip from '@material-ui/core/Tooltip';
+import Divider from '@material-ui/core/Divider';
+
+const styles = () => ({
+  error: {
+    color: 'white',
+    backgroundColor: 'darkred',
+    '&:hover': {
+      color: 'white',
+      backgroundColor: 'darkred'
+    }
+  }
+});
 
 export class BadgeSettings extends Component {
 
   state = {
     open: false,
+    openBadgeCreator: false,
     user: ''
   }
 
-  componentDidUpdate(previousProps) {
+  componentDidUpdate(previousProps, previousState) {
     if(previousProps.open !== this.props.open && this.props.open === true){
       this.setState({ open: true });
+    }
+    if(previousState.openBadgeCreator === true){
+      this.setState({ openBadgeCreator: false });
     }
     const { message } = this.props;
     if (message !== previousProps.message) {
       // Check for success
       if(message.id === 'ACCEPT_ISSUER_SUCCESS'){
         this.setState({msg: message.msg, msgType: 'success'});
+      }
+      if(message.id === 'CHANGE_BADGE_SUCCESS'){
+        this.setState({msg: message.msg, msgType: 'success'});
+        // const badgeIndex = this.props.badges.indexOf(this.props.badge._id);
+        // this.props.badge = this.props.badges[badgeIndex];
       }
       if(message.id === 'DECLINE_ISSUER_SUCCESS'){
         this.setState({user: ''});
@@ -138,6 +163,10 @@ export class BadgeSettings extends Component {
                 </Tooltip>
               </p>
             : <p><b>keine bestehenden Nutzer</b></p>}
+            <Button color="primary" variant='contained' onClick={() => this.setState({openBadgeCreator: true})} style={{width: '100%'}}>
+              Bearbeiten
+              <CreateBadge open={this.state.openBadgeCreator} badge={this.props.badge}/>
+            </Button>
           </DialogContent>
           <DialogActions>
             <Button color="default" variant='contained' onClick={this.toggle}>
@@ -152,6 +181,7 @@ export class BadgeSettings extends Component {
 
 BadgeSettings.propTypes = {
   user: PropTypes.object,
+  badge: PropTypes.object.isRequired,
   message: PropTypes.object.isRequired,
   acceptIssuerRequest: PropTypes.func.isRequired,
   declineIssuerRequest: PropTypes.func.isRequired
@@ -159,7 +189,8 @@ BadgeSettings.propTypes = {
 
 const mapStateToProps = state => ({
   user: state.auth.user,
+  badge: state.badge.badge,
   message: state.message
 });
 
-export default connect(mapStateToProps, { acceptIssuerRequest, declineIssuerRequest })(BadgeSettings);
+export default connect(mapStateToProps, { acceptIssuerRequest, declineIssuerRequest })(withStyles(styles)(BadgeSettings));

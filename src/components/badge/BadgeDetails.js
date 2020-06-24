@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
-import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Avatar from '@material-ui/core/Avatar';
@@ -35,14 +36,10 @@ export class BadgeDetails extends Component {
         >
           <DialogTitle>{badge.name}</DialogTitle>
           <DialogContent>
-            <Grid container spacing={1}>
-              <Grid item xs={12}>
-                {badge.image && badge.image.path ?
-                  <Avatar src={`/media/${badge.image.path}`} style={{width: '200px', height: '200px'}}/>
-                : <Avatar style={{width: '200px', height: '200px'}}></Avatar>
-                }
-              </Grid>
-            </Grid>
+            {badge.image && badge.image.path ?
+              <Avatar src={`/media/${badge.image.path}`} style={{width: '200px', height: '200px', marginLeft: 'auto', marginRight: 'auto'}}/>
+            : <Avatar style={{width: '200px', height: '200px', marginLeft: 'auto', marginRight: 'auto'}}></Avatar>
+            }
             <TextField
               style={{marginBottom: '10px', marginTop: '10px'}}
               variant='outlined'
@@ -50,15 +47,6 @@ export class BadgeDetails extends Component {
               label='Kategorie'
               disabled
               value={badge.category === 'achievement' ? 'Erfolg' : badge.category === 'professional skill' ? 'Fachkompetenz' : badge.category === 'meta skill' ? 'Meta-Kompetenz' : null}
-              fullWidth={true}
-            />
-            <TextField
-              style={{marginBottom: '10px'}}
-              variant='outlined'
-              type='text'
-              label='Name'
-              disabled
-              value={badge.name}
               fullWidth={true}
             />
             <TextField
@@ -76,11 +64,9 @@ export class BadgeDetails extends Component {
               variant='outlined'
               type='text'
               label='Kriterien'
-              name='criteria'
               multiline
               disabled
               value={badge.criteria}
-              onChange={this.onChange}
               fullWidth={true}
             />
           </DialogContent>
@@ -95,4 +81,12 @@ export class BadgeDetails extends Component {
   }
 }
 
-export default BadgeDetails;
+BadgeDetails.propTypes = {
+  badge: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  badge: state.badge.badge
+});
+
+export default connect(mapStateToProps, null)(BadgeDetails);

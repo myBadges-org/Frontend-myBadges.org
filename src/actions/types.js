@@ -34,6 +34,8 @@ export const CLEAR_MESSAGES = 'CLEAR_MESSAGES';
 // badge
 export const GET_BADGES = 'GET_BADGES';
 export const ADD_BADGE = 'ADD_BADGE';
+export const CHANGE_BADGE = 'CHANGE_BADGE';
+export const CHANGE_BADGES = 'CHANGE_BADGES';
 export const BADGES_LOADING = 'BADGES_LOADING';
 export const ACCEPT_ISSUER = 'ACCEPT_ISSUER';
 export const DECLINE_ISSUER = 'DECLINE_ISSUER';

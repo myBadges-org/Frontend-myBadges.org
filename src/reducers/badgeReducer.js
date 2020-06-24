@@ -1,8 +1,9 @@
-import { GET_BADGES, ADD_BADGE, BADGES_LOADING, ACCEPT_ISSUER, DECLINE_ISSUER, REQUEST_BADGE_PERMISSION } from '../actions/types';
+import { GET_BADGES, ADD_BADGE, CHANGE_BADGE, CHANGE_BADGES, BADGES_LOADING, ACCEPT_ISSUER, DECLINE_ISSUER, REQUEST_BADGE_PERMISSION } from '../actions/types';
 
 
 const initialState = {
   badges: [],
+  badge: null,
   isLoading: false
 };
 
@@ -14,6 +15,7 @@ export default function(state = initialState, action){
         isLoading: true
       };
     case ADD_BADGE:
+    case CHANGE_BADGES:
     case GET_BADGES:
     case ACCEPT_ISSUER:
     case DECLINE_ISSUER:
@@ -23,6 +25,11 @@ export default function(state = initialState, action){
         isLoading: false,
         badges: action.payload,
       };
+    case CHANGE_BADGE:
+      return {
+        ...state,
+        badge: action.payload
+      }
     default:
       return state;
   }

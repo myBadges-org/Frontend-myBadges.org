@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import BadgePaper from './Badge';
 
@@ -26,5 +28,14 @@ export class CourseBadges extends Component {
   }
 }
 
+CourseBadges.propTypes = {
+  badges: PropTypes.array.isRequired,
+  message: PropTypes.object.isRequired
+};
 
-export default CourseBadges;
+const mapStateToProps = state => ({
+  badges: state.badge.badges,
+  message: state.message
+});
+
+export default connect(mapStateToProps, null)(CourseBadges);

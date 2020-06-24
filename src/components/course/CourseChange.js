@@ -349,7 +349,7 @@ export class CourseChange extends Component {
                     style={{marginBottom: '10px'}}
                     variant='outlined'
                     type='text'
-                    label='maximale Teilnehmeranzahl'
+                    label='max. Teilnehmeranzahl'
                     name='size'
                     value={this.state.size}
                     onChange={this.onChange}
