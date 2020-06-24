@@ -1,4 +1,4 @@
-import { GET_BADGES, ADD_BADGE, CHANGE_BADGE, CHANGE_BADGES, BADGES_LOADING, ACCEPT_ISSUER, DECLINE_ISSUER, REQUEST_BADGE_PERMISSION } from '../actions/types';
+import { GET_BADGES, ADD_BADGE, CHANGE_BADGE, CHANGE_BADGES, BADGES_LOADING, NOMINATE_ISSUER, ACCEPT_MENTOR, DECLINE_MENTOR, REQUEST_BADGE_PERMISSION } from '../actions/types';
 
 
 const initialState = {
@@ -17,8 +17,9 @@ export default function(state = initialState, action){
     case ADD_BADGE:
     case CHANGE_BADGES:
     case GET_BADGES:
-    case ACCEPT_ISSUER:
-    case DECLINE_ISSUER:
+    case ACCEPT_MENTOR:
+    case DECLINE_MENTOR:
+    case NOMINATE_ISSUER:
     case REQUEST_BADGE_PERMISSION:
       return {
         ...state,

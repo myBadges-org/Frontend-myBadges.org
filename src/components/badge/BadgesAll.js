@@ -44,14 +44,12 @@ export class BadgesAll extends Component {
         {this.props.isLoading ? <LinearProgress /> : null}
         <div style={{maxWidth: '1000px', marginLeft: 'auto', marginRight: 'auto', marginTop: '30px'}}>
           {this.state.msg ? <Alert style={{marginBottom: '10px'}} icon={false} severity={this.state.msgType}>{this.state.msg}</Alert> : null}
-          {this.props.user && this.props.user.role[0] ?
-            <Button variant="contained" color="primary" onClick={() => this.setState({ open: true })} style={{marginBottom: '30px'}}>
-              Neuer Badge
-              <CreateBadge open={this.state.open}/>
-            </Button>
-          : null}
+          <Button variant="contained" color="primary" onClick={() => this.setState({ open: true })} style={{marginBottom: '30px'}}>
+            Neuer Badge
+            <CreateBadge open={this.state.open}/>
+          </Button>
           {!this.props.isLoading && this.props.badges ?
-            <Badges settings/>
+            <Badges badges={this.props.badges} settings/>
           : null}
         </div>
       </div>

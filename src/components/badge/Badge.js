@@ -57,15 +57,13 @@ export class BadgePaper extends Component {
     const badge = this.props.content
     var isIssuer, isMentor, isRequester, isNothing;
     if(this.props.user && this.props.settings){
-      if(badge.issuer.map(issuer => issuer._id).indexOf(this.props.user._id) > -1){
-        if(badge.issuer[0]._id === this.props.user._id){
-          isIssuer = true; isMentor = false; isRequester = false; isNothing = false;
-        }
-        else{
-          isMentor = true; isIssuer = false; isRequester = false; isNothing = false;
-        }
+      if(badge.issuer.indexOf(this.props.user._id) > -1){
+        isIssuer = true; isMentor = false; isRequester = false; isNothing = false;
       }
-      else if(badge.request.map(requester => requester._id).indexOf(this.props.user._id) > -1){
+      else if(badge.mentor.map(mentor => mentor._id).indexOf(this.props.user._id) > -1){
+        isMentor = true; isIssuer = false; isRequester = false; isNothing = false;
+      }
+      else if(badge.requestor.map(requestor => requestor._id).indexOf(this.props.user._id) > -1){
         isRequester = true; isIssuer = false; isIssuer = false; isNothing = false;
       }
       else {
@@ -94,7 +92,7 @@ export class BadgePaper extends Component {
                   </IconButton>
                 </Tooltip>
                 <Tooltip title="Badge verwalten">
-                  <Badge color="secondary" badgeContent={badge.request.length} style={{marginRight: '10px'}}>
+                  <Badge color="secondary" badgeContent={badge.requestor.length} style={{marginRight: '10px'}}>
                     <IconButton onClick={() => {this.badgeSettings(badge)}} style={{padding: 0}}>
                       <FontAwesomeIcon icon={faCog}/>
                     </IconButton>

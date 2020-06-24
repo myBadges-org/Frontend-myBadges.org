@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { acceptIssuerRequest, declineIssuerRequest } from '../../actions/badgeActions';
+import { acceptIssuerRequest, declineIssuerRequest, nominateIssuer } from '../../actions/badgeActions';
 
 import CreateBadge from '../badge/CreateBadge';
 
@@ -24,7 +24,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faTimes, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faTimes, faTrashAlt, faRocket } from "@fortawesome/free-solid-svg-icons";
 import Tooltip from '@material-ui/core/Tooltip';
 import Divider from '@material-ui/core/Divider';
 
@@ -57,7 +57,7 @@ export class BadgeSettings extends Component {
     const { message } = this.props;
     if (message !== previousProps.message) {
       // Check for success
-      if(message.id === 'ACCEPT_ISSUER_SUCCESS'){
+      if(message.id === 'ACCEPT_MENTOR_SUCCESS'){
         this.setState({msg: message.msg, msgType: 'success'});
       }
       if(message.id === 'CHANGE_BADGE_SUCCESS'){
@@ -65,11 +65,14 @@ export class BadgeSettings extends Component {
         // const badgeIndex = this.props.badges.indexOf(this.props.badge._id);
         // this.props.badge = this.props.badges[badgeIndex];
       }
-      if(message.id === 'DECLINE_ISSUER_SUCCESS'){
+      if(message.id === 'DECLINE_MENTOR_SUCCESS'){
+        this.setState({user: ''});
+      }
+      if(message.id === 'NOMINATE_ISSUER_SUCCESS'){
         this.setState({user: ''});
       }
       // Check for error
-      if(message.id === 'ACCEPT_ISSUER_ERROR'){
+      if(message.id === 'ACCEPT_MENTOR_ERROR'){
         this.setState({msg: message.msg, msgType: 'error'});
       }
     }
@@ -95,14 +98,14 @@ export class BadgeSettings extends Component {
         >
           <DialogTitle>{badge.name}</DialogTitle>
           <DialogContent>
-            {badge.request.length > 0 ?
+            {badge.requestor.length > 0 ?
               <div>
                 <p>
                   <b>offene Anfragen</b>
                   <TableContainer component={Paper}>
                     <Table>
                       <TableBody>
-                        {badge.request.map(user => (
+                        {badge.requestor.map(user => (
                           <TableRow key={user._id}>
                             <TableCell style={{padding: '0px 0px 0px 10px'}}>
                               {user.lastname}, {user.firstname}
@@ -130,10 +133,10 @@ export class BadgeSettings extends Component {
               </div>
               : <p><b>keine offenen Anfragen</b></p>
             }
-            {badge.issuer.length-1 > 0 && this.props.user && this.props.user._id ?
+            {badge.mentor.length > 0 && this.props.user && this.props.user._id ?
               <p>
-                <b>bestehende Nutzer verwalten</b>
-                <FormControl style={{marginBottom: '10px', width: 'calc(100% - 42px)'}}>
+                <b>bestehende Mentoren verwalten</b>
+                <FormControl style={{marginBottom: '10px', width: 'calc(100% - 42px - 42px)'}}>
                   {this.state.user === '' ?
                     <InputLabel
                       htmlFor='select-user'
@@ -141,7 +144,7 @@ export class BadgeSettings extends Component {
                       disabled
                       style={{transform: 'translate(0, 8px) scale(1)'}}
                     >
-                      Nutzer
+                      Nutzer auswählen
                     </InputLabel>
                   : null}
                   <Select
@@ -151,18 +154,23 @@ export class BadgeSettings extends Component {
                     value={this.state.user}
                     onChange={this.onChange}
                   >
-                    {badge.issuer.filter(user => user._id !== this.props.user._id).map(issuer => (
-                      <MenuItem key={issuer._id} value={issuer._id}>{issuer.lastname}, {issuer.firstname}</MenuItem>
+                    {badge.mentor.filter(user => user._id !== this.props.user._id).map(mentor => (
+                      <MenuItem key={mentor._id} value={mentor._id}>{mentor.lastname}, {mentor.firstname}</MenuItem>
                     ))}
                   </Select>
                 </FormControl>
+                <Tooltip title="zum Issuer befördern">
+                  <IconButton style={{width: '42px', paddingTop: '10px'}} disabled={!this.state.user} onClick={() => this.props.nominateIssuer(badge._id, this.state.user)}>
+                    <FontAwesomeIcon size='xs' icon={faRocket}/>
+                  </IconButton>
+                </Tooltip>
                 <Tooltip title="Erlaubnis entziehen">
-                  <IconButton style={{width: '42px', paddingTop: '10px'}} onClick={() => this.props.declineIssuerRequest(badge._id, this.state.user)}>
+                  <IconButton style={{width: '42px', paddingTop: '10px'}} disabled={!this.state.user} onClick={() => this.props.declineIssuerRequest(badge._id, this.state.user)}>
                     <FontAwesomeIcon size='xs' icon={faTrashAlt}/>
                   </IconButton>
                 </Tooltip>
               </p>
-            : <p><b>keine bestehenden Nutzer</b></p>}
+            : <p><b>keine bestehenden Mentoren</b></p>}
             <Button color="primary" variant='contained' onClick={() => this.setState({openBadgeCreator: true})} style={{width: '100%'}}>
               Bearbeiten
               <CreateBadge open={this.state.openBadgeCreator} badge={this.props.badge}/>
@@ -184,7 +192,8 @@ BadgeSettings.propTypes = {
   badge: PropTypes.object.isRequired,
   message: PropTypes.object.isRequired,
   acceptIssuerRequest: PropTypes.func.isRequired,
-  declineIssuerRequest: PropTypes.func.isRequired
+  declineIssuerRequest: PropTypes.func.isRequired,
+  nominateIssuer: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -193,4 +202,4 @@ const mapStateToProps = state => ({
   message: state.message
 });
 
-export default connect(mapStateToProps, { acceptIssuerRequest, declineIssuerRequest })(withStyles(styles)(BadgeSettings));
+export default connect(mapStateToProps, { acceptIssuerRequest, declineIssuerRequest, nominateIssuer })(withStyles(styles)(BadgeSettings));

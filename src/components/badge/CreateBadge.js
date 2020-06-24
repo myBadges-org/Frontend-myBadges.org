@@ -201,14 +201,12 @@ export class CreateBadge extends Component {
 }
 
 CreateBadge.propTypes = {
-  badge: PropTypes.object.isRequired,
   message: PropTypes.object.isRequired,
   addBadge: PropTypes.func.isRequired,
   changeBadge: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  badge: state.badge.badge,
   message: state.message
 });
 
