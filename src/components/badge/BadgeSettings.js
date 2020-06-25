@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { acceptIssuerRequest, declineIssuerRequest, nominateIssuer } from '../../actions/badgeActions';
+import { acceptIssuerRequest, declineIssuerRequest, nominateIssuer, deactivateBadge } from '../../actions/badgeActions';
 
 import CreateBadge from '../badge/CreateBadge';
 
@@ -175,6 +175,9 @@ export class BadgeSettings extends Component {
               Bearbeiten
               <CreateBadge open={this.state.openBadgeCreator} badge={this.props.badge}/>
             </Button>
+            <Button classes={{root: this.props.classes.error}} variant='contained' onClick={() => this.props.deactivateBadge(badge._id)} style={{width: '100%', margin: '8px 0px'}}>
+              Deaktivieren
+            </Button>
           </DialogContent>
           <DialogActions>
             <Button color="default" variant='contained' onClick={this.toggle}>
@@ -193,7 +196,8 @@ BadgeSettings.propTypes = {
   message: PropTypes.object.isRequired,
   acceptIssuerRequest: PropTypes.func.isRequired,
   declineIssuerRequest: PropTypes.func.isRequired,
-  nominateIssuer: PropTypes.func.isRequired
+  nominateIssuer: PropTypes.func.isRequired,
+  deactivateBadge: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -202,4 +206,4 @@ const mapStateToProps = state => ({
   message: state.message
 });
 
-export default connect(mapStateToProps, { acceptIssuerRequest, declineIssuerRequest, nominateIssuer })(withStyles(styles)(BadgeSettings));
+export default connect(mapStateToProps, { acceptIssuerRequest, declineIssuerRequest, nominateIssuer, deactivateBadge })(withStyles(styles)(BadgeSettings));

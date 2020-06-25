@@ -1,4 +1,4 @@
-import { GET_BADGES, ADD_BADGE, CHANGE_BADGE, CHANGE_BADGES, BADGES_LOADING, NOMINATE_ISSUER, ACCEPT_MENTOR, DECLINE_MENTOR, DECLINE_ISSUER, REQUEST_BADGE_PERMISSION } from './types';
+import { GET_BADGES, ADD_BADGE, CHANGE_BADGE, CHANGE_BADGES, BADGES_LOADING, DEACTIVATE_BADGE, NOMINATE_ISSUER, ACCEPT_MENTOR, DECLINE_MENTOR, DECLINE_ISSUER, REQUEST_BADGE_PERMISSION } from './types';
 
 import axios from 'axios';
 import { returnErrors, returnSuccess } from './messageActions'
@@ -36,8 +36,6 @@ export const addBadge = (newBadge) => (dispatch, getState) => {
     success: res => {
       var badges = getState().badge.badges;
       var badge = res.data.badge;
-      // var user = getState().auth.user;
-      // badge.issuer[0] = {_id: user._id, firstname: user.firstname, lastname: user.lastname};
       badges.push(badge);
       dispatch(returnSuccess(res.data.message, res.status, 'ADD_BADGE_SUCCESS'));
       dispatch({
@@ -69,8 +67,6 @@ export const changeBadge = (id, updatedBadge) => (dispatch, getState) => {
     success: res => {
       var badges = getState().badge.badges;
       var badge = res.data.badge;
-      // var user = getState().auth.user;
-      // badge.issuer[0] = {_id: user._id, firstname: user.firstname, lastname: user.lastname};
       const badgeIndex = badges.map(badge => badge._id).indexOf(id);
       badges[badgeIndex] = badge;
       dispatch(returnSuccess(res.data.message, res.status, 'CHANGE_BADGE_SUCCESS'));
@@ -90,6 +86,36 @@ export const changeBadge = (id, updatedBadge) => (dispatch, getState) => {
     }
   };
   axios.put(`/api/v1/badge/${id}`, updatedBadge, config)
+    .then(res => {
+      res.config.success(res);
+    })
+    .catch(err => {
+      if(err.response.status !== 401){
+        err.config.error(err);
+      }
+    });
+};
+
+
+// deactivate badge
+export const deactivateBadge = (id) => (dispatch, getState) => {
+  const config = {
+    success: res => {
+      var badges = getState().badge.badges;
+      badges = badges.filter(badge => badge._id !== id);
+      dispatch(returnSuccess(res.data.message, res.status, 'DEACTIVATE_BADGE_SUCCESS'));
+      dispatch({
+        type: DEACTIVATE_BADGE,
+        payload: badges
+      });
+    },
+    error: err => {
+      if(err.response){
+        dispatch(returnErrors(err.response.data.message, err.response.status, 'DEACTIVATE_BADGE_FAIL'));
+      }
+    }
+  };
+  axios.put(`/api/v1/badge/${id}/deactivation`, {}, config)
     .then(res => {
       res.config.success(res);
     })
