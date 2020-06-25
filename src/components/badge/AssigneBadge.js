@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { assigneBadge } from '../../actions/courseActions';
+import { assigneBadge } from '../../actions/projectActions';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -53,16 +53,16 @@ export class AssigneBadge extends Component {
   onSubmit = e => {
     e.preventDefault();
     if(this.state.badge){
-      this.props.assigneBadge(this.state.badge, this.props.course._id, this.props.participant._id);
+      this.props.assigneBadge(this.state.badge, this.props.project._id, this.props.participant._id);
     } else {
       this.setState({ msg: 'Bitte wählen Sie einen Badge aus.', msgType: 'error'});
     }
   };
 
   render(){
-    const courseBadgesAll = this.props.course.badge;
+    const projectBadgesAll = this.props.project.badge;
     const userBadgesIds = this.props.participant.badge;
-    const courseBadges = courseBadgesAll.filter(badge => !userBadgesIds.includes(badge._id));
+    const projectBadges = projectBadgesAll.filter(badge => !userBadgesIds.includes(badge._id));
     return(
       <Dialog
         open={this.state.open}
@@ -71,7 +71,7 @@ export class AssigneBadge extends Component {
         <DialogTitle>Badge vergeben</DialogTitle>
         <DialogContent>
           {this.state.msg ? <Alert style={{marginBottom: '10px'}} icon={false} severity={this.state.msgType}>{this.state.msg}</Alert> : null}
-          {courseBadges.length > 0 ?
+          {projectBadges.length > 0 ?
             <div>
               <Typography gutterBottom variant="subtitle1">
                 {this.props.participant.firstname} {this.props.participant.lastname}
@@ -85,7 +85,7 @@ export class AssigneBadge extends Component {
                   value={this.state.badge}
                   onChange={this.onChange}
                 >
-                  {courseBadges.map(badge => (
+                  {projectBadges.map(badge => (
                     <MenuItem key={badge._id} value={badge._id}>{badge.name}</MenuItem>
                   ))}
                 </Select>
@@ -97,7 +97,7 @@ export class AssigneBadge extends Component {
           <Button color="default" variant='contained' onClick={this.toggle}>
             Abbrechen
           </Button>
-          {courseBadges.length > 0 ?
+          {projectBadges.length > 0 ?
             <Button color="primary" variant='contained' onClick={this.onSubmit}>
               Bestätigen
             </Button>
@@ -109,13 +109,13 @@ export class AssigneBadge extends Component {
 }
 
 AssigneBadge.propTypes = {
-  course: PropTypes.object.isRequired,
+  project: PropTypes.object.isRequired,
   message: PropTypes.object.isRequired,
   assigneBadge: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  course: state.course.course,
+  project: state.project.project,
   message: state.message
 });
 

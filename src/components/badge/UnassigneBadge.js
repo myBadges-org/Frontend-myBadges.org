@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { unassigneBadge } from '../../actions/courseActions';
+import { unassigneBadge } from '../../actions/projectActions';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -53,16 +53,16 @@ export class UnassigneBadge extends Component {
   onSubmit = e => {
     e.preventDefault();
     if(this.state.badge){
-      this.props.unassigneBadge(this.state.badge, this.props.course._id, this.props.participant._id);
+      this.props.unassigneBadge(this.state.badge, this.props.project._id, this.props.participant._id);
     } else {
       this.setState({ msg: 'Bitte wählen Sie einen Badge aus.', msgType: 'error'});
     }
   };
 
   render(){
-    const courseBadges = this.props.course.badge;
+    const projectBadges = this.props.project.badge;
     const userBadgesIds = this.props.participant.badge;
-    const userBadges = courseBadges.filter(badge => userBadgesIds.includes(badge._id));
+    const userBadges = projectBadges.filter(badge => userBadgesIds.includes(badge._id));
     return(
       <Dialog
         open={this.state.open}
@@ -109,13 +109,13 @@ export class UnassigneBadge extends Component {
 }
 
 UnassigneBadge.propTypes = {
-  course: PropTypes.object.isRequired,
+  project: PropTypes.object.isRequired,
   message: PropTypes.object.isRequired,
   unassigneBadge: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  course: state.course.course,
+  project: state.project.project,
   message: state.message
 });
 

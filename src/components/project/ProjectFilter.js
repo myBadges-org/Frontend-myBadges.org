@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { paramsOnChange, sliderOnChange, onChangeAddress, deleteAddress, setAddress, onReset, onFilter } from '../../actions/courseActions';
+import { paramsOnChange, sliderOnChange, onChangeAddress, deleteAddress, setAddress, onReset, onFilter } from '../../actions/projectActions';
 
 import moment from 'moment';
 
@@ -25,7 +25,7 @@ import TextField from '@material-ui/core/TextField';
 import Slider from '@material-ui/core/Slider';
 import Badge from '@material-ui/core/Badge';
 
-export class CourseFilter extends Component {
+export class ProjectFilter extends Component {
 
   render(){
     return(
@@ -38,7 +38,7 @@ export class CourseFilter extends Component {
           <Badge badgeContent={this.props.parameter > 0 ? this.props.parameter : null} color="primary">
             <Typography>Filter</Typography>
           </Badge>
-          {this.props.courses ? <Typography style={{marginLeft: '30px', color: 'grey'}}>{this.props.courses.length} Projekte</Typography> : null}
+          {this.props.projects ? <Typography style={{marginLeft: '30px', color: 'grey'}}>{this.props.projects.length} Projekte</Typography> : null}
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <Grid container spacing={1}>
@@ -164,7 +164,7 @@ export class CourseFilter extends Component {
   }
 }
 
-CourseFilter.propTypes = {
+ProjectFilter.propTypes = {
   paramsOnChange: PropTypes.func.isRequired,
   sliderOnChange: PropTypes.func.isRequired,
   onChangeAddress: PropTypes.func.isRequired,
@@ -175,17 +175,17 @@ CourseFilter.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  courses: state.course.courses,
-  type: state.course.params.type,
-  name: state.course.params.name,
-  topic: state.course.params.topic,
-  coordinates: state.course.params.coordinates,
-  radius: state.course.params.radius,
-  startdate: state.course.params.startdate,
-  enddate: state.course.params.enddate,
-  parameter: state.course.params.parameter,
-  addresses: state.course.params.addresses,
-  address: state.course.params.address,
+  projects: state.project.projects,
+  type: state.project.params.type,
+  name: state.project.params.name,
+  topic: state.project.params.topic,
+  coordinates: state.project.params.coordinates,
+  radius: state.project.params.radius,
+  startdate: state.project.params.startdate,
+  enddate: state.project.params.enddate,
+  parameter: state.project.params.parameter,
+  addresses: state.project.params.addresses,
+  address: state.project.params.address,
 });
 
-export default connect(mapStateToProps, { paramsOnChange, sliderOnChange, onChangeAddress, deleteAddress, setAddress, onReset, onFilter })(CourseFilter);
+export default connect(mapStateToProps, { paramsOnChange, sliderOnChange, onChangeAddress, deleteAddress, setAddress, onReset, onFilter })(ProjectFilter);

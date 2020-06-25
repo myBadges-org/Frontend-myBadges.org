@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { assigneMultipleBadges } from '../../actions/courseActions';
+import { assigneMultipleBadges } from '../../actions/projectActions';
 
 import { withRouter } from 'react-router-dom';
 
@@ -37,10 +37,10 @@ export class AssigneMultipleBadges extends Component {
     if(previousProps.open !== this.props.open && this.props.open === true){
       this.setState({ open: true });
     }
-    const { message, course } = this.props;
+    const { message, project } = this.props;
     if (message !== previousProps.message) {
-      if(message.id === 'COURSE_PARTICIPANTS_SUCCESS'){
-        this.setState({ participants: course.participants});
+      if(message.id === 'PROJECT_PARTICIPANTS_SUCCESS'){
+        this.setState({ participants: project.participants});
       }
       if(message.id === 'MULTIPLE_ASSIGNE_SUCCESS'){
         this.setState({ msg: message.msg, msgType: 'success', assigned: {} });
@@ -70,7 +70,7 @@ export class AssigneMultipleBadges extends Component {
 
   onSubmit = (e) => {
     e.preventDefault();
-    this.props.assigneMultipleBadges(this.props.match.params.courseId, this.state.assigned);
+    this.props.assigneMultipleBadges(this.props.match.params.projectId, this.state.assigned);
   };
 
   toggle = () => {
@@ -79,7 +79,7 @@ export class AssigneMultipleBadges extends Component {
 
   render(){
     const { participants } = this.state;
-    const badges = this.props.course.badge;
+    const badges = this.props.project.badge;
     const disabled = !Object.keys(this.state.assigned).length > 0;
     return (
       participants ?
@@ -112,7 +112,7 @@ export class AssigneMultipleBadges extends Component {
                       {participants.map(participant => (
                         <TableRow key={participant._id}>
                           <TableCell align="center">{participant.lastname}, {participant.firstname}</TableCell>
-                          {this.props.course.badge.map(badge => {
+                          {this.props.project.badge.map(badge => {
                             const disabled = participant.badge.includes(badge._id);
                             return (
                               <TableCell key={badge._id} align="center">
@@ -149,14 +149,14 @@ export class AssigneMultipleBadges extends Component {
 }
 
 AssigneMultipleBadges.propTypes = {
-  course: PropTypes.object,
+  project: PropTypes.object,
   message: PropTypes.object.isRequired,
   assigneMultipleBadges: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   message: state.message,
-  course: state.course.course
+  project: state.project.project
 });
 
 export default connect(mapStateToProps, { assigneMultipleBadges })(withRouter(AssigneMultipleBadges));

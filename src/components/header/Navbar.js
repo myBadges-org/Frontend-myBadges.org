@@ -90,21 +90,21 @@ class Navbar extends Component {
             Badges&Portfolio
           </Typography>
         </Button>
-        <Button component={NavLink} to={'/course'} style={navButtonStyle} activeStyle={{fontWeight: "bold"}} color="inherit">
+        <Button component={NavLink} to={'/project'} style={navButtonStyle} activeStyle={{fontWeight: "bold"}} color="inherit">
           Projekte
         </Button>
         {this.props.isAuthenticated ?
-          <Button component={NavLink} to={'/course/me'} style={navButtonStyle} activeStyle={{fontWeight: "bold"}} color="inherit">
+          <Button component={NavLink} to={'/project/me'} style={navButtonStyle} activeStyle={{fontWeight: "bold"}} color="inherit">
             belegte Projekte
           </Button>
         : null}
         {this.props.isAuthenticated && this.props.user.role[0] !== 'earner' ?
-          <Button component={NavLink} to={'/course/me/creator'} style={navButtonStyle} activeStyle={{fontWeight: "bold"}} color="inherit">
+          <Button component={NavLink} to={'/project/me/creator'} style={navButtonStyle} activeStyle={{fontWeight: "bold"}} color="inherit">
             erstellte Projekte
           </Button>
         : null}
         {this.props.isAuthenticated ?
-          <Button component={NavLink} to={'/course/create'} style={navButtonStyle} activeStyle={{fontWeight: "bold"}} color="inherit">
+          <Button component={NavLink} to={'/project/create'} style={navButtonStyle} activeStyle={{fontWeight: "bold"}} color="inherit">
             Projekt erstellen
           </Button>
         : null}
@@ -129,21 +129,21 @@ class Navbar extends Component {
             Badges&Portfolio
           </Typography>
         </Button>
-        <Button component={NavLink} to={'/course'} style={navButtonStyle} activeStyle={{fontWeight: "bold"}} color="inherit">
+        <Button component={NavLink} to={'/project'} style={navButtonStyle} activeStyle={{fontWeight: "bold"}} color="inherit">
           Projekte
         </Button>
         {this.props.isAuthenticated ?
-          <Button component={NavLink} to={'/course/me'} style={navButtonStyle} activeStyle={{fontWeight: "bold"}} color="inherit">
+          <Button component={NavLink} to={'/project/me'} style={navButtonStyle} activeStyle={{fontWeight: "bold"}} color="inherit">
             belegte Projekte
           </Button>
         : null}
         {this.props.isAuthenticated && this.props.user.role[0] !== 'earner' ?
-          <Button component={NavLink} to={'/course/me/creator'} style={navButtonStyle} activeStyle={{fontWeight: "bold"}} color="inherit">
+          <Button component={NavLink} to={'/project/me/creator'} style={navButtonStyle} activeStyle={{fontWeight: "bold"}} color="inherit">
             erstellte Projekte
           </Button>
         : null}
         {this.props.isAuthenticated ?
-          <Button component={NavLink} to={'/course/create'} style={navButtonStyle} activeStyle={{fontWeight: "bold"}} color="inherit">
+          <Button component={NavLink} to={'/project/create'} style={navButtonStyle} activeStyle={{fontWeight: "bold"}} color="inherit">
             Projekt erstellen
           </Button>
         : null}

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getBadges } from '../../actions/badgeActions';
-import { updateCourse } from '../../actions/courseActions';
+import { updateProject } from '../../actions/projectActions';
 
 import { withRouter } from 'react-router-dom';
 import axios from 'axios';
@@ -28,7 +28,7 @@ import Link from '@material-ui/core/Link';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 
-export class CourseChange extends Component {
+export class ProjectChange extends Component {
 
   constructor(props){
     super(props);
@@ -38,20 +38,20 @@ export class CourseChange extends Component {
       msg: null,
       msgType: null,
       file: null,
-      url: props.course.image ? `/media/${props.course.image.path}` : '',
-      name: props.course.name,
-      badge: props.course.badge.map(badge => {return badge._id}),
-      courseprovider: props.course.courseprovider,
-      postalcode: props.course.postalcode,
+      url: props.project.image ? `/media/${props.project.image.path}` : '',
+      name: props.project.name,
+      badge: props.project.badge.map(badge => {return badge._id}),
+      provider: props.project.provider,
+      postalcode: props.project.postalcode,
       addresses: [],
-      address: props.course.address,
-      coordinates: props.course.coordinates && props.course.coordinates.coordinates,
-      topic: props.course.topic,
-      description: props.course.description,
-      requirements: props.course.requirements,
-      startdate: props.course.startdate,
-      enddate: props.course.enddate,
-      size: props.course.size,
+      address: props.project.address,
+      coordinates: props.project.coordinates && props.project.coordinates.coordinates,
+      topic: props.project.topic,
+      description: props.project.description,
+      requirements: props.project.requirements,
+      startdate: props.project.startdate,
+      enddate: props.project.enddate,
+      size: props.project.size,
     }
   }
 
@@ -68,11 +68,11 @@ export class CourseChange extends Component {
     }
     const { message } = this.props;
     if (message !== previousProps.message) {
-      if(message.id === 'COURSE_UPDATED_SUCCESS'){
+      if(message.id === 'PROJECT_UPDATED_SUCCESS'){
         this.toggle();
       }
-      // Check for course updated error
-      if(message.id === 'COURSE_UPDATED_ERROR'){
+      // Check for project updated error
+      if(message.id === 'PROJECT_UPDATED_ERROR'){
         this.setState({msg: message.msg, msgType: 'error'});
       }
       else {
@@ -124,16 +124,16 @@ export class CourseChange extends Component {
 
 
   // isChanged = () => {
-  //   var { size, enddate, startdate, requirements, description, topic, coordinates, address, postalcode, courseprovider, localbadge, globalbadge, name, url } = this.state;
-  //   const changedCourse = {
-  //     size, enddate, startdate, requirements, description, topic, coordinates, address, postalcode, courseprovider, localbadge, badge: globalbadge, name, url
+  //   var { size, enddate, startdate, requirements, description, topic, coordinates, address, postalcode, provider, localbadge, globalbadge, name, url } = this.state;
+  //   const changedProject = {
+  //     size, enddate, startdate, requirements, description, topic, coordinates, address, postalcode, provider, localbadge, badge: globalbadge, name, url
   //   };
   //
-  //   var { size, enddate, startdate, requirements, description, topic, coordinates, address, postalcode, courseprovider, localbadge, badge, name, image } = this.props.course;
-  //   const originalCourse = {
-  //     size, enddate, startdate, requirements, description, topic, coordinates, address, postalcode, courseprovider, localbadge, badge, name, url: image ? `/media/${image.path}` : ''
+  //   var { size, enddate, startdate, requirements, description, topic, coordinates, address, postalcode, provider, localbadge, badge, name, image } = this.props.project;
+  //   const originalProject = {
+  //     size, enddate, startdate, requirements, description, topic, coordinates, address, postalcode, provider, localbadge, badge, name, url: image ? `/media/${image.path}` : ''
   //   };
-  //   this.setState({ changed: originalCourse === changedCourse });
+  //   this.setState({ changed: originalProject === changedProject });
   // }
 
   onReset = () => {
@@ -143,49 +143,49 @@ export class CourseChange extends Component {
       msg: null,
       msgType: null,
       file: null,
-      url: this.props.course.image ? `/media/${this.props.course.image.path}` : null,
-      name: this.props.course.name,
-      badge: this.props.course.badge,
-      courseprovider: this.props.course.courseprovider,
-      postalcode: this.props.course.postalcode ? this.props.course.postalcode : '',
+      url: this.props.project.image ? `/media/${this.props.project.image.path}` : null,
+      name: this.props.project.name,
+      badge: this.props.project.badge,
+      provider: this.props.project.provider,
+      postalcode: this.props.project.postalcode ? this.props.project.postalcode : '',
       addresses: [],
-      address: this.props.course.address ? this.props.course.address : '',
-      coordinates: this.props.course.coordinates ? this.props.course.coordinates.coordinates : [],
-      topic: this.props.course.topic,
-      description: this.props.course.description,
-      requirements: this.props.course.requirements,
-      startdate: this.props.course.startdate,
-      enddate: this.props.course.enddate,
-      size: this.props.course.size
+      address: this.props.project.address ? this.props.project.address : '',
+      coordinates: this.props.project.coordinates ? this.props.project.coordinates.coordinates : [],
+      topic: this.props.project.topic,
+      description: this.props.project.description,
+      requirements: this.props.project.requirements,
+      startdate: this.props.project.startdate,
+      enddate: this.props.project.enddate,
+      size: this.props.project.size
     });
   };
 
   onSubmit = e => {
     e.preventDefault();
-    const { name, badge, courseprovider, postalcode, address, coordinates, topic, description, requirements, startdate, enddate, size, file } = this.state;
-    var updatedCourse = new FormData();
-    updatedCourse.set('name', name);
-    updatedCourse.set('courseprovider', courseprovider);
-    updatedCourse.set('topic', topic);
-    updatedCourse.set('description', description);
-    updatedCourse.set('requirements', requirements);
-    updatedCourse.set('startdate', startdate);
-    updatedCourse.set('enddate', enddate);
-    updatedCourse.set('size', size);
+    const { name, badge, provider, postalcode, address, coordinates, topic, description, requirements, startdate, enddate, size, file } = this.state;
+    var updatedProject = new FormData();
+    updatedProject.set('name', name);
+    updatedProject.set('provider', provider);
+    updatedProject.set('topic', topic);
+    updatedProject.set('description', description);
+    updatedProject.set('requirements', requirements);
+    updatedProject.set('startdate', startdate);
+    updatedProject.set('enddate', enddate);
+    updatedProject.set('size', size);
     badge.forEach((item, i) => {
-      updatedCourse.append('badge[]', item);
+      updatedProject.append('badge[]', item);
     });
     if(file){
-      updatedCourse.append('image', file);
+      updatedProject.append('image', file);
     }
-    if(this.props.course.coordinates){
-      updatedCourse.set('postalcode', postalcode);
-      updatedCourse.set('address', address);
+    if(this.props.project.coordinates){
+      updatedProject.set('postalcode', postalcode);
+      updatedProject.set('address', address);
       coordinates.forEach((item, i) => {
-        updatedCourse.append('coordinates[]', item);
+        updatedProject.append('coordinates[]', item);
       });
     }
-    this.props.updateCourse(this.props.match.params.courseId, updatedCourse);
+    this.props.updateProject(this.props.match.params.projectId, updatedProject);
   };
 
   toggle = () => {
@@ -193,16 +193,16 @@ export class CourseChange extends Component {
   };
 
   render(){
-    const { course } = this.props;
+    const { project } = this.props;
     return (
-      course ?
+      project ?
         <Dialog
           open={this.state.open}
           maxWidth='md'
           fullWidth
           onClose={this.toggle}
         >
-          <DialogTitle>"{course.name}" bearbeiten</DialogTitle>
+          <DialogTitle>"{project.name}" bearbeiten</DialogTitle>
           <DialogContent>
             <div>
               {this.state.msg ? <Alert style={{marginBottom: '10px'}} icon={false} severity={this.state.msgType}>{this.state.msg}</Alert> : null}
@@ -240,13 +240,13 @@ export class CourseChange extends Component {
                     variant='outlined'
                     type='text'
                     label='Anbieter des Projektes'
-                    name='courseprovider'
-                    value={this.state.courseprovider}
+                    name='provider'
+                    value={this.state.provider}
                     onChange={this.onChange}
                     fullWidth={true}
                   />
                 </Grid>
-                {this.props.course.coordinates ?
+                {this.props.project.coordinates ?
                   <Grid item xs={12} md={6}>
                     <TextField
                       variant='outlined'
@@ -397,12 +397,12 @@ export class CourseChange extends Component {
   }
 }
 
-CourseChange.propTypes = {
+ProjectChange.propTypes = {
   user: PropTypes.object.isRequired,
   badges: PropTypes.array.isRequired,
   message: PropTypes.object.isRequired,
   getBadges: PropTypes.func.isRequired,
-  updateCourse: PropTypes.func.isRequired
+  updateProject: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -411,4 +411,4 @@ const mapStateToProps = state => ({
   message: state.message
 });
 
-export default connect(mapStateToProps, { getBadges, updateCourse })(withRouter(CourseChange));
+export default connect(mapStateToProps, { getBadges, updateProject })(withRouter(ProjectChange));

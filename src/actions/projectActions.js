@@ -2,60 +2,60 @@ import axios from 'axios';
 import { returnErrors, returnSuccess } from './messageActions'
 
 import {
-  COURSE_LOADED,
-  COURSE_LOADING,
-  COURSE_UPDATED,
-  COURSE_USER_SIGNIN,
-  COURSE_USER_SIGNOUT,
+  PROJECT_LOADED,
+  PROJECT_LOADING,
+  PROJECT_UPDATED,
+  PROJECT_USER_SIGNIN,
+  PROJECT_USER_SIGNOUT,
   GET_PARTICIPANTS,
   ASSIGNE_BADGE,
   UNASSIGNE_BADGE,
   ASSIGNE_MULTIPLE_BADGES,
-  COURSES_LOADED,
-  COURSES_LOADING,
-  COURSE_ERROR,
-  SET_COURSE_PARAMS
+  PROJECTS_LOADED,
+  PROJECTS_LOADING,
+  PROJECT_ERROR,
+  SET_PROJECT_PARAMS
 } from '../actions/types';
 
-// get one course
-export const loadCourse = (id) => (dispatch) => {
+// get one project
+export const loadProject = (id) => (dispatch) => {
   dispatch({
-    type: COURSE_LOADING
+    type: PROJECT_LOADING
   });
-  axios.get(`/api/v1/course/${id}`)
+  axios.get(`/api/v1/project/${id}`)
     .then(res => {
-      if(!res.data.course.exists){
-        dispatch(returnSuccess('Dieses Projekt ist deaktiviert.', res.status, 'COURSE_DEACTIVATED'));
+      if(!res.data.project.exists){
+        dispatch(returnSuccess('Dieses Projekt ist deaktiviert.', res.status, 'PROJECT_DEACTIVATED'));
       }
       dispatch({
-        type: COURSE_LOADED,
-        payload: res.data.course
+        type: PROJECT_LOADED,
+        payload: res.data.project
       });
     })
     .catch(err => {
       if(err.response){
-        dispatch(returnErrors(err.response.data.message, err.response.status, 'COURSE_ERROR'));
+        dispatch(returnErrors(err.response.data.message, err.response.status, 'PROJECT_ERROR'));
       }
     });
 };
 
-// update one course
-export const updateCourse = (id, updatedCourse) => (dispatch) => {
+// update one project
+export const updateProject = (id, updatedProject) => (dispatch) => {
   const config = {
     success: res => {
       dispatch({
-        type: COURSE_UPDATED,
-        payload: res.data.course
+        type: PROJECT_UPDATED,
+        payload: res.data.project
       });
-      dispatch(returnSuccess(res.data.message, res.status, 'COURSE_UPDATED_SUCCESS'));
+      dispatch(returnSuccess(res.data.message, res.status, 'PROJECT_UPDATED_SUCCESS'));
     },
     error: err => {
       if(err.response){
-        dispatch(returnErrors(err.response.data.message, err.response.status, 'COURSE_UPDATED_ERROR'));
+        dispatch(returnErrors(err.response.data.message, err.response.status, 'PROJECT_UPDATED_ERROR'));
       }
     }
   };
-  axios.put(`/api/v1/course/${id}`, updatedCourse, config)
+  axios.put(`/api/v1/project/${id}`, updatedProject, config)
     .then(res => {
       res.config.success(res);
     })
@@ -68,23 +68,23 @@ export const updateCourse = (id, updatedCourse) => (dispatch) => {
 
 // user signs in
 export const signIn = (id) => (dispatch, getState) => {
-  var course = getState().course.course;
+  var project = getState().project.project;
   const config = {
     success: res => {
-      course.participants.push(getState().auth.user._id);
+      project.participants.push(getState().auth.user._id);
       dispatch({
-        type: COURSE_USER_SIGNIN,
-        payload: course
+        type: PROJECT_USER_SIGNIN,
+        payload: project
       });
-      dispatch(returnSuccess(res.data.message, res.status, 'COURSE_UPDATED_SUCCESS'));
+      dispatch(returnSuccess(res.data.message, res.status, 'PROJECT_UPDATED_SUCCESS'));
     },
     error: err => {
       if(err.response){
-        dispatch(returnErrors(err.response.data.message, err.response.status, 'COURSE_REGISTRATION_ERROR'));
+        dispatch(returnErrors(err.response.data.message, err.response.status, 'PROJECT_REGISTRATION_ERROR'));
       }
     }
   };
-  axios.put(`/api/v1/course/${id}/user/registration`, {}, config)
+  axios.put(`/api/v1/project/${id}/user/registration`, {}, config)
     .then(res => {
       res.config.success(res);
     })
@@ -97,23 +97,23 @@ export const signIn = (id) => (dispatch, getState) => {
 
 // user signs out
 export const signOut = (id) => (dispatch, getState) => {
-  var course = getState().course.course;
+  var project = getState().project.project;
   const config = {
     success: res => {
-      course.participants = course.participants.filter(userId => getState().auth.user._id !== userId);
+      project.participants = project.participants.filter(userId => getState().auth.user._id !== userId);
       dispatch({
-        type: COURSE_USER_SIGNOUT,
-        payload: course
+        type: PROJECT_USER_SIGNOUT,
+        payload: project
       });
-      dispatch(returnSuccess(res.data.message, res.status, 'COURSE_UPDATED_SUCCESS'));
+      dispatch(returnSuccess(res.data.message, res.status, 'PROJECT_UPDATED_SUCCESS'));
     },
     error: err => {
       if(err.response){
-        dispatch(returnErrors(err.response.data.message, err.response.status, 'COURSE_REGISTRATION_ERROR'));
+        dispatch(returnErrors(err.response.data.message, err.response.status, 'PROJECT_REGISTRATION_ERROR'));
       }
     }
   };
-  axios.put(`/api/v1/course/${id}/user/deregistration`, {}, config)
+  axios.put(`/api/v1/project/${id}/user/deregistration`, {}, config)
     .then(res => {
       res.config.success(res);
     })
@@ -124,24 +124,24 @@ export const signOut = (id) => (dispatch, getState) => {
     });
 };
 
-export const getParticipants = (courseId) => (dispatch, getState) => {
-  var course = getState().course.course;
+export const getParticipants = (projectId) => (dispatch, getState) => {
+  var project = getState().project.project;
   const config = {
     success: res => {
-      course.participants = res.data.participants;
+      project.participants = res.data.participants;
       dispatch({
         type: GET_PARTICIPANTS,
-        payload: course
+        payload: project
       });
-      dispatch(returnSuccess(res.data.message, res.status, 'COURSE_PARTICIPANTS_SUCCESS'));
+      dispatch(returnSuccess(res.data.message, res.status, 'PROJECT_PARTICIPANTS_SUCCESS'));
     },
     error: err => {
       if(err.response){
-        dispatch(returnErrors(err.response.data.message, err.response.status, 'COURSE_PARTICIPANTS_ERROR'));
+        dispatch(returnErrors(err.response.data.message, err.response.status, 'PROJECT_PARTICIPANTS_ERROR'));
       }
     }
   };
-  axios.get(`/api/v1/course/${courseId}/participants`, config)
+  axios.get(`/api/v1/project/${projectId}/participants`, config)
     .then(res => {
       res.config.success(res);
     })
@@ -152,15 +152,15 @@ export const getParticipants = (courseId) => (dispatch, getState) => {
     });
 }
 
-export const assigneBadge = (badgeId, courseId, userId) => (dispatch, getState) => {
-  var course = getState().course.course;
+export const assigneBadge = (badgeId, projectId, userId) => (dispatch, getState) => {
+  var project = getState().project.project;
   const config = {
     success: res => {
-      const index = course.participants.findIndex(user => user._id === userId);
-      course.participants[index].badge.push(badgeId);
+      const index = project.participants.findIndex(user => user._id === userId);
+      project.participants[index].badge.push(badgeId);
       dispatch({
         type: ASSIGNE_BADGE,
-        payload: course
+        payload: project
       });
       dispatch(returnSuccess(res.data.message, res.status, 'ASSIGNE_SUCCESS'));
     },
@@ -170,7 +170,7 @@ export const assigneBadge = (badgeId, courseId, userId) => (dispatch, getState) 
       }
     }
   };
-  axios.put(`/api/v1/badge/${badgeId}/course/${courseId}/assigne/user/${userId}`, {}, config)
+  axios.put(`/api/v1/badge/${badgeId}/project/${projectId}/assigne/user/${userId}`, {}, config)
     .then(res => {
       res.config.success(res);
     })
@@ -181,16 +181,16 @@ export const assigneBadge = (badgeId, courseId, userId) => (dispatch, getState) 
     });
 };
 
-export const unassigneBadge = (badgeId, courseId, userId) => (dispatch, getState) => {
-  var course = getState().course.course;
+export const unassigneBadge = (badgeId, projectId, userId) => (dispatch, getState) => {
+  var project = getState().project.project;
   const config = {
     success: res => {
-      const index = course.participants.findIndex(user => user._id === userId);
-      var updatedBadges = course.participants[index].badge.filter(bId => bId !== badgeId);
-      course.participants[index].badge = updatedBadges;
+      const index = project.participants.findIndex(user => user._id === userId);
+      var updatedBadges = project.participants[index].badge.filter(bId => bId !== badgeId);
+      project.participants[index].badge = updatedBadges;
       dispatch({
         type: UNASSIGNE_BADGE,
-        payload: course
+        payload: project
       });
       dispatch(returnSuccess(res.data.message, res.status, 'UNASSIGNE_SUCCESS'));
     },
@@ -200,7 +200,7 @@ export const unassigneBadge = (badgeId, courseId, userId) => (dispatch, getState
       }
     }
   };
-  axios.put(`/api/v1/badge/${badgeId}/course/${courseId}/unassigne/user/${userId}`, {}, config)
+  axios.put(`/api/v1/badge/${badgeId}/project/${projectId}/unassigne/user/${userId}`, {}, config)
     .then(res => {
       res.config.success(res);
     })
@@ -211,22 +211,22 @@ export const unassigneBadge = (badgeId, courseId, userId) => (dispatch, getState
     });
 };
 
-export const assigneMultipleBadges = (courseId, badges) => (dispatch, getState) => {
-  var course = getState().course.course;
+export const assigneMultipleBadges = (projectId, badges) => (dispatch, getState) => {
+  var project = getState().project.project;
   var body = {
     badges: badges
   };
   const config = {
     success: res => {
       Object.keys(badges).forEach((userId, i) => {
-        const index = course.participants.findIndex(user => user._id === userId);
+        const index = project.participants.findIndex(user => user._id === userId);
         badges[userId].forEach((badgeId, i) => {
-          course.participants[index].badge.push(badgeId);
+          project.participants[index].badge.push(badgeId);
         });
       });
       dispatch({
         type: ASSIGNE_MULTIPLE_BADGES,
-        payload: course
+        payload: project
       });
       dispatch(returnSuccess(res.data.message, res.status, 'MULTIPLE_ASSIGNE_SUCCESS'));
     },
@@ -236,7 +236,7 @@ export const assigneMultipleBadges = (courseId, badges) => (dispatch, getState) 
       }
     }
   };
-  axios.put(`/api/v1/badge/course/${courseId}/assigne`, body, config)
+  axios.put(`/api/v1/badge/project/${projectId}/assigne`, body, config)
     .then(res => {
       res.config.success(res);
     })
@@ -247,41 +247,41 @@ export const assigneMultipleBadges = (courseId, badges) => (dispatch, getState) 
     });
 };
 
-// get courses
-export const loadCourses = (url, params) => (dispatch, getState) => {
-  var parameter = getState().course.params;
+// get projects
+export const loadProjects = (url, params) => (dispatch, getState) => {
+  var parameter = getState().project.params;
   if(parameter.type === 'online'){
     parameter.online = true;
     dispatch({
-      type: SET_COURSE_PARAMS,
+      type: SET_PROJECT_PARAMS,
       payload: parameter
     });
   }
   else {
     parameter.online = false;
     dispatch({
-      type: SET_COURSE_PARAMS,
+      type: SET_PROJECT_PARAMS,
       payload: parameter
     });
   }
   dispatch({
-    type: COURSES_LOADING
+    type: PROJECTS_LOADING
   });
   const config = {
     params: params,
     success: res => {
       dispatch(returnSuccess(res.data.message, res.status));
       dispatch({
-        type: COURSES_LOADED,
-        payload: res.data.courses
+        type: PROJECTS_LOADED,
+        payload: res.data.projects
       })
     },
     error: err => {
       if(err.response){
-        dispatch(returnErrors(err.response.data.message, err.response.status, 'COURSES_ERROR'));
+        dispatch(returnErrors(err.response.data.message, err.response.status, 'PROJECTS_ERROR'));
       }
       dispatch({
-        type: COURSE_ERROR
+        type: PROJECT_ERROR
       });
     }
   };
@@ -298,25 +298,25 @@ export const loadCourses = (url, params) => (dispatch, getState) => {
 
 
 export const paramsOnChange = (e) => (dispatch, getState) => {
-  var params = getState().course.params;
+  var params = getState().project.params;
   params[e.target.name] = e.target.value;
   dispatch({
-    type: SET_COURSE_PARAMS,
+    type: SET_PROJECT_PARAMS,
     payload: params
   });
 };
 
 export const sliderOnChange = (e, value) => (dispatch, getState) => {
-  var params = getState().course.params;
+  var params = getState().project.params;
   params.radius = value;
   dispatch({
-    type: SET_COURSE_PARAMS,
+    type: SET_PROJECT_PARAMS,
     payload: params
   });
 };
 
 export const onChangeAddress = (e) => (dispatch, getState) => {
-  var params = getState().course.params;
+  var params = getState().project.params;
   if(e.target.value){
     axios.get(`https://nominatim.openstreetmap.org/search?format=json&limit=3&q=${e.target.value}`)
       .then(res => {
@@ -326,7 +326,7 @@ export const onChangeAddress = (e) => (dispatch, getState) => {
           params.addresses = ['Keine Übereinstimmung gefunden.'];
         }
         dispatch({
-          type: SET_COURSE_PARAMS,
+          type: SET_PROJECT_PARAMS,
           payload: params
         });
       })
@@ -337,7 +337,7 @@ export const onChangeAddress = (e) => (dispatch, getState) => {
   else {
     params.addresses = [];
     dispatch({
-      type: SET_COURSE_PARAMS,
+      type: SET_PROJECT_PARAMS,
       payload: params
     });
   }
@@ -345,22 +345,22 @@ export const onChangeAddress = (e) => (dispatch, getState) => {
 
 
 export const deleteAddress = () => (dispatch, getState) => {
-  var params = getState().course.params;
+  var params = getState().project.params;
   params.addresses = [];
   params.address = '';
   dispatch({
-    type: SET_COURSE_PARAMS,
+    type: SET_PROJECT_PARAMS,
     payload: params
   });
 };
 
 export const setAddress = (address) => (dispatch, getState) => {
-  var params = getState().course.params;
+  var params = getState().project.params;
   params.coordinates = [address.lon, address.lat];
   params.addresses = [];
   params.address = address.display_name;
   dispatch({
-    type: SET_COURSE_PARAMS,
+    type: SET_PROJECT_PARAMS,
     payload: params
   });
 };
@@ -368,12 +368,12 @@ export const setAddress = (address) => (dispatch, getState) => {
 
 export const onReset = (url) => (dispatch) => {
   dispatch(clearParams());
-  dispatch(loadCourses(url));
+  dispatch(loadProjects(url));
 };
 
 
 export const onFilter = (url) => (dispatch, getState) => {
-  var params = getState().course.params;
+  var params = getState().project.params;
   const { type, coordinates, radius, startdate, enddate, topic, name } = params;
   const configParams = {
     startdate,
@@ -388,16 +388,16 @@ export const onFilter = (url) => (dispatch, getState) => {
   }
   params.parameter = Object.values(configParams).filter(param => param !== null && param !== undefined && param !== '').length;
   dispatch({
-    type: SET_COURSE_PARAMS,
+    type: SET_PROJECT_PARAMS,
     payload: params
   })
-  dispatch(loadCourses(url, configParams));
+  dispatch(loadProjects(url, configParams));
 };
 
 
 export const clearParams = () => (dispatch) => {
   dispatch({
-    type: SET_COURSE_PARAMS,
+    type: SET_PROJECT_PARAMS,
     payload: {
       type: '',
       online: false,

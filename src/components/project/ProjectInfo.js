@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import Typography from '@material-ui/core/Typography';
 
-export class CourseInfo extends Component {
+export class ProjectInfo extends Component {
 
   render(){
     return(
@@ -31,7 +31,7 @@ export class CourseInfo extends Component {
   }
 }
 
-CourseInfo.propTypes = {
+ProjectInfo.propTypes = {
   panel: PropTypes.string.isRequired,
   setPanel: PropTypes.func.isRequired
 };
@@ -41,4 +41,4 @@ const mapStateToProps = state => ({
 });
 
 
-export default connect(mapStateToProps, { setPanel })(CourseInfo);
+export default connect(mapStateToProps, { setPanel })(ProjectInfo);

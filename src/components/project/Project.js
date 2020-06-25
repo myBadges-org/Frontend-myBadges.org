@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { loadCourse, signIn, signOut } from '../../actions/courseActions';
+import { loadProject, signIn, signOut } from '../../actions/projectActions';
 
 import { withRouter } from 'react-router-dom';
 import axios from 'axios';
@@ -11,9 +11,9 @@ import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
 
 import Badges from '../badge/Badges';
 import AssigneMultipleBadges from '../badge/AssigneMultipleBadges';
-import CourseChange from './CourseChange';
+import ProjectChange from './ProjectChange';
 import Participants from './Participants';
-import CourseInfo from './CourseInfo';
+import ProjectInfo from './ProjectInfo';
 
 import { withStyles } from '@material-ui/core/styles';
 
@@ -38,20 +38,20 @@ const styles = () => ({
   }
 });
 
-export class Course extends Component {
+export class Project extends Component {
 
   state = {
     msg: null,
     msgType: '',
-    openCourseChange: false,
+    openProjectChange: false,
     openParticipants: false,
     openAssigneBadges: false
   }
 
   componentDidMount(){
-    const courseId = this.props.match.params.courseId;
-    this.props.loadCourse(courseId);
-    if(this.props.message.id === 'ADD_COURSE_SUCCESS'){
+    const projectId = this.props.match.params.projectId;
+    this.props.loadProject(projectId);
+    if(this.props.message.id === 'ADD_PROJECT_SUCCESS'){
       this.setState({msg: this.props.message.msg, msgType: 'success'});
       window.scrollTo(0, 0);
     }
@@ -61,8 +61,8 @@ export class Course extends Component {
     if((previousProps.isAuthenticated === null && this.props.isAuthenticated === false) || (previousProps.isAuthenticated && this.props.isAuthenticated === false)){
       this.setState({msg: <div>Zum Ein- und Ausschreiben in das Projekt müssen Sie sich zunächst <Link href="/login">einloggen</Link>.</div>, msgType: 'info'});
     }
-    if(this.state.openCourseChange === true){
-      this.setState({ openCourseChange: false });
+    if(this.state.openProjectChange === true){
+      this.setState({ openProjectChange: false });
     }
     if(this.state.openParticipants === true){
       this.setState({ openParticipants: false });
@@ -72,16 +72,16 @@ export class Course extends Component {
     }
     const { message } = this.props;
     if (message !== previousProps.message) {
-      if(message.id === 'COURSE_DEACTIVATED'){
+      if(message.id === 'PROJECT_DEACTIVATED'){
         this.setState({msg: message.msg, msgType: 'info'});
       }
-      // Check for course update success
-      if(message.id === 'COURSE_UPDATED_SUCCESS'){
+      // Check for project update success
+      if(message.id === 'PROJECT_UPDATED_SUCCESS'){
         this.setState({msg: message.msg, msgType: 'success'});
         window.scrollTo(0, 0);
       }
-      // Check for course error
-      if(message.id === 'COURSE_ERROR' || message.id === 'COURSE_REGISTRATION_ERROR'){
+      // Check for project error
+      if(message.id === 'PROJECT_ERROR' || message.id === 'PROJECT_REGISTRATION_ERROR'){
         this.setState({msg: message.msg, msgType: 'error'});
         window.scrollTo(0, 0);
       }
@@ -99,13 +99,13 @@ export class Course extends Component {
     e.preventDefault();
     const config = {
       success: res => {
-        this.props.history.push('/course/me/creator');
+        this.props.history.push('/project/me/creator');
       },
       error: err => {
         this.setState({msgType: 'error', msg: err.response.data.message});
       }
     };
-    axios.put(`/api/v1/course/${this.props.match.params.courseId}/deactivation`, {}, config)
+    axios.put(`/api/v1/project/${this.props.match.params.projectId}/deactivation`, {}, config)
       .then(res => {
         res.config.success(res);
       })
@@ -118,65 +118,65 @@ export class Course extends Component {
 
   render(){
     const { msg, msgType } = this.state;
-    const { isLoading, course, user } = this.props;
-    const badges = course ? course.badge : null;
+    const { isLoading, project, user } = this.props;
+    const badges = project ? project.badge : null;
     return(
       <div>
         {isLoading ? <LinearProgress /> : null}
         <div style={{maxWidth: '1000px', marginLeft: 'auto', marginRight: 'auto', marginTop: '30px'}}>
           {msg ? <Alert style={{marginBottom: '10px'}} icon={false} severity={msgType}>{msg}</Alert> : null}
-          {!isLoading && course ?
+          {!isLoading && project ?
             <div>
               <Paper style={{padding: '15px'}}>
                 <Typography variant="h4">
-                  {course.name}
+                  {project.name}
                 </Typography>
-                {course.image && course.image.path ?
-                  <img src={`/media/${course.image.path}`} alt={`Bild vom Projekt ${course.name}`} style={{width: '100%', height: '300px', objectFit: 'cover'}}/>
+                {project.image && project.image.path ?
+                  <img src={`/media/${project.image.path}`} alt={`Bild vom Projekt ${project.name}`} style={{width: '100%', height: '300px', objectFit: 'cover'}}/>
                 : null}
-                {course.coordinates ?
-                  <CourseInfo
+                {project.coordinates ?
+                  <ProjectInfo
                     title='Adresse'
                     expanded='address'
                   >
-                    <Map center={[course.coordinates.coordinates[1], course.coordinates.coordinates[0]]} zoom={13} style={{width: '100%', height: '300px', borderRadius: '4px'}}>
+                    <Map center={[project.coordinates.coordinates[1], project.coordinates.coordinates[0]]} zoom={13} style={{width: '100%', height: '300px', borderRadius: '4px'}}>
                       <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                       />
-                      <Marker ref={(ref) => {this.openPopup(ref)}} position={[course.coordinates.coordinates[1], course.coordinates.coordinates[0]]}>
-                        <Popup open>{course.address}</Popup>
+                      <Marker ref={(ref) => {this.openPopup(ref)}} position={[project.coordinates.coordinates[1], project.coordinates.coordinates[0]]}>
+                        <Popup open>{project.address}</Popup>
                       </Marker>
                     </Map>
-                  </CourseInfo>
+                  </ProjectInfo>
                 : null
                 }
-                <CourseInfo
+                <ProjectInfo
                   title='Zeitraum'
                   expanded='time'
-                  content={`vom ${moment(course.startdate).format('DD. MMMM YYYY')} bis ${moment(course.enddate).format('DD. MMMM YYYY')}`}
+                  content={`vom ${moment(project.startdate).format('DD. MMMM YYYY')} bis ${moment(project.enddate).format('DD. MMMM YYYY')}`}
                 />
-                <CourseInfo
+                <ProjectInfo
                   title='Thema'
                   expanded='topic'
-                  content={course.topic}
+                  content={project.topic}
                 />
-                <CourseInfo
+                <ProjectInfo
                   title='Beschreibung'
                   expanded='description'
-                  content={course.description}
+                  content={project.description}
                 />
-                <CourseInfo
+                <ProjectInfo
                   title='Voraussetzungen'
                   expanded='requirements'
-                  content={course.requirements}
+                  content={project.requirements}
                 />
-                <CourseInfo
+                <ProjectInfo
                   title='Plätze'
                   expanded='size'
-                  content={`insgesamt: ${course.size}, davon sind noch ${course.size - course.participants.length} verfügbar`}
+                  content={`insgesamt: ${project.size}, davon sind noch ${project.size - project.participants.length} verfügbar`}
                 />
-                <CourseInfo
+                <ProjectInfo
                   title={
                     <Badge badgeContent={badges.length} color="primary">
                       <b>verknüpfte Badges</b>
@@ -185,22 +185,22 @@ export class Course extends Component {
                   expanded='badge'
                 >
                   <Badges badges={badges}/>
-                </CourseInfo>
+                </ProjectInfo>
               </Paper>
-              {user && course.exists?
-                user._id === course.creator._id ?
+              {user && project.exists?
+                user._id === project.creator._id ?
                   <div>
                     <p>
-                      <Button color="primary" variant='contained' onClick={() => this.setState({openCourseChange: true})} style={{width: '100%'}}>
+                      <Button color="primary" variant='contained' onClick={() => this.setState({openProjectChange: true})} style={{width: '100%'}}>
                         Bearbeiten
                       </Button>
-                      <CourseChange open={this.state.openCourseChange} course={course}/>
+                      <ProjectChange open={this.state.openProjectChange} project={project}/>
                     </p>
                     <p>
                       <Button color="primary" variant='contained' onClick={() => this.setState({openParticipants: true})} style={{width: '100%'}}>
                         Teilnehmer anzeigen
                       </Button>
-                      <Participants open={this.state.openParticipants} courseName={course.name}/>
+                      <Participants open={this.state.openParticipants} projectName={project.name}/>
                     </p>
                     <p>
                       <Button color="primary" variant='contained' onClick={() => this.setState({openAssigneBadges: true})} style={{width: '100%'}}>
@@ -216,15 +216,15 @@ export class Course extends Component {
                     </p>
                   </div>
                   :
-                  course.participants.includes(user._id) ?
+                  project.participants.includes(user._id) ?
                     <p>
-                      <Button color="primary" variant='contained' onClick={() => this.props.signOut(course._id)} style={{width: '100%'}}>
+                      <Button color="primary" variant='contained' onClick={() => this.props.signOut(project._id)} style={{width: '100%'}}>
                         Abmelden
                       </Button>
                     </p>
                   :
                     <p>
-                      <Button color="primary" variant='contained' onClick={() => this.props.signIn(course._id)} style={{width: '100%'}}>
+                      <Button color="primary" variant='contained' onClick={() => this.props.signIn(project._id)} style={{width: '100%'}}>
                         Anmelden
                       </Button>
                     </p>
@@ -238,13 +238,13 @@ export class Course extends Component {
   }
 }
 
-Course.propTypes = {
+Project.propTypes = {
   user: PropTypes.object,
   message: PropTypes.object.isRequired,
   isAuthenticated: PropTypes.bool,
   isLoading: PropTypes.bool.isRequired,
-  course: PropTypes.object,
-  loadCourse: PropTypes.func.isRequired,
+  project: PropTypes.object,
+  loadProject: PropTypes.func.isRequired,
   signIn: PropTypes.func.isRequired,
   signOut: PropTypes.func.isRequired
 };
@@ -252,10 +252,10 @@ Course.propTypes = {
 const mapStateToProps = state => ({
   user: state.auth.user,
   message: state.message,
-  isLoading: state.course.isLoading,
+  isLoading: state.project.isLoading,
   isAuthenticated: state.auth.isAuthenticated,
-  course: state.course.course
+  project: state.project.project
 });
 
 
-export default connect(mapStateToProps, { loadCourse, signIn, signOut })(withRouter(withStyles(styles)(Course)));
+export default connect(mapStateToProps, { loadProject, signIn, signOut })(withRouter(withStyles(styles)(Project)));

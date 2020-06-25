@@ -5,6 +5,8 @@ import { withRouter } from 'react-router-dom';
 import { getBadges } from '../../actions/badgeActions';
 import { returnSuccess } from '../../actions/messageActions';
 
+import { Link } from 'react-router-dom';
+import { withStyles } from '@material-ui/core/styles';
 
 import axios from 'axios';
 import moment from 'moment';
@@ -21,7 +23,7 @@ import Alert from '@material-ui/lab/Alert';
 import Avatar from '@material-ui/core/Avatar';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import Link from '@material-ui/core/Link';
+import LinkMaterial from '@material-ui/core/Link';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Radio from '@material-ui/core/Radio';
@@ -29,10 +31,22 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 
-export class CreateCourse extends Component {
+const styles = theme => ({
+  link: {
+    textDecoration: 'none',
+    color: theme.palette.primary.main,
+    '&:hover': {
+      color: theme.palette.primary.main,
+      textDecoration: 'underline'
+    }
+  }
+});
+
+
+export class CreateProject extends Component {
 
   state = {
-    course: 'presence',
+    project: 'presence',
     open: false,
     msg: null,
     msgType: null,
@@ -40,7 +54,7 @@ export class CreateCourse extends Component {
     url: null,
     name: '',
     badge: [],
-    courseprovider: '',
+    provider: '',
     postalcode: '',
     addresses: [],
     address: '',
@@ -109,7 +123,7 @@ export class CreateCourse extends Component {
 
   onReset = () => {
     this.setState({
-      course: 'presence',
+      project: 'presence',
       open: false,
       msg: null,
       msgType: null,
@@ -117,7 +131,7 @@ export class CreateCourse extends Component {
       url: null,
       name: '',
       badge: [],
-      courseprovider: '',
+      provider: '',
       postalcode: '',
       addresses: [],
       address: '',
@@ -133,33 +147,33 @@ export class CreateCourse extends Component {
 
   onSubmit = e => {
     e.preventDefault();
-    const { course, name, badge, courseprovider, postalcode, address, coordinates, topic, description, requirements, startdate, enddate, size, file } = this.state;
-    var newCourse = new FormData();
-    newCourse.set('name', name);
-    newCourse.set('courseprovider', courseprovider);
-    newCourse.set('topic', topic);
-    newCourse.set('description', description);
-    newCourse.set('requirements', requirements);
-    newCourse.set('startdate', startdate);
-    newCourse.set('enddate', enddate);
-    newCourse.set('size', size);
+    const { project, name, badge, provider, postalcode, address, coordinates, topic, description, requirements, startdate, enddate, size, file } = this.state;
+    var newProject = new FormData();
+    newProject.set('name', name);
+    newProject.set('provider', provider);
+    newProject.set('topic', topic);
+    newProject.set('description', description);
+    newProject.set('requirements', requirements);
+    newProject.set('startdate', startdate);
+    newProject.set('enddate', enddate);
+    newProject.set('size', size);
     badge.forEach((item, i) => {
-      newCourse.append('badge[]', item);
+      newProject.append('badge[]', item);
     });
     if(file){
-      newCourse.append('image', file);
+      newProject.append('image', file);
     }
-    if(course !== 'online'){
-      newCourse.set('postalcode', postalcode);
-      newCourse.set('address', address);
+    if(project !== 'online'){
+      newProject.set('postalcode', postalcode);
+      newProject.set('address', address);
       coordinates.forEach((item, i) => {
-        newCourse.append('coordinates[]', item);
+        newProject.append('coordinates[]', item);
       });
     }
-    axios.post('/api/v1/course', newCourse)
+    axios.post('/api/v1/project', newProject)
       .then(res => {
-        this.props.returnSuccess(res.data.message, res.status, 'ADD_COURSE_SUCCESS');
-        this.props.history.push(`/course/${res.data.course._id}`);
+        this.props.returnSuccess(res.data.message, res.status, 'ADD_PROJECT_SUCCESS');
+        this.props.history.push(`/project/${res.data.project._id}`);
       })
       .catch(err => {
         this.setState({msgType: 'error', msg: err.response.data.message});
@@ -170,9 +184,9 @@ export class CreateCourse extends Component {
     return(
       <div style={{maxWidth: '500px', marginLeft: 'auto', marginRight: 'auto', marginTop: '30px'}}>
         {this.state.msg ? <Alert style={{marginBottom: '10px'}} icon={false} severity={this.state.msgType}>{this.state.msg}</Alert> : null}
-        <Alert style={{marginBottom: '10px'}} icon={false} severity={'info'}><div>Beachten Sie, dass beim Erstellen eines Projektes ausschließlich Badges auswählbar sind, die man selbstständig vergeben darf. Einen Überblick über alle Badges erhalten Sie <Link href="/badges">hier</Link>.</div></Alert>
+        <Alert style={{marginBottom: '10px'}} icon={false} severity={'info'}><div>Beachten Sie, dass beim Erstellen eines Projektes ausschließlich Badges auswählbar sind, die man selbstständig vergeben darf. Einen Überblick über alle Badges erhalten Sie <Link to="/badges" className={this.props.classes.link}>hier</Link>.</div></Alert>
         <FormControl component="fieldset">
-          <RadioGroup row name="course" value={this.state.course} onClick={this.onChange}>
+          <RadioGroup row name="project" value={this.state.project} onClick={this.onChange}>
             <FormControlLabel
               value='presence'
               control={<Radio color="primary" />}
@@ -221,13 +235,13 @@ export class CreateCourse extends Component {
               variant='outlined'
               type='text'
               label='Anbieter des Projektes'
-              name='courseprovider'
-              value={this.state.courseprovider}
+              name='provider'
+              value={this.state.provider}
               onChange={this.onChange}
               fullWidth={true}
             />
           </Grid>
-          {this.state.course !== 'online' ?
+          {this.state.project !== 'online' ?
             <Grid item xs={12} md={6}>
               <TextField
                 variant='outlined'
@@ -353,13 +367,21 @@ export class CreateCourse extends Component {
                     <MenuItem key={badge._id} value={badge._id}>{badge.name}</MenuItem>
                   ))}
                 </Select>
-                <Link color="primary" onClick={() => {this.setState({ open: true });}} style={{cursor: 'pointer'}}>
+                <LinkMaterial color="primary" onClick={() => {this.setState({ open: true });}} style={{cursor: 'pointer'}}>
                   Nicht der richtige Badge dabei?
                   <CreateBadge open={this.state.open}/>
-                </Link>
+                </LinkMaterial>
               </FormControl>
             </Grid>
-            : null
+          : <Grid item xs={12} md={6}>
+              {`Sie können aktuell keinen Badge vergeben. Beantragen Sie entweder die Rechte an einen bestehenden Badge `}
+              <Link to="/badges" className={this.props.classes.link}>hier</Link>
+               {` oder erstellen Sie einen `}
+              <LinkMaterial color="primary" onClick={() => {this.setState({ open: true });}} style={{cursor: 'pointer'}}>
+                neuen Badge
+                <CreateBadge open={this.state.open}/>
+              </LinkMaterial>.
+            </Grid>
           }
         </Grid>
         <p>
@@ -377,7 +399,7 @@ export class CreateCourse extends Component {
   }
 }
 
-CreateCourse.propTypes = {
+CreateProject.propTypes = {
   user: PropTypes.object.isRequired,
   badges: PropTypes.array.isRequired,
   message: PropTypes.object.isRequired,
@@ -391,4 +413,4 @@ const mapStateToProps = state => ({
   message: state.message
 });
 
-export default connect(mapStateToProps, { getBadges, returnSuccess })(withRouter(CreateCourse));
+export default connect(mapStateToProps, { getBadges, returnSuccess })(withRouter(withStyles(styles, { withTheme: true })(CreateProject)));

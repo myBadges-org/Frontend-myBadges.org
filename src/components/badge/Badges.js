@@ -7,7 +7,7 @@ import BadgePaper from './Badge';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
-export class CourseBadges extends Component {
+export class Badges extends Component {
 
   render(){
     const badges = this.props.badges;
@@ -25,4 +25,4 @@ export class CourseBadges extends Component {
   }
 }
 
-export default CourseBadges;
+export default Badges;

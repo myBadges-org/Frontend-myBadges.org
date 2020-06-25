@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { loadCourses, clearParams } from '../../actions/courseActions';
+import { loadProjects, clearParams } from '../../actions/projectActions';
 
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 
-import CourseFilter from './CourseFilter';
-import CourseListMap from './CourseListMap';
+import ProjectFilter from './ProjectFilter';
+import ProjectListMap from './ProjectListMap';
 
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -17,7 +17,7 @@ import Alert from '@material-ui/lab/Alert';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
 
-export class CourseList extends Component {
+export class ProjectList extends Component {
 
   constructor(props){
     super(props);
@@ -29,17 +29,17 @@ export class CourseList extends Component {
 
   componentDidMount(){
     this.props.clearParams();
-    this.props.loadCourses(this.props.url);
+    this.props.loadProjects(this.props.url);
   }
 
   componentDidUpdate(prevProps){
     if(prevProps.url !== this.props.url){
-      this.props.loadCourses(this.props.url);
+      this.props.loadProjects(this.props.url);
     }
     const { message } = this.props;
     if (message !== prevProps.message) {
-      // Check for course error
-      if(message.id === 'COURSES_ERROR'){
+      // Check for project error
+      if(message.id === 'PROJECTS_ERROR'){
         this.setState({msg: message.msg, msgType: 'error'});
       }
       else {
@@ -51,21 +51,21 @@ export class CourseList extends Component {
   render(){
     return(
       <div>
-        {this.props.course.isLoading ? <LinearProgress /> : null}
+        {this.props.project.isLoading ? <LinearProgress /> : null}
         <div style={{maxWidth: '1000px', marginLeft: 'auto', marginRight: 'auto', marginTop: '30px'}}>
           {this.state.msg ? <Alert style={{marginBottom: '10px'}} icon={false} severity={this.state.msgType}>{this.state.msg}</Alert> : null}
-          {!this.props.course.isLoading ?
+          {!this.props.project.isLoading ?
             <div>
-            <CourseFilter url={this.props.url}/>
-            <CourseListMap />
-            {this.props.course.courses && this.props.course.courses.length > 0 ?
-              this.props.course.courses.map(course => (
-                <Link key={course._id} to={`/course/${course._id}`} style={{textDecoration: 'none'}}>
+            <ProjectFilter url={this.props.url}/>
+            <ProjectListMap />
+            {this.props.project.projects && this.props.project.projects.length > 0 ?
+              this.props.project.projects.map(project => (
+                <Link key={project._id} to={`/project/${project._id}`} style={{textDecoration: 'none'}}>
                   <Paper style={{marginBottom: '15px'}}>
                     <Grid container spacing={2}>
                       <Grid item>
-                        {(course.image && course.image.path) ?
-                          <Avatar src={`/media/${course.image.path}`} style={{width: '200px', height: '200px'}}/>
+                        {(project.image && project.image.path) ?
+                          <Avatar src={`/media/${project.image.path}`} style={{width: '200px', height: '200px'}}/>
                         : <Avatar style={{width: '200px', height: '200px'}}></Avatar>
                         }
                       </Grid>
@@ -73,16 +73,16 @@ export class CourseList extends Component {
                         <Grid item xs container direction="column" spacing={2}>
                           <Grid item xs>
                             <Typography gutterBottom variant="body1">
-                              <b>{course.name}</b>
+                              <b>{project.name}</b>
                             </Typography>
                             <Typography variant="body2">
-                              Zeitraum von {moment(course.startdate).format('LL')} bis {moment(course.enddate).format('LL')}
+                              Zeitraum von {moment(project.startdate).format('LL')} bis {moment(project.enddate).format('LL')}
                             </Typography>
                             <Typography variant="body2">
-                              Thema: {course.topic}
+                              Thema: {project.topic}
                             </Typography>
                             <Typography variant="body2">
-                              Beschreibung: {course.description}
+                              Beschreibung: {project.description}
                             </Typography>
                           </Grid>
                         </Grid>
@@ -103,16 +103,16 @@ export class CourseList extends Component {
   }
 }
 
-CourseList.propTypes = {
-  course: PropTypes.object,
+ProjectList.propTypes = {
+  project: PropTypes.object,
   message: PropTypes.object.isRequired,
-  loadCourses: PropTypes.func.isRequired,
+  loadProjects: PropTypes.func.isRequired,
   clearParams: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  course: state.course,
+  project: state.project,
   message: state.message
 });
 
-export default connect(mapStateToProps, { loadCourses, clearParams })(CourseList);
+export default connect(mapStateToProps, { loadProjects, clearParams })(ProjectList);

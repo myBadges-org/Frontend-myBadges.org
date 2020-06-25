@@ -1,9 +1,9 @@
-import { COURSES_LOADED, COURSES_LOADING, COURSE_UPDATED, COURSE_USER_SIGNIN, COURSE_USER_SIGNOUT, GET_PARTICIPANTS, ASSIGNE_BADGE, UNASSIGNE_BADGE, ASSIGNE_MULTIPLE_BADGES, COURSE_LOADED, COURSE_LOADING, SET_COURSE_PARAMS, COURSE_ERROR } from '../actions/types';
+import { PROJECTS_LOADED, PROJECTS_LOADING, PROJECT_UPDATED, PROJECT_USER_SIGNIN, PROJECT_USER_SIGNOUT, GET_PARTICIPANTS, ASSIGNE_BADGE, UNASSIGNE_BADGE, ASSIGNE_MULTIPLE_BADGES, PROJECT_LOADED, PROJECT_LOADING, SET_PROJECT_PARAMS, PROJECT_ERROR } from '../actions/types';
 
 
 const initialState = {
-  courses: null,
-  course: null,
+  projects: null,
+  project: null,
   isLoading: false,
   params: {
     type: '',
@@ -22,46 +22,46 @@ const initialState = {
 
 export default function(state = initialState, action){
   switch(action.type){
-    case COURSE_LOADING:
+    case PROJECT_LOADING:
       return {
         ...state,
         isLoading: true
       };
-    case COURSE_LOADED:
+    case PROJECT_LOADED:
       return {
         ...state,
         isLoading: false,
-        course: action.payload
+        project: action.payload
       };
-    case COURSE_UPDATED:
-    case COURSE_USER_SIGNIN:
-    case COURSE_USER_SIGNOUT:
+    case PROJECT_UPDATED:
+    case PROJECT_USER_SIGNIN:
+    case PROJECT_USER_SIGNOUT:
     case GET_PARTICIPANTS:
     case ASSIGNE_BADGE:
     case UNASSIGNE_BADGE:
     case ASSIGNE_MULTIPLE_BADGES:
       return {
         ...state,
-        course: action.payload
+        project: action.payload
       };
-    case COURSES_LOADING:
+    case PROJECTS_LOADING:
       return {
         ...state,
         isLoading: true
       };
-    case COURSES_LOADED:
+    case PROJECTS_LOADED:
       return {
         ...state,
         isLoading: false,
-        courses: action.payload
+        projects: action.payload
       };
-    case COURSE_ERROR:
+    case PROJECT_ERROR:
       return {
         ...state,
-        courses: null,
+        projects: null,
         isLoading: false
       };
-    case SET_COURSE_PARAMS:
+    case SET_PROJECT_PARAMS:
       return {
         ...state,
         params: action.payload

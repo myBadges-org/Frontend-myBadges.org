@@ -6,7 +6,7 @@ import { Map, Marker, Popup, Circle, CircleMarker, FeatureGroup , TileLayer } fr
 
 
 
-export class CourseListMap extends Component {
+export class ProjectListMap extends Component {
 
   // https://stackoverflow.com/questions/53601692/fit-map-to-feature-layer-bounds-in-react-leaflet
   onFeatureGroupAdd = (e) => {
@@ -14,20 +14,20 @@ export class CourseListMap extends Component {
   }
 
   render(){
-    const isCourseLocated = this.props.courses ? this.props.courses.filter(course => course.coordinates).length > 0 : false;
+    const isProjectLocated = this.props.projects ? this.props.projects.filter(project => project.coordinates).length > 0 : false;
     return(
-        isCourseLocated ?
+        isProjectLocated ?
           <Map ref={(refElement) => {this.refMap = refElement}} center={[51.9606649, 7.6261347]} zoom={13} style={{width: '100%', height: '300px', marginBottom: '20px', borderRadius: '4px'}}>
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
             />
-            {(this.props.courses && this.props.courses.length) > 0 || this.props.coordinates ?
+            {(this.props.projects && this.props.projects.length) > 0 || this.props.coordinates ?
               <FeatureGroup onAdd={this.onFeatureGroupAdd}>
-                {this.props.courses.map(course => (
-                  course.coordinates ?
-                    <Marker key={course._id} position={[course.coordinates.coordinates[1], course.coordinates.coordinates[0]]}>
-                      <Popup>{course.name}</Popup>
+                {this.props.projects.map(project => (
+                  project.coordinates ?
+                    <Marker key={project._id} position={[project.coordinates.coordinates[1], project.coordinates.coordinates[0]]}>
+                      <Popup>{project.name}</Popup>
                     </Marker>
                   : null
                 ))}
@@ -49,16 +49,16 @@ export class CourseListMap extends Component {
   }
 }
 
-CourseListMap.propTypes = {
-  courses: PropTypes.array
+ProjectListMap.propTypes = {
+  projects: PropTypes.array
 };
 
 const mapStateToProps = state => ({
-  courses: state.course.courses,
-  coordinates: state.course.params.coordinates,
-  address: state.course.params.address,
-  radius: state.course.params.radius,
-  online: state.course.params.online
+  projects: state.project.projects,
+  coordinates: state.project.params.coordinates,
+  address: state.project.params.address,
+  radius: state.project.params.radius,
+  online: state.project.params.online
 });
 
-export default connect(mapStateToProps, null)(CourseListMap);
+export default connect(mapStateToProps, null)(ProjectListMap);

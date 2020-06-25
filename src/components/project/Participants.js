@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getParticipants } from '../../actions/courseActions';
+import { getParticipants } from '../../actions/projectActions';
 
 import moment from 'moment';
 import localization from 'moment/locale/de';
@@ -36,7 +36,7 @@ export class Participants extends Component {
   }
 
   componentDidMount(){
-    this.props.getParticipants(this.props.match.params.courseId);
+    this.props.getParticipants(this.props.match.params.projectId);
   }
 
   componentDidUpdate(previousProps, previousState) {
@@ -49,10 +49,10 @@ export class Participants extends Component {
     if(this.state.openUnassigneBadge === true){
       this.setState({ openUnassigneBadge: false });
     }
-    const { message, course } = this.props;
+    const { message, project } = this.props;
     if (message !== previousProps.message) {
-      if(message.id === 'COURSE_PARTICIPANTS_SUCCESS'){
-        this.setState({ participants: course.participants });
+      if(message.id === 'PROJECT_PARTICIPANTS_SUCCESS'){
+        this.setState({ participants: project.participants });
       }
     }
   }
@@ -72,7 +72,7 @@ export class Participants extends Component {
           fullWidth
           onClose={this.toggle}
         >
-          <DialogTitle>Teilnehmer vom Projekt {this.props.courseName}</DialogTitle>
+          <DialogTitle>Teilnehmer vom Projekt {this.props.projectName}</DialogTitle>
           <DialogContent>
             <div>
               {this.state.msg ? <Alert style={{marginBottom: '10px'}} icon={false} severity={this.state.msgType}>{this.state.msg}</Alert> : null}
@@ -139,14 +139,14 @@ export class Participants extends Component {
 }
 
 Participants.propTypes = {
-  course: PropTypes.object,
+  project: PropTypes.object,
   message: PropTypes.object.isRequired,
   getParticipants: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   message: state.message,
-  course: state.course.course
+  project: state.project.project
 });
 
 export default connect(mapStateToProps, { getParticipants })(withRouter(Participants));
