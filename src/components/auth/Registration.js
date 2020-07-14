@@ -66,7 +66,7 @@ export class Registration extends Component {
       lastname,
       city,
       postalcode,
-      birthday,
+      birthday: moment(birthday).format('YYYY-MM-DD'),
       email,
       username,
       password,
@@ -139,6 +139,7 @@ export class Registration extends Component {
               label="Geburtsdatum"
               type="date"
               name="birthday"
+              placeholder="JJJJ-MM-TT"
               onChange={this.onChange}
               value={moment(this.state.birthday).format('YYYY-MM-DD')}
               InputLabelProps={{

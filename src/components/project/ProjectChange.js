@@ -169,8 +169,8 @@ export class ProjectChange extends Component {
     updatedProject.set('topic', topic);
     updatedProject.set('description', description);
     updatedProject.set('requirements', requirements);
-    updatedProject.set('startdate', startdate);
-    updatedProject.set('enddate', enddate);
+    updatedProject.set('startdate', moment(startdate).format('YYYY-MM-DD'));
+    updatedProject.set('enddate', moment(enddate).format('YYYY-MM-DD'));
     updatedProject.set('size', size);
     badge.forEach((item, i) => {
       updatedProject.append('badge[]', item);
@@ -289,6 +289,7 @@ export class ProjectChange extends Component {
                     label="Stadtdatum"
                     type="date"
                     name="startdate"
+                    placeholder="JJJJ-MM-TT"
                     value={moment(this.state.startdate).format('YYYY-MM-DD')}
                     onChange={this.onChange}
                     InputLabelProps={{
@@ -302,6 +303,7 @@ export class ProjectChange extends Component {
                     label="Enddatum"
                     type="date"
                     name="enddate"
+                    placeholder="JJJJ-MM-TT"
                     value={moment(this.state.enddate).format('YYYY-MM-DD')}
                     onChange={this.onChange}
                     InputLabelProps={{

@@ -154,8 +154,8 @@ export class CreateProject extends Component {
     newProject.set('topic', topic);
     newProject.set('description', description);
     newProject.set('requirements', requirements);
-    newProject.set('startdate', startdate);
-    newProject.set('enddate', enddate);
+    newProject.set('startdate', moment(startdate).format('YYYY-MM-DD'));
+    newProject.set('enddate', moment(enddate).format('YYYY-MM-DD'));
     newProject.set('size', size);
     badge.forEach((item, i) => {
       newProject.append('badge[]', item);
@@ -284,6 +284,7 @@ export class CreateProject extends Component {
               label="Stadtdatum"
               type="date"
               name="startdate"
+              placeholder="JJJJ-MM-TT"
               value={moment(this.state.startdate).format('YYYY-MM-DD')}
               onChange={this.onChange}
               InputLabelProps={{
@@ -297,6 +298,7 @@ export class CreateProject extends Component {
               label="Enddatum"
               type="date"
               name="enddate"
+              placeholder="JJJJ-MM-TT"
               value={moment(this.state.enddate).format('YYYY-MM-DD')}
               onChange={this.onChange}
               InputLabelProps={{
