@@ -1,10 +1,16 @@
-import { GET_BADGES, ADD_BADGE, CHANGE_BADGE, CHANGE_BADGES, BADGES_LOADING, DEACTIVATE_BADGE, NOMINATE_ISSUER, ACCEPT_MENTOR, DECLINE_MENTOR, REQUEST_BADGE_PERMISSION } from '../actions/types';
+import { GET_BADGES, ADD_BADGE, CHANGE_BADGE, CHANGE_BADGES, BADGES_LOADING, DEACTIVATE_BADGE, SET_BADGE_PARAMS, NOMINATE_ISSUER, ACCEPT_MENTOR, DECLINE_MENTOR, REQUEST_BADGE_PERMISSION } from '../actions/types';
 
 
 const initialState = {
   badges: [],
   badge: null,
-  isLoading: false
+  isLoading: false,
+  params: {
+    category: '',
+    name: false,
+    description: '',
+    parameter: 0
+  }
 };
 
 export default function(state = initialState, action){
@@ -31,6 +37,11 @@ export default function(state = initialState, action){
       return {
         ...state,
         badge: action.payload
+      }
+    case SET_BADGE_PARAMS:
+      return {
+        ...state,
+        params: action.payload
       }
     default:
       return state;

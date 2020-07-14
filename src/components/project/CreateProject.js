@@ -68,7 +68,7 @@ export class CreateProject extends Component {
   }
 
   componentDidMount(){
-    this.props.getBadges({issuer: this.props.user._id});
+    this.props.getBadges('/api/v1/badge', {issuer: this.props.user._id});
   }
 
   componentDidUpdate(previousProps, previousState) {

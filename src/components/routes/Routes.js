@@ -14,8 +14,7 @@ import EmailConfirmation from '../auth/EmailConfirmation';
 import Project from '../project/Project';
 import ProjectList from '../project/ProjectList';
 import CreateProject from '../project/CreateProject';
-import BadgesMe from '../badge/BadgesMe';
-import BadgesAll from '../badge/BadgesAll';
+import BadgesList from '../badge/BadgesList';
 import Contact from '../contact/Contact';
 import Imprint from '../imprint/Imprint';
 import AboutUs from '../aboutUs/AboutUs';
@@ -53,9 +52,11 @@ class Routes extends Component {
           <CreateProject/>
         </PrivateRoute>
         <Route path="/project/:projectId" exact component={Project}/>
-        <Route path="/badges" exact component={BadgesAll}/>
+        <Route path="/badges" exact>
+          <BadgesList url='/api/v1/badge' create/>
+        </Route>
         <PrivateRoute path="/badges/me" exact>
-          <BadgesMe/>
+          <BadgesList url='/api/v1/badge/me'/>
         </PrivateRoute>
         <Route path="/contact" exact component={Contact} />
         <Route path="/imprint" exact component={Imprint} />

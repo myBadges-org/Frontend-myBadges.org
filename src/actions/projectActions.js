@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { returnErrors, returnSuccess } from './messageActions'
 
+import moment from 'moment';
+
 import {
   PROJECT_LOADED,
   PROJECT_LOADING,
@@ -375,10 +377,9 @@ export const onReset = (url) => (dispatch) => {
 export const onFilter = (url) => (dispatch, getState) => {
   var params = getState().project.params;
   const { type, coordinates, radius, startdate, enddate, topic, name } = params;
-  const configParams = {
-    startdate,
-    enddate,
-  };
+  const configParams = {};
+  if(Date.parse(moment(startdate).format('YYYY-MM-DD'))) configParams.startdate = moment(startdate).format('YYYY-MM-DD');
+  if(Date.parse(moment(enddate).format('YYYY-MM-DD'))) configParams.enddate = moment(enddate).format('YYYY-MM-DD');
   if(type !== '') configParams.type = type;
   if(name !== '') configParams.name = name;
   if(topic !== '') configParams.topic = topic;

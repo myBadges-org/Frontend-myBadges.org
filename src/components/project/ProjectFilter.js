@@ -133,6 +133,7 @@ export class ProjectFilter extends Component {
             label="Stadtdatum"
             type="date"
             name="startdate"
+            placeholder="JJJJ-MM-TT"
             value={moment(this.props.startdate).format('YYYY-MM-DD')}
             onChange={this.props.paramsOnChange}
             InputLabelProps={{
@@ -146,6 +147,7 @@ export class ProjectFilter extends Component {
             label="Enddatum"
             type="date"
             name="enddate"
+            placeholder="JJJJ-MM-TT"
             value={moment(this.props.enddate).format('YYYY-MM-DD')}
             onChange={this.props.paramsOnChange}
             InputLabelProps={{
