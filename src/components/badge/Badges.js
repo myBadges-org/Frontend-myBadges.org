@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 
 import BadgePaper from './Badge';
 
 import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
 
 export class Badges extends Component {
 

@@ -82,7 +82,7 @@ export class BadgeDetails extends Component {
 }
 
 BadgeDetails.propTypes = {
-  badge: PropTypes.object.isRequired
+  badge: PropTypes.object
 };
 
 const mapStateToProps = state => ({

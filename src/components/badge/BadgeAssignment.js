@@ -190,7 +190,7 @@ export class BadgeAssignment extends Component {
 
 
 BadgeAssignment.propTypes = {
-  badge: PropTypes.object.isRequired,
+  badge: PropTypes.object,
 };
 
 const mapStateToProps = state => ({

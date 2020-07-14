@@ -26,7 +26,6 @@ import IconButton from '@material-ui/core/IconButton';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTimes, faTrashAlt, faRocket } from "@fortawesome/free-solid-svg-icons";
 import Tooltip from '@material-ui/core/Tooltip';
-import Divider from '@material-ui/core/Divider';
 
 const styles = () => ({
   error: {
@@ -192,7 +191,7 @@ export class BadgeSettings extends Component {
 
 BadgeSettings.propTypes = {
   user: PropTypes.object,
-  badge: PropTypes.object.isRequired,
+  badge: PropTypes.object,
   message: PropTypes.object.isRequired,
   acceptIssuerRequest: PropTypes.func.isRequired,
   declineIssuerRequest: PropTypes.func.isRequired,

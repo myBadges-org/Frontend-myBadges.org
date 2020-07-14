@@ -127,7 +127,7 @@ export class BadgePaper extends Component {
 BadgePaper.propTypes = {
   user: PropTypes.object,
   message: PropTypes.object.isRequired,
-  badge: PropTypes.object.isRequired,
+  badge: PropTypes.object,
   requestBadgePermission: PropTypes.func.isRequired,
   getBadge: PropTypes.func.isRequired
 };
