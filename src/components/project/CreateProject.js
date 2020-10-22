@@ -67,15 +67,15 @@ export class CreateProject extends Component {
     size: ''
   }
 
-  componentDidMount(){
-    this.props.getBadges('/api/v1/badge', {issuer: this.props.user._id});
+  componentDidMount() {
+    this.props.getBadges('/api/v1/badge', { issuer: this.props.user._id });
   }
 
   componentDidUpdate(previousProps, previousState) {
-    if(previousState.open === true){
+    if (previousState.open === true) {
       this.setState({ open: false });
     }
-    if(this.state.msg){
+    if (this.state.msg) {
       window.scrollTo(0, 0);
     }
   }
@@ -86,7 +86,7 @@ export class CreateProject extends Component {
 
   onFileChange = (e) => {
     var extensionType = e.target.files[0].type.split('image/')[1];
-    if(extensionType !== 'png' && extensionType !== 'jpg' && extensionType !== 'gif' && extensionType !== 'jpeg') {
+    if (extensionType !== 'png' && extensionType !== 'jpg' && extensionType !== 'gif' && extensionType !== 'jpeg') {
       this.setState({ msgType: 'error', msg: 'Es sind nur Bilder mit der Dateiendung "PNG", "JPG", "JPEG" und "GIF" erlaubt.' });
     }
     else {
@@ -95,21 +95,21 @@ export class CreateProject extends Component {
   };
 
   onChangeAddress = e => {
-    if(e.target.value){
+    if (e.target.value) {
       axios.get(`https://nominatim.openstreetmap.org/search?format=json&limit=3&q=${e.target.value}`)
         .then(res => {
-          if(res.data.length > 0){
-            this.setState({addresses: res.data});
+          if (res.data.length > 0) {
+            this.setState({ addresses: res.data });
           } else {
-            this.setState({addresses: ['Keine Übereinstimmung gefunden.']});
+            this.setState({ addresses: ['Keine Übereinstimmung gefunden.'] });
           }
         })
         .catch(err => {
-          this.setState({msgType: 'error', msg: err.response.data.message});
+          this.setState({ msgType: 'error', msg: err.response.data.message });
         });
     }
     else {
-      this.setState({addresses: []});
+      this.setState({ addresses: [] });
     }
   };
 
@@ -160,10 +160,10 @@ export class CreateProject extends Component {
     badge.forEach((item, i) => {
       newProject.append('badge[]', item);
     });
-    if(file){
+    if (file) {
       newProject.append('image', file);
     }
-    if(project !== 'online'){
+    if (project !== 'online') {
       newProject.set('postalcode', postalcode);
       newProject.set('address', address);
       coordinates.forEach((item, i) => {
@@ -176,15 +176,15 @@ export class CreateProject extends Component {
         this.props.history.push(`/project/${res.data.project._id}`);
       })
       .catch(err => {
-        this.setState({msgType: 'error', msg: err.response.data.message});
+        this.setState({ msgType: 'error', msg: err.response.data.message });
       });
   };
 
-  render(){
-    return(
-      <div style={{maxWidth: '500px', marginLeft: 'auto', marginRight: 'auto', marginTop: '30px'}}>
-        {this.state.msg ? <Alert style={{marginBottom: '10px'}} icon={false} severity={this.state.msgType}>{this.state.msg}</Alert> : null}
-        <Alert style={{marginBottom: '10px'}} icon={false} severity={'info'}><div>Beachten Sie, dass beim Erstellen eines Projektes ausschließlich Badges auswählbar sind, die man selbstständig vergeben darf. Einen Überblick über alle Badges erhalten Sie <Link to="/badges" className={this.props.classes.link}>hier</Link>.</div></Alert>
+  render() {
+    return (
+      <div style={{ maxWidth: '500px', marginLeft: 'auto', marginRight: 'auto', marginTop: '30px' }}>
+        {this.state.msg ? <Alert style={{ marginBottom: '10px' }} icon={false} severity={this.state.msgType}>{this.state.msg}</Alert> : null}
+        <Alert style={{ marginBottom: '10px' }} icon={false} severity={'info'}><div>Beachten Sie, dass beim Erstellen eines Projektes ausschließlich Badges auswählbar sind, die man selbstständig vergeben darf. Einen Überblick über alle Badges erhalten Sie <Link to="/badges" className={this.props.classes.link}>hier</Link>.</div></Alert>
         <FormControl component="fieldset">
           <RadioGroup row name="project" value={this.state.project} onClick={this.onChange}>
             <FormControlLabel
@@ -204,24 +204,24 @@ export class CreateProject extends Component {
         <Grid container direction="row" spacing={1}>
           <Grid item xs={6}>
             {this.state.url ?
-              <Avatar src={this.state.url} style={{width: '200px', height: '200px'}}/>
-            : <Avatar style={{width: '200px', height: '200px'}}></Avatar>
+              <Avatar src={this.state.url} style={{ width: '200px', height: '200px' }} />
+              : <Avatar style={{ width: '200px', height: '200px' }}></Avatar>
             }
           </Grid>
           <Grid item xs={6}>
             <input
-              style={{display: 'none'}}
+              style={{ display: 'none' }}
               accept="image/*"
               onChange={this.onFileChange}
               name="picture"
               type="file"
               ref={fileInput => this.fileInput = fileInput}
             />
-            <Button color="primary" variant='contained' onClick={() => this.fileInput.click()} style={{top: '50%', transform: 'translateY(-50%)'}}>Bild auswählen</Button>
+            <Button color="primary" variant='contained' onClick={() => this.fileInput.click()} style={{ top: '50%', transform: 'translateY(-50%)' }}>Bild auswählen</Button>
           </Grid>
           <Grid item xs={12} md={6}>
             <TextField
-              style={{marginBottom: '10px'}}
+              style={{ marginBottom: '10px' }}
               variant='outlined'
               type='text'
               label='Name'
@@ -231,7 +231,7 @@ export class CreateProject extends Component {
               fullWidth={true}
             />
             <TextField
-              style={{marginBottom: '10px'}}
+              style={{ marginBottom: '10px' }}
               variant='outlined'
               type='text'
               label='Anbieter des Projektes'
@@ -253,20 +253,20 @@ export class CreateProject extends Component {
                 onBlur={this.onChangeAddress}
                 fullWidth={true}
               />
-              <List style={{paddingTop: 0, paddingBottom: '10px'}}>
-              {this.state.addresses.map((address, i) => (
-                address === 'Keine Übereinstimmung gefunden.' ?
-                  <ListItem button key={i} onClick={this.deleteAddress} style={{border: '1px solid rgba(0, 0, 0, 0.23)', borderRadius: '4px'}}>
-                    <ListItemText>{address}</ListItemText>
-                  </ListItem>
-                :
-                <ListItem button key={i} onClick={() => {this.setAddress(address)}} style={{border: '1px solid rgba(0, 0, 0, 0.23)', borderRadius: '4px'}}>
-                  <ListItemText>{address.display_name}</ListItemText>
-                </ListItem>
-              ))}
+              <List style={{ paddingTop: 0, paddingBottom: '10px' }}>
+                {this.state.addresses.map((address, i) => (
+                  address === 'Keine Übereinstimmung gefunden.' ?
+                    <ListItem button key={i} onClick={this.deleteAddress} style={{ border: '1px solid rgba(0, 0, 0, 0.23)', borderRadius: '4px' }}>
+                      <ListItemText>{address}</ListItemText>
+                    </ListItem>
+                    :
+                    <ListItem button key={i} onClick={() => { this.setAddress(address) }} style={{ border: '1px solid rgba(0, 0, 0, 0.23)', borderRadius: '4px' }}>
+                      <ListItemText>{address.display_name}</ListItemText>
+                    </ListItem>
+                ))}
               </List>
               <TextField
-                style={{marginBottom: '10px'}}
+                style={{ marginBottom: '10px' }}
                 variant='outlined'
                 type='text'
                 label='Postleitzahl'
@@ -276,12 +276,12 @@ export class CreateProject extends Component {
                 fullWidth={true}
               />
             </Grid>
-          : null}
+            : null}
           <Grid item xs={12} md={6}>
             <TextField
-              style={{marginBottom: '10px'}}
+              style={{ marginBottom: '10px' }}
               variant='outlined'
-              label="Stadtdatum"
+              label="Startdatum"
               type="date"
               name="startdate"
               placeholder="JJJJ-MM-TT"
@@ -293,7 +293,7 @@ export class CreateProject extends Component {
               fullWidth={true}
             />
             <TextField
-              style={{marginBottom: '10px'}}
+              style={{ marginBottom: '10px' }}
               variant='outlined'
               label="Enddatum"
               type="date"
@@ -309,7 +309,7 @@ export class CreateProject extends Component {
           </Grid>
           <Grid item xs={12} md={6}>
             <TextField
-              style={{marginBottom: '10px'}}
+              style={{ marginBottom: '10px' }}
               variant='outlined'
               type='text'
               label='Thema'
@@ -319,7 +319,7 @@ export class CreateProject extends Component {
               fullWidth={true}
             />
             <TextField
-              style={{marginBottom: '10px'}}
+              style={{ marginBottom: '10px' }}
               variant='outlined'
               type='text'
               label='Beschreibung'
@@ -332,7 +332,7 @@ export class CreateProject extends Component {
           </Grid>
           <Grid item xs={12} md={6}>
             <TextField
-              style={{marginBottom: '10px'}}
+              style={{ marginBottom: '10px' }}
               variant='outlined'
               type='text'
               label='Voraussetzungen'
@@ -343,7 +343,7 @@ export class CreateProject extends Component {
               fullWidth={true}
             />
             <TextField
-              style={{marginBottom: '10px'}}
+              style={{ marginBottom: '10px' }}
               variant='outlined'
               type='text'
               label='max. Teilnehmeranzahl'
@@ -355,7 +355,7 @@ export class CreateProject extends Component {
           </Grid>
           {this.props.badges.length > 0 ?
             <Grid item xs={12} md={6}>
-              <FormControl variant="outlined" fullWidth style={{marginBottom: '10px'}}>
+              <FormControl variant="outlined" fullWidth style={{ marginBottom: '10px' }}>
                 <InputLabel id="select-badge">Badges</InputLabel>
                 <Select
                   labelId="select-badge"
@@ -369,30 +369,30 @@ export class CreateProject extends Component {
                     <MenuItem key={badge._id} value={badge._id}>{badge.name}</MenuItem>
                   ))}
                 </Select>
-                <LinkMaterial color="primary" onClick={() => {this.setState({ open: true });}} style={{cursor: 'pointer'}}>
+                <LinkMaterial color="primary" onClick={() => { this.setState({ open: true }); }} style={{ cursor: 'pointer' }}>
                   Nicht der richtige Badge dabei?
-                  <CreateBadge open={this.state.open}/>
+                  <CreateBadge open={this.state.open} />
                 </LinkMaterial>
               </FormControl>
             </Grid>
-          : <Grid item xs={12} md={6}>
+            : <Grid item xs={12} md={6}>
               {`Sie können aktuell keinen Badge vergeben. Beantragen Sie entweder die Rechte an einen bestehenden Badge `}
               <Link to="/badges" className={this.props.classes.link}>hier</Link>
-               {` oder erstellen Sie einen `}
-              <LinkMaterial color="primary" onClick={() => {this.setState({ open: true });}} style={{cursor: 'pointer'}}>
+              {` oder erstellen Sie einen `}
+              <LinkMaterial color="primary" onClick={() => { this.setState({ open: true }); }} style={{ cursor: 'pointer' }}>
                 neuen Badge
-                <CreateBadge open={this.state.open}/>
+                <CreateBadge open={this.state.open} />
               </LinkMaterial>.
             </Grid>
           }
         </Grid>
         <p>
-          <Button color="primary" variant='contained' onClick={this.onSubmit} style={{width: '100%'}}>
+          <Button color="primary" variant='contained' onClick={this.onSubmit} style={{ width: '100%' }}>
             Projekt erstellen
           </Button>
         </p>
         <p>
-          <Button color="default" variant='contained' onClick={this.onReset} style={{width: '100%'}}>
+          <Button color="default" variant='contained' onClick={this.onReset} style={{ width: '100%' }}>
             Zurücksetzen
           </Button>
         </p>
