@@ -250,7 +250,7 @@ export const assigneMultipleBadges = (projectId, badges) => (dispatch, getState)
 };
 
 // get projects
-export const loadProjects = (url, params) => (dispatch, getState) => {
+export const loadProjects = (url, params, successCb) => (dispatch, getState) => {
   var parameter = getState().project.params;
   if(parameter.type === 'online'){
     parameter.online = true;
@@ -272,13 +272,16 @@ export const loadProjects = (url, params) => (dispatch, getState) => {
   const config = {
     params: params,
     success: res => {
-      dispatch(returnSuccess(res.data.message, res.status));
       dispatch({
         type: PROJECTS_LOADED,
         payload: res.data.projects
       })
+      if(!successCb){
+        dispatch(returnSuccess(res.data.message, res.status));
+      }
     },
     error: err => {
+      console.log(err);
       if(err.response){
         dispatch(returnErrors(err.response.data.message, err.response.status, 'PROJECTS_ERROR'));
       }

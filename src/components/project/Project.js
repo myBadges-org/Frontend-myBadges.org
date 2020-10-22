@@ -95,6 +95,30 @@ export class Project extends Component {
     if(ref) ref.leafletElement.openPopup();
   }
 
+
+  createCode = () => {
+    const config = {
+      success: res => {
+        this.setState({msgType: 'success', msg: 'Es wurde erfolgreich ein Code erstellt. Den Code und weitere Informationen erhalten Sie via E-Mail.'});
+        window.scrollTo(0, 0);
+      },
+      error: err => {
+        this.setState({msgType: 'error', msg: err.response.data.message});
+        window.scrollTo(0, 0);
+      }
+    };
+    axios.post(`/api/v1/project/${this.props.match.params.projectId}/code`, {}, config)
+      .then(res => {
+        res.config.success(res);
+      })
+      .catch(err => {
+        if(err.response.status !== 401){
+          err.config.error(err);
+        }
+      });
+  };
+
+
   onDelete = (e) => {
     e.preventDefault();
     const config = {
@@ -103,6 +127,7 @@ export class Project extends Component {
       },
       error: err => {
         this.setState({msgType: 'error', msg: err.response.data.message});
+        window.scrollTo(0, 0);
       }
     };
     axios.put(`/api/v1/project/${this.props.match.params.projectId}/deactivation`, {}, config)
@@ -207,6 +232,11 @@ export class Project extends Component {
                         Badges vergeben
                       </Button>
                       <AssigneMultipleBadges open={this.state.openAssigneBadges}/>
+                    </p>
+                    <p>
+                      <Button color="primary" variant='contained' onClick={() => this.createCode()} style={{width: '100%'}}>
+                        Code erstellen
+                      </Button>
                     </p>
                     <Divider variant='fullWidth'/>
                     <p>

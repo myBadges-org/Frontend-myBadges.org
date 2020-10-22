@@ -7,6 +7,7 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 
 import ProjectFilter from './ProjectFilter';
+import Code from './Code';
 import ProjectListMap from './ProjectListMap';
 
 import Paper from '@material-ui/core/Paper';
@@ -42,6 +43,9 @@ export class ProjectList extends Component {
       if(message.id === 'PROJECTS_ERROR'){
         this.setState({msg: message.msg, msgType: 'error'});
       }
+      else if(message.id === 'PROJECTS_SUCCESS'){
+        this.setState({msg: message.msg, msgType: 'success'});
+      }
       else {
         this.setState({msg: null, msgType: ''});
       }
@@ -56,6 +60,9 @@ export class ProjectList extends Component {
           {this.state.msg ? <Alert style={{marginBottom: '10px'}} icon={false} severity={this.state.msgType}>{this.state.msg}</Alert> : null}
           {!this.props.project.isLoading ?
             <div>
+            {/^.*project\/me$/.test(this.props.url) ?
+              <Code url={this.props.url}/>
+            : null}
             <ProjectFilter url={this.props.url}/>
             <ProjectListMap />
             {this.props.project.projects && this.props.project.projects.length > 0 ?
