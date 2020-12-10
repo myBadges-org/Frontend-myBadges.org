@@ -57,7 +57,7 @@ export class BadgePaper extends Component {
     const badge = this.props.content
     var isIssuer, isMentor, isRequester, isNothing;
     if(this.props.user && this.props.settings){
-      if(badge.issuer.indexOf(this.props.user._id) > -1){
+      if(badge.issuer.map(issuer => issuer._id).indexOf(this.props.user._id) > -1){
         isIssuer = true; isMentor = false; isRequester = false; isNothing = false;
       }
       else if(badge.mentor.map(mentor => mentor._id).indexOf(this.props.user._id) > -1){

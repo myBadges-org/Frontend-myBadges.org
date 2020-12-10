@@ -6,6 +6,8 @@ import { USER_LOADED, LOGOUT_SUCCESS } from '../../actions/types';
 import axios from 'axios';
 import moment from 'moment';
 
+import CreateAccounts from './CreateAccounts';
+
 import { withStyles } from '@material-ui/core/styles';
 
 import Grid from '@material-ui/core/Grid';
@@ -16,6 +18,9 @@ import Divider from '@material-ui/core/Divider';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Badge from '@material-ui/core/Badge';
 import Avatar from '@material-ui/core/Avatar';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 const styles = () => ({
   error: {
@@ -35,14 +40,18 @@ const styles = () => ({
 export class User extends Component {
 
   state = {
+    user: 'change',
     msg: null,
     msgType: null,
     file: null,
     url: null,
+    username: this.props.user.username,
+    firstname: this.props.user.firstname,
     lastname: this.props.user.lastname,
     email: this.props.user.email,
     city: this.props.user.city,
     postalcode: this.props.user.postalcode,
+    birthday: this.props.user.birthday || '',
   }
 
   componentDidUpdate() {
@@ -64,17 +73,20 @@ export class User extends Component {
   };
 
   onReset = () => {
-    this.setState({ msg: null, msgType: null, file: null, url: null, lastname: this.props.user.lastname, email: this.props.user.email, city: this.props.user.city, postalcode: this.props.user.postalcode });
+    this.setState({ msg: null, msgType: null, file: null, url: null, firstname: this.props.user.firstname, lastname: this.props.user.lastname, email: this.props.user.email, city: this.props.user.city, postalcode: this.props.user.postalcode });
   };
 
   onSubmit = e => {
     e.preventDefault();
-    const { lastname, city, postalcode, email, file } = this.state;
+    const { username, firstname, lastname, city, postalcode, email, file, birthday } = this.state;
     var updatedUser = new FormData();
+    updatedUser.set('username', username);
+    updatedUser.set('firstname', firstname);
     updatedUser.set('lastname', lastname);
     updatedUser.set('city', city);
     updatedUser.set('postalcode', postalcode);
     updatedUser.set('email', email);
+    updatedUser.set('birthday', moment(birthday).format('YYYY-MM-DD'));
     updatedUser.append('profile', file);
     // Request Body
     const config = {
@@ -89,16 +101,29 @@ export class User extends Component {
         this.setState({msgType: 'error', msg: err.response.data.message});
       }
     };
-    axios.put('/api/v1/user/me', updatedUser, config)
-      .then(res => {
-        res.config.success(res);
-      })
-      .catch(err => {
-        if(err.response.status !== 401){
-          err.config.error(err);
-        }
-      });
+    if(this.state.user === 'change'){
+      axios.put('/api/v1/user/me', updatedUser, config)
+        .then(res => {
+          res.config.success(res);
+        })
+        .catch(err => {
+          if(err.response.status !== 401){
+            err.config.error(err);
+          }
+        });
+    } else {
+      axios.post('/api/v1/user/me', updatedUser, config)
+        .then(res => {
+          res.config.success(res);
+        })
+        .catch(err => {
+          if(err.response.status !== 401){
+            err.config.error(err);
+          }
+        });
+    }
   };
+
 
   onDelete = (e) => {
     e.preventDefault();
@@ -129,24 +154,45 @@ export class User extends Component {
     return(
       <div style={{maxWidth: '500px', marginLeft: 'auto', marginRight: 'auto', marginTop: '30px'}}>
         {this.state.msg ? <Alert style={{marginBottom: '10px'}} icon={false} severity={this.state.msgType}>{this.state.msg}</Alert> : null}
-        <Grid container spacing={1}>
-          <Grid item xs={6}>
-            {(user.image && user.image.path) || this.state.url ?
-              <Avatar src={this.state.url || `/media/${user.image.path}`} style={{width: '200px', height: '200px'}}/>
-            : <Avatar style={{width: '200px', height: '200px'}}>{user.firstname.charAt(0)}{this.state.lastname.charAt(0)}</Avatar>
-            }
-          </Grid>
-          <Grid item xs={6}>
-            <input
-              style={{display: 'none'}}
-              accept="image/*"
-              onChange={this.onFileChange}
-              name="picture"
-              type="file"
-              ref={fileInput => this.fileInput = fileInput}
+        {this.props.user.role[0] === 'teacher' ? <CreateAccounts /> : null}
+        {!this.props.user.email ?
+          <RadioGroup row value={this.state.user} name='user' onChange={(e) => this.onChange(e)} style={{marginBottom: '10px'}}>
+            <FormControlLabel style={{color: 'black'}}
+              value="change"
+              control={<Radio color="primary" />}
+              label="Namen ändern"
+              labelPlacement="end"
             />
-            <Button color="primary" variant='contained' onClick={() => this.fileInput.click()} style={{top: '50%', transform: 'translateY(-50%)'}}>Bild auswählen</Button>
-          </Grid>
+            <FormControlLabel style={{color: 'black'}}
+              value="new"
+              control={<Radio color="primary" />}
+              label="Informationen ergänzen"
+              labelPlacement="end"
+            />
+          </RadioGroup>
+        : null}
+        <Grid container spacing={1}>
+          {this.props.user.image || this.state.user === 'new' ?
+            <Grid item xs={6}>
+              {(user.image && user.image.path) || this.state.url ?
+                <Avatar src={this.state.url || `/media/${user.image.path}`} style={{width: '200px', height: '200px'}}/>
+              : <Avatar style={{width: '200px', height: '200px'}}>{user.firstname.charAt(0)}{this.state.lastname.charAt(0)}</Avatar>
+              }
+            </Grid>
+          : null}
+          {this.props.user.image || this.state.user === 'new' ?
+            <Grid item xs={6}>
+              <input
+                style={{display: 'none'}}
+                accept="image/*"
+                onChange={this.onFileChange}
+                name="picture"
+                type="file"
+                ref={fileInput => this.fileInput = fileInput}
+              />
+              <Button color="primary" variant='contained' onClick={() => this.fileInput.click()} style={{top: '50%', transform: 'translateY(-50%)'}}>Bild auswählen</Button>
+            </Grid>
+          : null}
           <Grid item xs={12} md={6}>
             <TextField
               style={{marginBottom: '10px'}}
@@ -154,8 +200,9 @@ export class User extends Component {
               type='text'
               label='Vorname'
               name='firstname'
-              disabled
-              defaultValue={user.firstname}
+              disabled={this.props.user.email}
+              value={this.state.firstname}
+              onChange={this.onChange}
               fullWidth={true}
             />
             <TextField
@@ -169,75 +216,97 @@ export class User extends Component {
               fullWidth={true}
             />
           </Grid>
-          <Grid item xs={12} md={6}>
-            <TextField
-              style={{marginBottom: '10px'}}
-              variant='outlined'
-              type='text'
-              label='Email'
-              name='email'
-              value={this.state.email}
-              onChange={this.onChange}
-              fullWidth={true}
-              InputProps={{
-                endAdornment:
-                  <InputAdornment
-                    position="end"
-                  >
-                    {user.emailIsConfirmed ?
-                    <Badge badgeContent='verifiziert' color='default'/>
-                    : <Badge badgeContent='nicht verifiziert' color='error'/>}
-                  </InputAdornment>
-              }}
-            />
-            <TextField
-              style={{marginBottom: '10px'}}
-              variant='outlined'
-              type='text'
-              label='Rolle'
-              name='role'
-              disabled
-              defaultValue={user.role}
-              fullWidth={true}
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <TextField
-              style={{marginBottom: '10px'}}
-              variant='outlined'
-              type='text'
-              label='Stadt'
-              name='city'
-              value={this.state.city}
-              onChange={this.onChange}
-              fullWidth={true}
-            />
-            <TextField
-              style={{marginBottom: '10px'}}
-              variant='outlined'
-              type='text'
-              label='Postleitzahl'
-              name='postalcode'
-              value={this.state.postalcode}
-              onChange={this.onChange}
-              fullWidth={true}
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <TextField
-              style={{marginBottom: '10px'}}
-              variant='outlined'
-              label="Geburtsdatum"
-              type="date"
-              name="birthday"
-              disabled
-              defaultValue={moment(user.birthday).format('YYYY-MM-DD')}
-              InputLabelProps={{
-                shrink: true
-              }}
-              fullWidth={true}
-            />
-          </Grid>
+          {!this.props.user.email ?
+            <Grid item xs={12} md={6}>
+              <TextField
+                style={{marginBottom: '10px'}}
+                variant='outlined'
+                type='text'
+                label='Nutzername'
+                name='username'
+                value={this.state.username}
+                onChange={this.onChange}
+                fullWidth={true}
+              />
+            </Grid>
+          : null}
+          {this.props.user.email || this.state.user === 'new'?
+            <Grid item xs={12} md={6}>
+              <TextField
+                style={{marginBottom: '10px'}}
+                variant='outlined'
+                type='text'
+                label='Email'
+                name='email'
+                value={this.state.email}
+                onChange={this.onChange}
+                fullWidth={true}
+                InputProps={this.props.user.email ? {
+                  endAdornment:
+                    <InputAdornment
+                      position="end"
+                    >
+                      {user.emailIsConfirmed ?
+                      <Badge badgeContent='verifiziert' color='default'/>
+                      : <Badge badgeContent='nicht verifiziert' color='error'/>}
+                    </InputAdornment>
+                } : null}
+              />
+              <TextField
+                style={{marginBottom: '10px'}}
+                variant='outlined'
+                type='text'
+                label='Rolle'
+                name='role'
+                disabled
+                defaultValue={user.role}
+                fullWidth={true}
+              />
+            </Grid>
+          : null}
+          {this.props.user.city || this.state.user === 'new'?
+            <Grid item xs={12} md={6}>
+              <TextField
+                style={{marginBottom: '10px'}}
+                variant='outlined'
+                type='text'
+                label='Stadt'
+                name='city'
+                value={this.state.city}
+                onChange={this.onChange}
+                fullWidth={true}
+              />
+              <TextField
+                style={{marginBottom: '10px'}}
+                variant='outlined'
+                type='text'
+                label='Postleitzahl'
+                name='postalcode'
+                value={this.state.postalcode}
+                onChange={this.onChange}
+                fullWidth={true}
+              />
+            </Grid>
+          : null}
+          {this.props.user.birthday || this.state.user === 'new'?
+            <Grid item xs={12} md={6}>
+              <TextField
+                style={{marginBottom: '10px'}}
+                variant='outlined'
+                label="Geburtsdatum"
+                type="date"
+                name="birthday"
+                onChange={this.onChange}
+                placeholder="JJJJ-MM-TT"
+                disabled={this.props.user.birthday}
+                value={moment(this.state.birthday).format('YYYY-MM-DD')}
+                InputLabelProps={{
+                  shrink: true
+                }}
+                fullWidth={true}
+              />
+            </Grid>
+          : null}
         </Grid>
         <p>
           <Button color="primary" variant='contained' onClick={this.onSubmit} style={{width: '100%'}}>

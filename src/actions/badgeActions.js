@@ -187,7 +187,7 @@ export const declineIssuerRequest = (badgeId, userId) => (dispatch, getState) =>
         if(err.response.status === 400){
           var badges = getState().badge.badges;
           const badgeIndex = badges.map(badge => badge._id).indexOf(badgeId);
-          badges[badgeIndex].request = badges[badgeIndex].request.filter(user => user._id !== userId);
+          badges[badgeIndex].requestor = badges[badgeIndex].requestor.filter(user => user._id !== userId);
           dispatch({
             type: DECLINE_MENTOR,
             payload: badges
