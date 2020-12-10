@@ -30,7 +30,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 
 export class ProjectChange extends Component {
 
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       open: false,
@@ -40,7 +40,7 @@ export class ProjectChange extends Component {
       file: null,
       url: props.project.image ? `/media/${props.project.image.path}` : '',
       name: props.project.name,
-      badge: props.project.badge.map(badge => {return badge._id}),
+      badge: props.project.badge.map(badge => { return badge._id }),
       provider: props.project.provider,
       postalcode: props.project.postalcode,
       addresses: [],
@@ -55,28 +55,28 @@ export class ProjectChange extends Component {
     }
   }
 
-  componentDidMount(){
-    this.props.getBadges('/api/v1/badge', {issuer: this.props.user._id});
+  componentDidMount() {
+    this.props.getBadges('/api/v1/badge', { issuer: this.props.user._id });
   }
 
   componentDidUpdate(previousProps, previousState) {
-    if(previousState.openBadgeCreator === true){
+    if (previousState.openBadgeCreator === true) {
       this.setState({ openBadgeCreator: false });
     }
-    if(previousProps.open !== this.props.open && this.props.open === true){
+    if (previousProps.open !== this.props.open && this.props.open === true) {
       this.setState({ open: true });
     }
     const { message } = this.props;
     if (message !== previousProps.message) {
-      if(message.id === 'PROJECT_UPDATED_SUCCESS'){
+      if (message.id === 'PROJECT_UPDATED_SUCCESS') {
         this.toggle();
       }
       // Check for project updated error
-      if(message.id === 'PROJECT_UPDATED_ERROR'){
-        this.setState({msg: message.msg, msgType: 'error'});
+      if (message.id === 'PROJECT_UPDATED_ERROR') {
+        this.setState({ msg: message.msg, msgType: 'error' });
       }
       else {
-        this.setState({msg: null});
+        this.setState({ msg: null });
       }
     }
   }
@@ -87,7 +87,7 @@ export class ProjectChange extends Component {
 
   onFileChange = (e) => {
     var extensionType = e.target.files[0].type.split('image/')[1];
-    if(extensionType !== 'png' && extensionType !== 'jpg' && extensionType !== 'gif' && extensionType !== 'jpeg') {
+    if (extensionType !== 'png' && extensionType !== 'jpg' && extensionType !== 'gif' && extensionType !== 'jpeg') {
       this.setState({ msgType: 'error', msg: 'Es sind nur Bilder mit der Dateiendung "PNG", "JPG", "JPEG" und "GIF" erlaubt.' });
     }
     else {
@@ -96,21 +96,21 @@ export class ProjectChange extends Component {
   };
 
   onChangeAddress = e => {
-    if(e.target.value){
+    if (e.target.value) {
       axios.get(`https://nominatim.openstreetmap.org/search?format=json&limit=3&q=${e.target.value}`)
         .then(res => {
-          if(res.data.length > 0){
-            this.setState({addresses: res.data});
+          if (res.data.length > 0) {
+            this.setState({ addresses: res.data });
           } else {
-            this.setState({addresses: ['Keine Übereinstimmung gefunden.']});
+            this.setState({ addresses: ['Keine Übereinstimmung gefunden.'] });
           }
         })
         .catch(err => {
-          this.setState({msgType: 'error', msg: err.response.data.message});
+          this.setState({ msgType: 'error', msg: err.response.data.message });
         });
     }
     else {
-      this.setState({addresses: []});
+      this.setState({ addresses: [] });
     }
   };
 
@@ -175,10 +175,10 @@ export class ProjectChange extends Component {
     badge.forEach((item, i) => {
       updatedProject.append('badge[]', item);
     });
-    if(file){
+    if (file) {
       updatedProject.append('image', file);
     }
-    if(this.props.project.coordinates){
+    if (this.props.project.coordinates) {
       updatedProject.set('postalcode', postalcode);
       updatedProject.set('address', address);
       coordinates.forEach((item, i) => {
@@ -192,7 +192,7 @@ export class ProjectChange extends Component {
     this.setState({ open: false });
   };
 
-  render(){
+  render() {
     const { project } = this.props;
     return (
       project ?
@@ -205,28 +205,28 @@ export class ProjectChange extends Component {
           <DialogTitle>"{project.name}" bearbeiten</DialogTitle>
           <DialogContent>
             <div>
-              {this.state.msg ? <Alert style={{marginBottom: '10px'}} icon={false} severity={this.state.msgType}>{this.state.msg}</Alert> : null}
+              {this.state.msg ? <Alert style={{ marginBottom: '10px' }} icon={false} severity={this.state.msgType}>{this.state.msg}</Alert> : null}
               <Grid container direction="row" spacing={1}>
                 <Grid item xs={6}>
                   {this.state.url ?
-                    <Avatar src={this.state.url} style={{width: '200px', height: '200px'}}/>
-                  : <Avatar style={{width: '200px', height: '200px'}}></Avatar>
+                    <Avatar src={this.state.url} style={{ width: '200px', height: '200px' }} />
+                    : <Avatar style={{ width: '200px', height: '200px' }}></Avatar>
                   }
                 </Grid>
                 <Grid item xs={6}>
                   <input
-                    style={{display: 'none'}}
+                    style={{ display: 'none' }}
                     accept="image/*"
                     onChange={this.onFileChange}
                     name="picture"
                     type="file"
                     ref={fileInput => this.fileInput = fileInput}
                   />
-                  <Button color="primary" variant='contained' onClick={() => this.fileInput.click()} style={{top: '50%', transform: 'translateY(-50%)'}}>Bild auswählen</Button>
+                  <Button color="primary" variant='contained' onClick={() => this.fileInput.click()} style={{ top: '50%', transform: 'translateY(-50%)' }}>Bild auswählen</Button>
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <TextField
-                    style={{marginBottom: '10px'}}
+                    style={{ marginBottom: '10px' }}
                     variant='outlined'
                     type='text'
                     label='Name'
@@ -236,7 +236,7 @@ export class ProjectChange extends Component {
                     fullWidth={true}
                   />
                   <TextField
-                    style={{marginBottom: '10px'}}
+                    style={{ marginBottom: '10px' }}
                     variant='outlined'
                     type='text'
                     label='Anbieter des Projektes'
@@ -258,20 +258,20 @@ export class ProjectChange extends Component {
                       onBlur={this.onChangeAddress}
                       fullWidth={true}
                     />
-                    <List style={{paddingTop: 0, paddingBottom: '10px'}}>
-                    {this.state.addresses.map((address, i) => (
-                      address === 'Keine Übereinstimmung gefunden.' ?
-                        <ListItem button key={i} onClick={this.deleteAddress} style={{border: '1px solid rgba(0, 0, 0, 0.23)', borderRadius: '4px'}}>
-                          <ListItemText>{address}</ListItemText>
-                        </ListItem>
-                      :
-                      <ListItem button key={i} onClick={() => {this.setAddress(address)}} style={{border: '1px solid rgba(0, 0, 0, 0.23)', borderRadius: '4px'}}>
-                        <ListItemText>{address.display_name}</ListItemText>
-                      </ListItem>
-                    ))}
+                    <List style={{ paddingTop: 0, paddingBottom: '10px' }}>
+                      {this.state.addresses.map((address, i) => (
+                        address === 'Keine Übereinstimmung gefunden.' ?
+                          <ListItem button key={i} onClick={this.deleteAddress} style={{ border: '1px solid rgba(0, 0, 0, 0.23)', borderRadius: '4px' }}>
+                            <ListItemText>{address}</ListItemText>
+                          </ListItem>
+                          :
+                          <ListItem button key={i} onClick={() => { this.setAddress(address) }} style={{ border: '1px solid rgba(0, 0, 0, 0.23)', borderRadius: '4px' }}>
+                            <ListItemText>{address.display_name}</ListItemText>
+                          </ListItem>
+                      ))}
                     </List>
                     <TextField
-                      style={{marginBottom: '10px'}}
+                      style={{ marginBottom: '10px' }}
                       variant='outlined'
                       type='text'
                       label='Postleitzahl'
@@ -281,12 +281,12 @@ export class ProjectChange extends Component {
                       fullWidth={true}
                     />
                   </Grid>
-                : null}
+                  : null}
                 <Grid item xs={12} md={6}>
                   <TextField
-                    style={{marginBottom: '10px'}}
+                    style={{ marginBottom: '10px' }}
                     variant='outlined'
-                    label="Stadtdatum"
+                    label="Startdatum"
                     type="date"
                     name="startdate"
                     placeholder="JJJJ-MM-TT"
@@ -298,7 +298,7 @@ export class ProjectChange extends Component {
                     fullWidth={true}
                   />
                   <TextField
-                    style={{marginBottom: '10px'}}
+                    style={{ marginBottom: '10px' }}
                     variant='outlined'
                     label="Enddatum"
                     type="date"
@@ -314,7 +314,7 @@ export class ProjectChange extends Component {
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <TextField
-                    style={{marginBottom: '10px'}}
+                    style={{ marginBottom: '10px' }}
                     variant='outlined'
                     type='text'
                     label='Thema'
@@ -324,7 +324,7 @@ export class ProjectChange extends Component {
                     fullWidth={true}
                   />
                   <TextField
-                    style={{marginBottom: '10px'}}
+                    style={{ marginBottom: '10px' }}
                     variant='outlined'
                     type='text'
                     label='Beschreibung'
@@ -337,7 +337,7 @@ export class ProjectChange extends Component {
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <TextField
-                    style={{marginBottom: '10px'}}
+                    style={{ marginBottom: '10px' }}
                     variant='outlined'
                     type='text'
                     label='Voraussetzungen'
@@ -348,7 +348,7 @@ export class ProjectChange extends Component {
                     fullWidth={true}
                   />
                   <TextField
-                    style={{marginBottom: '10px'}}
+                    style={{ marginBottom: '10px' }}
                     variant='outlined'
                     type='text'
                     label='max. Teilnehmeranzahl'
@@ -360,7 +360,7 @@ export class ProjectChange extends Component {
                 </Grid>
                 {this.props.badges.length > 0 ?
                   <Grid item xs={12} md={6}>
-                    <FormControl variant="outlined" fullWidth style={{marginBottom: '10px'}}>
+                    <FormControl variant="outlined" fullWidth style={{ marginBottom: '10px' }}>
                       <InputLabel id="select-badge">Badges</InputLabel>
                       <Select
                         labelId="select-badge"
@@ -374,9 +374,9 @@ export class ProjectChange extends Component {
                           <MenuItem key={badge._id} value={badge._id}>{badge.name}</MenuItem>
                         ))}
                       </Select>
-                      <Link color="primary" onClick={() => {this.setState({ openBadgeCreator: true });}} style={{cursor: 'pointer'}}>
+                      <Link color="primary" onClick={() => { this.setState({ openBadgeCreator: true }); }} style={{ cursor: 'pointer' }}>
                         Nicht der richtige Badge dabei?
-                        <CreateBadge open={this.state.openBadgeCreator}/>
+                        <CreateBadge open={this.state.openBadgeCreator} />
                       </Link>
                     </FormControl>
                   </Grid>
@@ -394,7 +394,7 @@ export class ProjectChange extends Component {
             </Button>
           </DialogActions>
         </Dialog>
-      : null
+        : null
     );
   }
 }
